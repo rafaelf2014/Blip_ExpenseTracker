@@ -21,7 +21,7 @@ app.post('/api/register', async (req, res) => {
   const newUser = {
     id: Date.now().toString(),
     username: username,
-    password: password 
+    password: password
   };
 
   db.data.users.push(newUser);
@@ -36,7 +36,6 @@ app.post('/api/login', async (req, res) => {
   if (!user) {
     return res.status(401).json({ error: "Invalid credentials" });
   }
-
   return res.status(200).json({
     message: "Login successful!",
     user: {
@@ -44,6 +43,14 @@ app.post('/api/login', async (req, res) => {
       username: user.username
     }
   });
+});
+
+app.get('/api/expenses', (req, res) => {
+  if (db.data && db.data.expenses) {
+    res.json(db.data.expenses);
+  } else {
+    res.status(404).json({ error: "No expenses found" });
+  }
 });
 
 // 4. Start the server on port 5000

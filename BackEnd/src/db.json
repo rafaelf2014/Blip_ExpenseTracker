@@ -11,5 +11,20 @@
       "password": "12345"
     }
   ],
-  "expenses": []
+  "expenses": [
+    {
+      "id": "1",
+      "description": "Netflix",
+      "amount": 15.99,
+      "category": "Entertainment",
+      "date": "2024-03-15"
+    },
+    {
+      "id": "2",
+      "description": "Supermarket",
+      "amount": 85.50,
+      "category": "Food",
+      "date": "2024-03-14"
+    }
+  ]
 }

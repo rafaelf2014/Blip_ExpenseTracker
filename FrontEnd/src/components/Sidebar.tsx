@@ -7,7 +7,7 @@ export function Sidebar() {
     const location = useLocation();
 
     const menuItems = [
-        { id: 'dashboard', path: '/', icon: LayoutDashboard, label: 'Dashboard' },
+        { id: 'dashboard', path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
         { id: 'transactions', path: '/transactions', icon: Receipt, label: 'Transactions' },
         { id: 'settings', path: '/settings', icon: Settings, label: 'Settings' },
     ];

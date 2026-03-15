@@ -1,13 +1,12 @@
-//src /Transaction.tsx
 import { Sidebar } from "../components/Sidebar";
 
-export default function Transactions() {
+export default function Settings() {
     return (
         <div style={{ display: 'flex', minHeight: '100vh', width: '100vw' }}>
             <Sidebar />
             <div>
                 <h1>Control Painel</h1>
-                <p>WellCome to Transactions</p>
+                <p>WellCome to Settings</p>
             </div>
         </div>
     );
