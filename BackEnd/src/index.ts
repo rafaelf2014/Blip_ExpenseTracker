@@ -45,6 +45,36 @@ app.post('/api/login', async (req, res) => {
   });
 });
 
+app.get('/api/expense-config', (req, res) => {
+  res.json({
+    categories: db.data.categories,
+    expenseTypes: db.data.expenseTypes
+  });
+});
+
+app.post('/api/expenses', async (req, res): Promise<any> => {
+  const { userId, description, amount, category, type, date } = req.body;
+
+  const user = db.data.users.find((u) => u.id === userId);
+  if (!user) {
+    return res.status(400).json({ error: "Invalid user ID" });
+  }
+
+  const newExpense = {
+    id: Date.now().toString(),
+    userId: userId,
+    description: description,
+    amount: Number(amount),
+    category: category,
+    type: type,
+    date: new Date(date).toISOString()
+  };
+
+  db.data.expenses.push(newExpense);
+  await db.write();
+  res.status(201).json({ message: "Expense added successfully!" });
+});
+
 app.get('/api/expenses', (req, res) => {
   if (db.data && db.data.expenses) {
     res.json(db.data.expenses);
