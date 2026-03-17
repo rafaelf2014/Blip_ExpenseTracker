@@ -25,6 +25,7 @@ export default function AuthPage() {
     if (response.ok) {
       alert(data.message);
       localStorage.setItem('username', username);
+      localStorage.setItem('userId', data.user.id);
       // Send them to the main app
       navigate('/dashboard'); 
     } else {

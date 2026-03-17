@@ -11,6 +11,17 @@
       "password": "12345"
     }
   ],
+  "expenses": [
+    {
+      "id": "1773749063872",
+      "userId": "1773510223926",
+      "description": "fui ao mc",
+      "amount": 12,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-03-17T00:00:00.000Z"
+    }
+  ],
   "categories": [
     "Food",
     "Health",
