@@ -79,7 +79,7 @@ export default function Dashboard() {
                       </span>
                     </td>
                     <td style={{ padding: '12px', color: '#EF4444', fontWeight: 'bold' }}>
-                      € {Number(exp.amount).toFixed(2)}
+                      {Number(exp.amount).toFixed(2)} €
                     </td>
                     <td style={{ padding: '12px', color: '#94A3B8', fontSize: '0.9rem' }}>{exp.date}</td>
                   </tr>

@@ -2,7 +2,7 @@
   "users": [
     {
       "id": "1773510223926",
-      "username": "rafael",
+      "username": "Rafael",
       "password": "12345"
     },
     {
@@ -22,7 +22,7 @@
     {
       "id": "2",
       "description": "Supermarket",
-      "amount": 85.50,
+      "amount": 85.5,
       "category": "Food",
       "date": "2024-03-14"
     }
