@@ -94,20 +94,23 @@ export default function Dashboard() {
   const transactionCount = expenses.length;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100vw' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', backgroundColor: '#0B1221', color: 'white', fontFamily: 'sans-serif' }}>
       <Sidebar />
-      <div style={{ flex: '1', padding: '40px', flexDirection: 'column', display: 'flex', gap: '30px' }}>
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eee', paddingBottom: '10px' }}>
-          <h2>Blip Expense Tracker</h2>
+      <div style={{ flex: '1', padding: '40px', flexDirection: 'column', display: 'flex' }}>
+        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
           <div>
-            <span style={{ marginLeft: '15px', marginRight: '15px', fontWeight: 'bold' }}>Welcome, {username}!</span>
-            <button onClick={handleLogout} style={{ padding: '5px 15px', cursor: 'pointer' }}>Logout</button>
+            <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Blip Expense Tracker</h2>
+            <p style={{ margin: '5px 0 0 0', color: '#64748B', fontSize: '14px' }}>View and manage all your transactions</p>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+            <span style={{ color: '#64748B', fontSize: '14px' }}>Welcome, <strong style={{ color: 'white' }}>{username}</strong>!</span>
+            <button onClick={handleLogout} style={{ padding: '8px 16px', backgroundColor: 'transparent', border: '1px solid #2A3441', color: '#94A3B8', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
           </div>
         </header>
 
-        <main style={{ marginTop: '30px', textAlign: 'center' }}>
+        <main style={{ textAlign: 'center' }}>
           <SummaryBoxes totalSpent={totalSpent} transactionCount={transactionCount} />
-
+          
           <FilterControls 
             searchTerm={searchTerm} setSearchTerm={setSearchTerm}
             showFilters={showFilters} setShowFilters={setShowFilters}

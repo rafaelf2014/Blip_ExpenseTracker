@@ -25,26 +25,36 @@ export function FilterControls({
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <div style={{ display: 'flex', gap: '15px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
+        
+        {/* Search Bar matching mockup */}
+        <div style={{ flex: 2 }}>
           <input 
-            type="text" placeholder="Search descriptions..." value={searchTerm}
+            type="text" placeholder="Search transactions..." value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ padding: '10px 15px', width: '300px', borderRadius: '6px', border: '1px solid #334155', backgroundColor: '#1E293B', color: 'white' }}
+            style={{ padding: '12px 15px', width: '100%', borderRadius: '8px', border: '1px solid #2A3441', backgroundColor: '#151E2D', color: 'white', boxSizing: 'border-box' }}
           />
+        </div>
+
+        {/* Filter Button */}
+        <div style={{ flex: 1 }}>
           <button
             onClick={() => setShowFilters(!showFilters)}
-            style={{ padding: '10px 20px', backgroundColor: showFilters ? '#475569' : '#1E293B', color: 'white', border: '1px solid #334155', borderRadius: '4px', cursor: 'pointer' }}
+            style={{ padding: '12px 20px', width: '100%', backgroundColor: showFilters ? '#2A3441' : '#151E2D', color: 'white', border: '1px solid #2A3441', borderRadius: '8px', cursor: 'pointer' }}
           >
-            {showFilters ? 'Hide Filters' : 'Show Filters'}
+            {showFilters ? 'Hide Filters' : 'Filters'}
           </button>
         </div>
-        <button
-          onClick={onAddNew}
-          style={{ padding: '10px 20px', backgroundColor: '#3B82F6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-        >
-          + Add New Expense
-        </button>
+
+        {/* Cyan Add Button from Mockup */}
+        <div>
+          <button
+            onClick={onAddNew}
+            style={{ padding: '12px 24px', backgroundColor: '#06B6D4', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
+          >
+            + Add Expense
+          </button>
+        </div>
       </div>
 
       {showFilters && (

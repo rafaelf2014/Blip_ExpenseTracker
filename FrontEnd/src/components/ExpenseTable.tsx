@@ -69,55 +69,46 @@ export function ExpenseTable({ expenses }: ExpenseTableProps) {
 
 
   return (
-    <div style={{ marginTop: '40px', textAlign: 'left', backgroundColor: '#0F172A', padding: '20px', borderRadius: '8px', borderColor: 'white', border: '2px solid' }}>
-      <h3 style={{ borderBottom: '2px solid #3B82F6', paddingBottom: '10px', marginTop: '0', color: 'white' }}>Your Expenses</h3>
-
+    <div style={{ marginTop: '20px', backgroundColor: '#151E2D', borderRadius: '8px', border: '1px solid #2A3441', overflow: 'hidden' }}>
+      
       {expenses.length === 0 ? (
-        <p style={{ color: 'gray', textAlign: 'center' }}>No expenses added yet. Click "Add New Expense" to get started!</p>
+        <p style={{ color: '#64748B', textAlign: 'center', padding: '40px' }}>No transactions found.</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '15px', textAlign: 'left' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
-            <tr style={{ borderBottom: '2px solid #cbd5e1', color: '#64748b', fontSize: '14px' }}>
-              
-              {/* 4. Make each header clickable and add the arrow icon! */}
-              <th onClick={() => handleSort('amount')} style={{ padding: '12px 8px', textAlign: 'left', paddingInlineStart: '30px', cursor: 'pointer', userSelect: 'none' }}>
-                Amount {getSortIcon('amount')}
+            <tr style={{ borderBottom: '1px solid #2A3441', color: '#64748B', fontSize: '13px' }}>
+              <th onClick={() => handleSort('description')} style={{ padding: '16px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
+                Transaction {getSortIcon('description')}
               </th>
-              <th onClick={() => handleSort('category')} style={{ padding: '12px 8px', cursor: 'pointer', userSelect: 'none' }}>
+              <th onClick={() => handleSort('category')} style={{ padding: '16px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
                 Category {getSortIcon('category')}
               </th>
-              <th onClick={() => handleSort('description')} style={{ padding: '12px 8px', cursor: 'pointer', userSelect: 'none' }}>
-                Description {getSortIcon('description')}
-              </th>
-              <th onClick={() => handleSort('date')} style={{ padding: '12px 8px', cursor: 'pointer', userSelect: 'none' }}>
+              <th onClick={() => handleSort('date')} style={{ padding: '16px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
                 Date {getSortIcon('date')}
               </th>
-              <th onClick={() => handleSort('type')} style={{ padding: '12px 8px', cursor: 'pointer', userSelect: 'none' }}>
-                Type {getSortIcon('type')}
+              <th onClick={() => handleSort('amount')} style={{ padding: '16px', cursor: 'pointer', userSelect: 'none', fontWeight: '600', textAlign: 'right' }}>
+                Amount {getSortIcon('amount')}
               </th>
-
             </tr>
           </thead>
           <tbody>
-            {/* 5. Map over the SORTED array instead of the raw array */}
             {sortedExpenses.map((expense) => (
-              <tr key={expense.id} style={{ borderBottom: '1px solid #1E293B', color: 'white' }}>
-                <td style={{ padding: '12px 8px', paddingInlineStart: '30px', textAlign: 'left', fontWeight: 'bold', color: '#ef4444' }}>
-                  ${Number(expense.amount).toFixed(2)}
+              <tr key={expense.id} style={{ borderBottom: '1px solid #2A3441', color: '#F8FAFC', fontSize: '14px' }}>
+                <td style={{ padding: '16px', fontWeight: '500' }}>
+                  {expense.description}
                 </td>
-                <td style={{ padding: '12px 8px' }}>
-                  <span style={{ backgroundColor: '#1bed14', color: 'black', padding: '4px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: '500' }}>
+                <td style={{ padding: '16px' }}>
+                  {/* The dark pill badge from the mockup! */}
+                  <span style={{ backgroundColor: '#1E293B', color: '#94A3B8', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: '500' }}>
                     {expense.category}
                   </span>
                 </td>
-                <td style={{ padding: '12px 8px', fontWeight: '500' }}>
-                  {expense.description}
-                </td>
-                <td style={{ padding: '12px 8px', color: '#94a3b8', fontSize: '14px' }}>
+                <td style={{ padding: '16px', color: '#94A3B8' }}>
                   {expense.date}
                 </td>
-                <td style={{ padding: '12px 8px', color: '#94a3b8', fontSize: '14px' }}>
-                  {expense.type}
+                <td style={{ padding: '16px', textAlign: 'right', fontWeight: 'bold', color: '#EF4444' }}>
+                  {/* Mockup uses Red for expenses! */}
+                  ${Number(expense.amount).toFixed(2)}
                 </td>
               </tr>
             ))}
