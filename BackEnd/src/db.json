@@ -13,18 +13,64 @@
   ],
   "expenses": [
     {
-      "id": "1",
-      "description": "Netflix",
-      "amount": 15.99,
-      "category": "Entertainment",
-      "date": "2024-03-15"
+      "id": "1773749063872",
+      "userId": "1773510223926",
+      "description": "fui ao mc",
+      "amount": 12,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-03-17T00:00:00.000Z"
     },
     {
-      "id": "2",
-      "description": "Supermarket",
-      "amount": 85.5,
+      "id": "1774109389214",
+      "userId": "1773510223926",
+      "description": "Comida",
+      "amount": 12312,
       "category": "Food",
-      "date": "2024-03-14"
+      "type": "One-time",
+      "date": "2026-03-20T00:00:00.000Z"
+    },
+    {
+      "id": "1774112744798",
+      "userId": "1773510223926",
+      "description": "Worten - ps5",
+      "amount": 500,
+      "category": "Entertainment",
+      "type": "One-time",
+      "date": "2026-03-21T00:00:00.000Z"
+    },
+    {
+      "id": "1774385907341",
+      "userId": "1773510223926",
+      "description": "Fnac",
+      "amount": 999,
+      "category": "Transportation",
+      "type": "One-time",
+      "date": "2026-03-24T00:00:00.000Z"
+    },
+    {
+      "id": "1774386333747",
+      "userId": "1773510223926",
+      "description": "asda",
+      "amount": 123,
+      "category": "Health",
+      "type": "One-time",
+      "date": "2026-03-24T00:00:00.000Z"
     }
+  ],
+  "categories": [
+    "Food",
+    "Health",
+    "Clothes",
+    "Housing",
+    "Transportation",
+    "Entertainment",
+    "Other"
+  ],
+  "expenseTypes": [
+    "One-time",
+    "Monthly",
+    "Yearly",
+    "Subscription"
   ]
 }

@@ -1,13 +1,12 @@
 import express from 'express';
 import cors from 'cors';
-import { db } from './db.ts'; // Imports your LowDB database connection
+import { db } from './db.ts';
 
-// 1. Initialize the Express server
+
 const app = express();
 
-// 2. Set up permissions and data parsing
-app.use(cors()); // Allows React to talk to this server
-app.use(express.json()); // Tells the server how to read JSON data sent from React
+app.use(cors());
+app.use(express.json());
 
 // Register Route
 app.post('/api/register', async (req, res) => {
@@ -45,12 +44,88 @@ app.post('/api/login', async (req, res) => {
   });
 });
 
-app.get('/api/expenses', (req, res) => {
-  if (db.data && db.data.expenses) {
-    res.json(db.data.expenses);
-  } else {
-    res.status(404).json({ error: "No expenses found" });
+app.get('/api/expense-config', (req, res) => {
+  res.json({
+    categories: db.data.categories,
+    expenseTypes: db.data.expenseTypes
+  });
+});
+
+app.post('/api/expenses', async (req, res): Promise<any> => {
+  const { userId, description, amount, category, type, date } = req.body;
+
+  const user = db.data.users.find((u) => u.id === userId);
+  if (!user) {
+    return res.status(400).json({ error: "Invalid user ID" });
   }
+
+  const newExpense = {
+    id: Date.now().toString(),
+    userId: userId,
+    description: description,
+    amount: Number(amount),
+    category: category,
+    type: type,
+    date: new Date(date).toISOString()
+  };
+
+  db.data.expenses.push(newExpense);
+  await db.write();
+  res.status(201).json({ message: "Expense added successfully!" });
+});
+
+app.get('/api/expenses/:userId', (req, res) => {
+  const { userId } = req.params;
+  const userExpenses = db.data.expenses.filter((exp: any) => exp.userId === userId);
+  return res.status(200).json(userExpenses);
+});
+
+app.put('/api/users/update', async (req, res) => {
+  const { oldUsername, newUsername } = req.body;
+  
+  const user = db.data.users.find((u: any) => u.username === oldUsername);
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+  
+  const nameExists = db.data.users.find((u: any) => u.username === newUsername);
+  if (nameExists && oldUsername !== newUsername) {
+    return res.status(400).json({ error: "Username already taken" });
+  }
+  
+  user.username = newUsername;
+  
+  db.data.expenses.forEach((expense: any) => {
+    if (expense.userId === oldUsername) {
+        expense.userId = newUsername;
+    }
+  });
+
+  await db.write();
+
+  return res.status(200).json({ message: "Username updated successfully!" });
+});
+
+app.put('/api/users/update-password', async (req, res) => {
+  const { username, currentPassword, newPassword } = req.body;
+
+  // 1. Find the user
+  const user = db.data.users.find((u: any) => u.username === username);
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found" });
+  }
+
+  // 2. Security check: Verify the current password
+  if (user.password !== currentPassword) {
+    return res.status(401).json({ error: "Current password is incorrect" });
+  }
+
+  // 3. Update and save
+  user.password = newPassword;
+  await db.write();
+
+  return res.json({ message: "Password updated successfully! 🔒" });
 });
 
 app.put('/api/users/update', async (req, res) => {
