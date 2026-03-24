@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Sidebar } from './Sidebar';
 import { ExpenseModal } from './ExpenseModal';
 import { ExpenseTable, type Expense } from './ExpenseTable'; 
+import { FilterControls } from './FilterControl';
+import { SummaryBoxes } from './SummaryBoxes';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -15,6 +17,14 @@ export default function Dashboard() {
   const [categories, setCategories] = useState<string[]>([]);
   const [expenseTypes, setExpenseTypes] = useState<string[]>([]);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+
+  const [searchTerm, setSearchTerm] = useState('');
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterType, setFilterType] = useState('');
+  const [filterTime, setFilterTime] = useState('');
+  const [filterMin, setFilterMin] = useState('');
+  const [filterMax, setFilterMax] = useState('');
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -54,6 +64,35 @@ export default function Dashboard() {
   };
 
 
+  const filteredExpenses = expenses.filter((expense) => {
+    const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = filterCategory === '' || expense.category === filterCategory;
+    const matchesType = filterType === '' || expense.type === filterType;
+    
+    const amount = Number(expense.amount);
+    const matchesMin = filterMin === '' || amount >= Number(filterMin);
+    const matchesMax = filterMax === '' || amount <= Number(filterMax);
+
+    let matchesTime = true;
+    if (filterTime !== '') {
+      const expenseDate = new Date(expense.date);
+      const today = new Date();
+      if (filterTime === 'week') {
+        const oneWeekAgo = new Date();
+        oneWeekAgo.setDate(today.getDate() - 7);
+        matchesTime = expenseDate >= oneWeekAgo;
+      } else if (filterTime === 'month') {
+        matchesTime = expenseDate.getMonth() === today.getMonth() && expenseDate.getFullYear() === today.getFullYear();
+      } else if (filterTime === 'year') {
+        matchesTime = expenseDate.getFullYear() === today.getFullYear();
+      }
+    }
+    return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && matchesTime;
+  });
+
+  const totalSpent = expenses.reduce((sum, expense) => sum + Number(expense.amount), 0);
+  const transactionCount = expenses.length;
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', width: '100vw' }}>
       <Sidebar />
@@ -67,23 +106,28 @@ export default function Dashboard() {
         </header>
 
         <main style={{ marginTop: '30px', textAlign: 'center' }}>
-          <button
-            onClick={() => setShowForm(true)}
-            style={{ padding: '10px 20px', backgroundColor: '#3B82F6', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-          >
-            Add New Expense
-          </button>
+          <SummaryBoxes totalSpent={totalSpent} transactionCount={transactionCount} />
+
+          <FilterControls 
+            searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+            showFilters={showFilters} setShowFilters={setShowFilters}
+            filterCategory={filterCategory} setFilterCategory={setFilterCategory}
+            filterType={filterType} setFilterType={setFilterType}
+            filterTime={filterTime} setFilterTime={setFilterTime}
+            filterMin={filterMin} setFilterMin={setFilterMin}
+            filterMax={filterMax} setFilterMax={setFilterMax}
+            categories={categories} expenseTypes={expenseTypes}
+            onAddNew={() => setShowForm(true)}
+          />
 
           {showForm && (
             <ExpenseModal
-              userId={userId}
-              categories={categories}
-              expenseTypes={expenseTypes}
-              onClose={() => setShowForm(false)}
-              onExpenseAdded={() => fetchExpenses(userId)}
+              userId={userId} categories={categories} expenseTypes={expenseTypes}
+              onClose={() => setShowForm(false)} onExpenseAdded={() => fetchExpenses(userId)}
             />
           )} 
-          <ExpenseTable expenses={expenses} />
+          
+          <ExpenseTable expenses={filteredExpenses} />
         </main>
       </div>
     </div>
