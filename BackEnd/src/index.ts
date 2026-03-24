@@ -75,12 +75,10 @@ app.post('/api/expenses', async (req, res): Promise<any> => {
   res.status(201).json({ message: "Expense added successfully!" });
 });
 
-app.get('/api/expenses', (req, res) => {
-  if (db.data && db.data.expenses) {
-    res.json(db.data.expenses);
-  } else {
-    res.status(404).json({ error: "No expenses found" });
-  }
+app.get('/api/expenses/:userId', (req, res) => {
+  const { userId } = req.params;
+  const userExpenses = db.data.expenses.filter((exp: any) => exp.userId === userId);
+  return res.status(200).json(userExpenses);
 });
 
 // 4. Start the server on port 5000
