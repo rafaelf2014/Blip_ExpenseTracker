@@ -27,7 +27,6 @@ export function FilterControls({
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
         
-        {/* Search Bar matching mockup */}
         <div style={{ flex: 2 }}>
           <input 
             type="text" placeholder="Search transactions..." value={searchTerm}
@@ -36,7 +35,6 @@ export function FilterControls({
           />
         </div>
 
-        {/* Filter Button */}
         <div style={{ flex: 1 }}>
           <button
             onClick={() => setShowFilters(!showFilters)}
@@ -46,7 +44,6 @@ export function FilterControls({
           </button>
         </div>
 
-        {/* Cyan Add Button from Mockup */}
         <div>
           <button
             onClick={onAddNew}

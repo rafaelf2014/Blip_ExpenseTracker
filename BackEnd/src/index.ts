@@ -109,19 +109,16 @@ app.put('/api/users/update', async (req, res) => {
 app.put('/api/users/update-password', async (req, res) => {
   const { username, currentPassword, newPassword } = req.body;
 
-  // 1. Find the user
   const user = db.data.users.find((u: any) => u.username === username);
 
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }
 
-  // 2. Security check: Verify the current password
   if (user.password !== currentPassword) {
     return res.status(401).json({ error: "Current password is incorrect" });
   }
 
-  // 3. Update and save
   user.password = newPassword;
   await db.write();
 

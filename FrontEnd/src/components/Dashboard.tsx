@@ -97,41 +97,43 @@ export default function Dashboard() {
     <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', backgroundColor: '#0B1221', color: 'white', fontFamily: 'sans-serif' }}>
       <Sidebar />
       <div style={{ flex: '1', padding: '40px', flexDirection: 'column', display: 'flex' }}>
-        <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
-          <div>
-            <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Blip Expense Tracker</h2>
-            <p style={{ margin: '5px 0 0 0', color: '#64748B', fontSize: '14px' }}>View and manage all your transactions</p>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-            <span style={{ color: '#64748B', fontSize: '14px' }}>Welcome, <strong style={{ color: 'white' }}>{username}</strong>!</span>
-            <button onClick={handleLogout} style={{ padding: '8px 16px', backgroundColor: 'transparent', border: '1px solid #2A3441', color: '#94A3B8', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
-          </div>
-        </header>
+        <div style={{ width: '100%', maxWidth: '1600px', boxSizing: 'border-box', margin: '0 auto', padding: '40px', display: 'flex', flexDirection: 'column' }}>
+          <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
+            <div>
+              <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Blip Expense Tracker</h2>
+              <p style={{ margin: '5px 0 0 0', color: '#64748B', fontSize: '14px' }}>View and manage all your transactions</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+              <span style={{ color: '#64748B', fontSize: '14px' }}>Welcome, <strong style={{ color: 'white' }}>{username}</strong>!</span>
+              <button onClick={handleLogout} style={{ padding: '8px 16px', backgroundColor: 'transparent', border: '1px solid #2A3441', color: '#94A3B8', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
+            </div>
+          </header>
 
-        <main style={{ textAlign: 'center' }}>
-          <SummaryBoxes totalSpent={totalSpent} transactionCount={transactionCount} />
-          
-          <FilterControls 
-            searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-            showFilters={showFilters} setShowFilters={setShowFilters}
-            filterCategory={filterCategory} setFilterCategory={setFilterCategory}
-            filterType={filterType} setFilterType={setFilterType}
-            filterTime={filterTime} setFilterTime={setFilterTime}
-            filterMin={filterMin} setFilterMin={setFilterMin}
-            filterMax={filterMax} setFilterMax={setFilterMax}
-            categories={categories} expenseTypes={expenseTypes}
-            onAddNew={() => setShowForm(true)}
-          />
-
-          {showForm && (
-            <ExpenseModal
-              userId={userId} categories={categories} expenseTypes={expenseTypes}
-              onClose={() => setShowForm(false)} onExpenseAdded={() => fetchExpenses(userId)}
+          <main style={{ textAlign: 'center' }}>
+            <SummaryBoxes totalSpent={totalSpent} transactionCount={transactionCount} />
+            
+            <FilterControls 
+              searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+              showFilters={showFilters} setShowFilters={setShowFilters}
+              filterCategory={filterCategory} setFilterCategory={setFilterCategory}
+              filterType={filterType} setFilterType={setFilterType}
+              filterTime={filterTime} setFilterTime={setFilterTime}
+              filterMin={filterMin} setFilterMin={setFilterMin}
+              filterMax={filterMax} setFilterMax={setFilterMax}
+              categories={categories} expenseTypes={expenseTypes}
+              onAddNew={() => setShowForm(true)}
             />
-          )} 
-          
-          <ExpenseTable expenses={filteredExpenses} />
-        </main>
+
+            {showForm && (
+              <ExpenseModal
+                userId={userId} categories={categories} expenseTypes={expenseTypes}
+                onClose={() => setShowForm(false)} onExpenseAdded={() => fetchExpenses(userId)}
+              />
+            )} 
+            
+            <ExpenseTable expenses={filteredExpenses} />
+          </main>
+        </div>
       </div>
     </div>
   );

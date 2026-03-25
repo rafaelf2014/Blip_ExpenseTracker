@@ -25,8 +25,8 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
 
         if (response.ok) {
             alert('Expense added successfully!');
-            onExpenseAdded(); // Tells the Dashboard to refresh the list!
-            onClose(); // Closes the modal
+            onExpenseAdded();
+            onClose();
         } else {
             alert('Failed to add expense. Please try again.');
         }

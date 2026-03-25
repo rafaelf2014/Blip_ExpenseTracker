@@ -3,7 +3,6 @@ import { Link, useLocation } from 'react-router-dom';
 import './../styles/Sidebar.scss';
 
 export function Sidebar() {
-    /* Identify which page the user is on*/
     const location = useLocation();
 
     const menuItems = [
@@ -15,10 +14,9 @@ export function Sidebar() {
     return (
         <aside className="sidebar">
             <div className="sidebar-logo">
-                <Receipt size={28} color="white" />
+                <Receipt size={36} color="white" />
             </div>
 
-            {/* Navigation*/}
             <nav className="sidebar-nav">
                 {menuItems.map((item) => {
                     const Icon = item.icon;
@@ -31,7 +29,7 @@ export function Sidebar() {
                             className={`nav-item ${active ? 'active' : ''}`}
                             title={item.label}
                         >
-                            <Icon size={24} />
+                            <Icon size={36} />
                             <span className="tooltip">{item.label}</span>
                         </Link>
                     );
