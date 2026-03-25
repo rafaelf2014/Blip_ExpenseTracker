@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { SubmitEventHandler } from 'react';
-import { Receipt } from 'lucide-react'; // Added the logo icon!
+import { Receipt } from 'lucide-react';
 
 export default function AuthPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIslogin] = useState(false); // Defaulting to Register based on your code, though you might want true here usually!
+  const [isLogin, setIslogin] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
@@ -24,14 +24,13 @@ export default function AuthPage() {
 
     if (response.ok) {
       if (isLogin) {
-          // Only login gives back the user object in your current backend setup!
           localStorage.setItem('username', username);
           localStorage.setItem('userId', data.user.id);
           navigate('/dashboard'); 
       } else {
           alert(data.message + " You can now login.");
-          setIslogin(true); // Switch to login screen automatically after registering!
-          setPassword(''); // Clear password for safety
+          setIslogin(true);
+          setPassword('');
       }
     } else {
       alert("Error: " + data.error);
@@ -39,13 +38,10 @@ export default function AuthPage() {
   };
 
   return (
-    // Full screen dark background
     <div style={{ minHeight: '100vh', width: '100vw', backgroundColor: '#0B1221', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif' }}>
       
-      {/* The Login Card */}
       <div style={{ backgroundColor: '#151E2D', padding: '40px', borderRadius: '16px', border: '1px solid #2A3441', width: '100%', maxWidth: '400px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)', textAlign: 'center' }}>
         
-        {/* The Brand Logo (Matching the Sidebar!) */}
         <div style={{ width: '64px', height: '64px', background: 'linear-gradient(135deg, #06B6D4, #0891B2)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px auto', boxShadow: '0 4px 15px rgba(6, 182, 212, 0.3)' }}>
           <Receipt size={36} color="white" />
         </div>

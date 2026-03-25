@@ -56,12 +56,11 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
     return sortDirection === 'asc' ? ' ↑' : ' ↓';
   };
 
-  // Helper 1: REWRITTEN to force the DD-MM-YYYY format!
   const formatDate = (dateString: string) => {
     try {
       const d = new Date(dateString);
       const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed in JS!
+      const month = String(d.getMonth() + 1).padStart(2, '0');
       const year = d.getFullYear();
       return `${day}-${month}-${year}`;
     } catch {
@@ -69,7 +68,6 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
     }
   };
 
-  // Helper 2: Increased icon sizes to 22!
   const getCategoryIcon = (category: string) => {
     const cat = category.toLowerCase();
     if (cat.includes('food') || cat.includes('restaurant')) return <Utensils size={22} />;
@@ -91,7 +89,6 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
       ) : (
         <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
           <thead>
-            {/* Bumped Header Font Size */}
             <tr style={{ borderBottom: '1px solid #2A3441', color: '#94A3B8', fontSize: '16px' }}>
               <th onClick={() => handleSort('description')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
                 Transaction {getSortIcon('description')}
@@ -105,10 +102,10 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
               <th onClick={() => handleSort('type')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
                 Type {getSortIcon('type')}
               </th>
-              <th onClick={() => handleSort('amount')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600', textAlign: 'right' }}>
+              <th onClick={() => handleSort('amount')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600', textAlign: 'center' }}>
                 Price {getSortIcon('amount')}
               </th>
-              <th style={{ padding: '24px 20px', textAlign: 'center', fontWeight: '600' }}>
+              <th style={{ padding: '24px 20px', textAlign: 'center', fontWeight: '600',  }}>
                 Actions
               </th>
             </tr>
@@ -117,7 +114,6 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
             {sortedExpenses.map((expense) => (
               <tr key={expense.id} style={{ borderBottom: '1px solid #2A3441', color: '#F8FAFC', transition: 'background-color 0.2s' }}>
                 
-                {/* Bigger Description Text (18px) and Icon Circle (48px) */}
                 <td style={{ padding: '20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '16px', fontSize: '18px' }}>
                   <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#1E293B', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#06B6D4', flexShrink: 0 }}>
                     {getCategoryIcon(expense.category)}
@@ -125,25 +121,21 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
                   {expense.description}
                 </td>
 
-                {/* Bigger Pill */}
                 <td style={{ padding: '20px' }}>
                   <span style={{ backgroundColor: '#1E293B', color: '#94A3B8', padding: '10px 16px', borderRadius: '20px', fontSize: '15px', fontWeight: '600' }}>
                     {expense.category}
                   </span>
                 </td>
 
-                {/* Formatted Date & Larger Text */}
                 <td style={{ padding: '20px', color: '#94A3B8', fontSize: '17px' }}>
                   {formatDate(expense.date)}
                 </td>
 
-                {/* Type */}
                 <td style={{ padding: '20px', color: '#94A3B8', fontSize: '17px', textTransform: 'capitalize' }}>
                   {expense.type || 'Standard'}
                 </td>
 
-                {/* Hero Price Text (20px) */}
-                <td style={{ padding: '20px', textAlign: 'right', fontWeight: 'bold', color: Number(expense.amount) > 0 ? '#EF4444' : '#10B981', fontSize: '20px' }}>
+                <td style={{ padding: '20px', textAlign: 'center', fontWeight: 'bold', color: Number(expense.amount) > 0 ? '#EF4444' : '#10B981', fontSize: '20px' }}>
                   ${Number(expense.amount).toFixed(2)}
                 </td>
                 <td style={{ padding: '20px', textAlign: 'center' }}>

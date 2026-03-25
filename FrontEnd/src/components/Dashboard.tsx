@@ -74,7 +74,7 @@ export default function Dashboard() {
       body: JSON.stringify(updatedData)
     });
     setEditingExpense(null);
-    fetchExpenses(userId); // Refresh the table!
+    fetchExpenses(userId);
   };
 
   // New Delete Handler
@@ -83,7 +83,7 @@ export default function Dashboard() {
       method: 'DELETE'
     });
     setEditingExpense(null);
-    fetchExpenses(userId); // Refresh the table!
+    fetchExpenses(userId);
   };
 
 
