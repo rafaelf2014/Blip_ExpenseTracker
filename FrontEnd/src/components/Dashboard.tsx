@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { Sidebar } from './Sidebar';
 import { ExpenseModal } from './ExpenseModal';
+import { EditExpenseModal } from './EditExpenseModal';
 import { ExpenseTable, type Expense } from './ExpenseTable'; 
 import { FilterControls } from './FilterControl';
 import { SummaryBoxes } from './SummaryBoxes';
@@ -25,6 +26,8 @@ export default function Dashboard() {
   const [filterTime, setFilterTime] = useState('');
   const [filterMin, setFilterMin] = useState('');
   const [filterMax, setFilterMax] = useState('');
+
+  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
@@ -61,6 +64,26 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Error fetching expenses:', error);
     }
+  };
+
+  // New Save Handler
+  const handleUpdateExpense = async (id: string, updatedData: any) => {
+    await fetch(`http://localhost:5000/api/expenses/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedData)
+    });
+    setEditingExpense(null);
+    fetchExpenses(userId); // Refresh the table!
+  };
+
+  // New Delete Handler
+  const handleDeleteExpense = async (id: string) => {
+    await fetch(`http://localhost:5000/api/expenses/${id}`, {
+      method: 'DELETE'
+    });
+    setEditingExpense(null);
+    fetchExpenses(userId); // Refresh the table!
   };
 
 
@@ -130,8 +153,18 @@ export default function Dashboard() {
                 onClose={() => setShowForm(false)} onExpenseAdded={() => fetchExpenses(userId)}
               />
             )} 
+            {editingExpense && (
+              <EditExpenseModal
+                expense={editingExpense}
+                categories={categories}
+                expenseTypes={expenseTypes}
+                onClose={() => setEditingExpense(null)}
+                onSave={handleUpdateExpense}
+                onDelete={handleDeleteExpense}
+              />
+            )}
             
-            <ExpenseTable expenses={filteredExpenses} />
+            <ExpenseTable expenses={filteredExpenses} onEditClick={setEditingExpense} />
           </main>
         </div>
       </div>

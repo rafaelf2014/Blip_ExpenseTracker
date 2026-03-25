@@ -80,6 +80,25 @@ app.get('/api/expenses/:userId', (req, res) => {
   return res.status(200).json(userExpenses);
 });
 
+app.put('/api/expenses/:id', async (req, res): Promise<any> => {
+  const { id } = req.params;
+  const index = db.data.expenses.findIndex((e: any) => e.id === id);
+  
+  if (index !== -1) {
+    db.data.expenses[index] = { ...db.data.expenses[index], ...req.body };
+    await db.write();
+    return res.json({ message: "Expense updated!" });
+  }
+  return res.status(404).json({ error: "Expense not found" });
+});
+
+app.delete('/api/expenses/:id', async (req, res): Promise<any> => {
+  const { id } = req.params;
+  db.data.expenses = db.data.expenses.filter((e: any) => e.id !== id);
+  await db.write();
+  return res.json({ message: "Expense deleted!" });
+});
+
 app.put('/api/users/update', async (req, res) => {
   const { oldUsername, newUsername } = req.body;
   

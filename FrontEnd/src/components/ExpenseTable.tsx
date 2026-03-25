@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase } from 'lucide-react';
+import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal } from 'lucide-react';
 
 export type Expense = {
   id: string;
@@ -12,12 +12,14 @@ export type Expense = {
 
 type ExpenseTableProps = {
   expenses: Expense[];
+  onEditClick: (expense: Expense) => void;
 };
+
 
 type SortColumn = 'amount' | 'category' | 'description' | 'date' | 'type' | null;
 type SortDirection = 'asc' | 'desc';
 
-export function ExpenseTable({ expenses }: ExpenseTableProps) {
+export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
@@ -106,6 +108,9 @@ export function ExpenseTable({ expenses }: ExpenseTableProps) {
               <th onClick={() => handleSort('amount')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600', textAlign: 'right' }}>
                 Price {getSortIcon('amount')}
               </th>
+              <th style={{ padding: '24px 20px', textAlign: 'center', fontWeight: '600' }}>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -140,6 +145,11 @@ export function ExpenseTable({ expenses }: ExpenseTableProps) {
                 {/* Hero Price Text (20px) */}
                 <td style={{ padding: '20px', textAlign: 'right', fontWeight: 'bold', color: Number(expense.amount) > 0 ? '#EF4444' : '#10B981', fontSize: '20px' }}>
                   ${Number(expense.amount).toFixed(2)}
+                </td>
+                <td style={{ padding: '20px', textAlign: 'center' }}>
+                  <button onClick={() => onEditClick(expense)} style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: '5px' }}>
+                    <MoreHorizontal size={24} />
+                  </button>
                 </td>
 
               </tr>
