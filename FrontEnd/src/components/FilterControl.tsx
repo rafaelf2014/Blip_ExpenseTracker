@@ -1,3 +1,6 @@
+import { Check, Filter, Folder, Layers, Calendar } from "lucide-react";
+import "../styles/FilterControl.scss";
+
 type FilterControlsProps = {
   searchTerm: string; setSearchTerm: (val: string) => void;
   showFilters: boolean; setShowFilters: (val: boolean) => void;
@@ -17,7 +20,7 @@ export function FilterControls({
   filterTime, setFilterTime, filterMin, setFilterMin,
   filterMax, setFilterMax, categories, expenseTypes, onAddNew
 }: FilterControlsProps) {
-  
+
   const handleClear = () => {
     setFilterCategory(''); setFilterType(''); setFilterTime('');
     setFilterMin(''); setFilterMax(''); setSearchTerm('');
@@ -25,76 +28,113 @@ export function FilterControls({
 
   return (
     <>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
-        
-        <div style={{ flex: 2 }}>
-          <input 
-            type="text" placeholder="Search transactions..." value={searchTerm}
+      {/* TOP BAR (Search & Main Actions) */}
+      <div className="filter-top-bar">
+        <div className="search-wrapper">
+          <input
+            type="text"
+            placeholder="Search transactions..."
+            value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{ padding: '12px 15px', width: '100%', borderRadius: '8px', border: '1px solid #2A3441', backgroundColor: '#151E2D', color: 'white', boxSizing: 'border-box' }}
           />
         </div>
 
-        <div style={{ flex: 1 }}>
+        <div className="action-buttons">
           <button
+            className={`toggle-filters-btn ${showFilters ? 'active' : ''}`}
             onClick={() => setShowFilters(!showFilters)}
-            style={{ padding: '12px 20px', width: '100%', backgroundColor: showFilters ? '#2A3441' : '#151E2D', color: 'white', border: '1px solid #2A3441', borderRadius: '8px', cursor: 'pointer' }}
           >
+            <Filter size={16} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />
             {showFilters ? 'Hide Filters' : 'Filters'}
           </button>
-        </div>
 
-        <div>
-          <button
-            onClick={onAddNew}
-            style={{ padding: '12px 24px', backgroundColor: '#06B6D4', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 'bold', cursor: 'pointer' }}
-          >
+          <button className="add-expense-btn" onClick={onAddNew}>
             + Add Expense
           </button>
         </div>
       </div>
-
+      {/* Expanded Filter Panel */}
       {showFilters && (
-        <div style={{ backgroundColor: '#0F172A', padding: '20px', borderRadius: '8px', border: '1px solid #334155', marginBottom: '30px', display: 'flex', gap: '20px', flexWrap: 'wrap', textAlign: 'left' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ color: '#94a3b8', fontSize: '12px' }}>Category</label>
-            <select value={filterCategory} onChange={(e) => setFilterCategory(e.target.value)} style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#1E293B', color: 'white', border: '1px solid #334155' }}>
-              <option value="">All Categories</option>
-              {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-            </select>
+        <div className="filter-panel">
+
+          {/* Section: Time Range */}
+          <div className="filter-section">
+            <h3 className="section-title"><Calendar size={18} /> Date Range</h3>
+            <div className="options-grid">
+              <div className={`filter-pill ${filterTime === '' ? 'active' : ''}`} onClick={() => setFilterTime('')}>
+                All Time
+              </div>
+              <div className={`filter-pill ${filterTime === 'week' ? 'active' : ''}`} onClick={() => setFilterTime('week')}>
+                This Week
+              </div>
+              <div className={`filter-pill ${filterTime === 'month' ? 'active' : ''}`} onClick={() => setFilterTime('month')}>
+                This Month
+              </div>
+              <div className={`filter-pill ${filterTime === 'year' ? 'active' : ''}`} onClick={() => setFilterTime('year')}>
+                This Year
+              </div>
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ color: '#94a3b8', fontSize: '12px' }}>Type</label>
-            <select value={filterType} onChange={(e) => setFilterType(e.target.value)} style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#1E293B', color: 'white', border: '1px solid #334155' }}>
-              <option value="">All Types</option>
-              {expenseTypes.map(t => <option key={t} value={t}>{t}</option>)}
-            </select>
+
+          {/* Section: Categories */}
+          <div className="filter-section">
+            <h3 className="section-title"><Layers size={18} /> Categories</h3>
+            <div className="options-grid">
+
+              <div className={`category-card ${filterCategory === '' ? 'active' : ''}`} onClick={() => setFilterCategory('')}>
+                <Check size={14} className="check-icon" />
+                <Folder size={28} />
+                <span style={{ fontSize: '12px', fontWeight: 500 }}>All Categories</span>
+              </div>
+
+              {categories.map((cat) => (
+                <div key={cat} className={`category-card ${filterCategory === cat ? 'active' : ''}`} onClick={() => setFilterCategory(cat)}>
+                  <Check size={14} className="check-icon" />
+                  <Folder size={28} />
+                  <span style={{ fontSize: '12px', fontWeight: 500 }}>{cat}</span>
+                </div>
+              ))}
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ color: '#94a3b8', fontSize: '12px' }}>Time Range</label>
-            <select value={filterTime} onChange={(e) => setFilterTime(e.target.value)} style={{ padding: '8px', borderRadius: '4px', backgroundColor: '#1E293B', color: 'white', border: '1px solid #334155' }}>
-              <option value="">All Time</option>
-              <option value="week">This Week</option>
-              <option value="month">This Month</option>
-              <option value="year">This Year</option>
-            </select>
+
+          {/* Section: Types */}
+          <div className="filter-section">
+            <h3 className="section-title"><Layers size={18} /> Transaction Type</h3>
+            <div className="options-grid">
+              <div className={`filter-pill ${filterType === '' ? 'active' : ''}`} onClick={() => setFilterType('')}>
+                All Types
+              </div>
+              {expenseTypes.map((type) => (
+                <div key={type} className={`filter-pill ${filterType === type ? 'active' : ''}`} onClick={() => setFilterType(type)}>
+                  {type}
+                </div>
+              ))}
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ color: '#94a3b8', fontSize: '12px' }}>Min Amount ($)</label>
-            <input type="number" value={filterMin} onChange={(e) => setFilterMin(e.target.value)} placeholder="0" style={{ padding: '8px', width: '100px', borderRadius: '4px', backgroundColor: '#1E293B', color: 'white', border: '1px solid #334155' }} />
+
+          {/* Footer: Amounts & Action Buttons */}
+          <div className="filter-footer">
+            <div className="amounts-group">
+              <div className="input-group">
+                <label>Min Amount ($)</label>
+                <input type="number" value={filterMin} onChange={(e) => setFilterMin(e.target.value)} placeholder="0" />
+              </div>
+              <div className="input-group">
+                <label>Max Amount ($)</label>
+                <input type="number" value={filterMax} onChange={(e) => setFilterMax(e.target.value)} placeholder="Any" />
+              </div>
+            </div>
+
+            <div className="panel-actions">
+              <button className="clear-btn" onClick={handleClear}>
+                Clear All
+              </button>
+              <button className="apply-btn" onClick={() => setShowFilters(false)}>
+                Apply Filters
+              </button>
+            </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
-            <label style={{ color: '#94a3b8', fontSize: '12px' }}>Max Amount ($)</label>
-            <input type="number" value={filterMax} onChange={(e) => setFilterMax(e.target.value)} placeholder="Any" style={{ padding: '8px', width: '100px', borderRadius: '4px', backgroundColor: '#1E293B', color: 'white', border: '1px solid #334155' }} />
-          </div>
-          <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-            <button 
-              onClick={handleClear}
-              style={{ padding: '8px 15px', backgroundColor: 'transparent', color: '#EF4444', border: '1px solid #EF4444', borderRadius: '4px', cursor: 'pointer' }}
-            >
-              Clear All
-            </button>
-          </div>
+
         </div>
       )}
     </>

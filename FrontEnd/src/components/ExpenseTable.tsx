@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal } from 'lucide-react';
+import "../styles/ExpenseTable.scss";
 
 export type Expense = {
   id: string;
@@ -64,7 +65,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
       const year = d.getFullYear();
       return `${day}-${month}-${year}`;
     } catch {
-      return dateString.split(' ')[0]; 
+      return dateString.split(' ')[0];
     }
   };
 
@@ -82,68 +83,67 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   };
 
   return (
-    <div style={{ marginTop: '20px', backgroundColor: '#151E2D', borderRadius: '12px', border: '1px solid #2A3441', overflow: 'hidden' }}>
-      
+    <div className='expense-table-container'>
+
       {expenses.length === 0 ? (
-        <p style={{ color: '#64748B', textAlign: 'center', padding: '60px', fontSize: '20px' }}>No transactions found.</p>
+        <p className='empty-state'>No transactions found.</p>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+        <table className='expense-table'>
           <thead>
-            <tr style={{ borderBottom: '1px solid #2A3441', color: '#94A3B8', fontSize: '16px' }}>
-              <th onClick={() => handleSort('description')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
+            <tr>
+              <th className='sortable' onClick={() => handleSort('description')} >
                 Transaction {getSortIcon('description')}
               </th>
-              <th onClick={() => handleSort('category')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
+              <th className='sortable' onClick={() => handleSort('category')} >
                 Category {getSortIcon('category')}
               </th>
-              <th onClick={() => handleSort('date')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
+              <th className='sortable' onClick={() => handleSort('date')} >
                 Date {getSortIcon('date')}
               </th>
-              <th onClick={() => handleSort('type')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600' }}>
+              <th className='sortable' onClick={() => handleSort('type')} >
                 Type {getSortIcon('type')}
               </th>
-              <th onClick={() => handleSort('amount')} style={{ padding: '24px 20px', cursor: 'pointer', userSelect: 'none', fontWeight: '600', textAlign: 'center' }}>
+              <th className='sortable text-center' onClick={() => handleSort('amount')} >
                 Price {getSortIcon('amount')}
               </th>
-              <th style={{ padding: '24px 20px', textAlign: 'center', fontWeight: '600',  }}>
+              <th className='text-center'>
                 Actions
               </th>
             </tr>
           </thead>
           <tbody>
             {sortedExpenses.map((expense) => (
-              <tr key={expense.id} style={{ borderBottom: '1px solid #2A3441', color: '#F8FAFC', transition: 'background-color 0.2s' }}>
-                
-                <td style={{ padding: '20px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '16px', fontSize: '18px' }}>
-                  <div style={{ width: '48px', height: '48px', borderRadius: '50%', backgroundColor: '#1E293B', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#06B6D4', flexShrink: 0 }}>
+              <tr key={expense.id} >
+
+                <td className='desc-col'>
+                  <div className='icon-wrapper'>
                     {getCategoryIcon(expense.category)}
                   </div>
                   {expense.description}
                 </td>
 
-                <td style={{ padding: '20px' }}>
-                  <span style={{ backgroundColor: '#1E293B', color: '#94A3B8', padding: '10px 16px', borderRadius: '20px', fontSize: '15px', fontWeight: '600' }}>
+                <td className='category-col'>
+                  <span className='category-pill'>
                     {expense.category}
                   </span>
                 </td>
 
-                <td style={{ padding: '20px', color: '#94A3B8', fontSize: '17px' }}>
+                <td className='date-col' >
                   {formatDate(expense.date)}
                 </td>
 
-                <td style={{ padding: '20px', color: '#94A3B8', fontSize: '17px', textTransform: 'capitalize' }}>
+                <td className='type-col capitalize' >
                   {expense.type || 'Standard'}
                 </td>
 
-                <td style={{ padding: '20px', textAlign: 'center', fontWeight: 'bold', color: Number(expense.amount) > 0 ? '#EF4444' : '#10B981', fontSize: '20px' }}>
+                <td className={`amount-col ${Number(expense.amount) > 0 ? 'expense' : 'income'}`} >
                   ${Number(expense.amount).toFixed(2)}
                 </td>
-                <td style={{ padding: '20px', textAlign: 'center' }}>
-                  <button onClick={() => onEditClick(expense)} style={{ background: 'none', border: 'none', color: '#94A3B8', cursor: 'pointer', padding: '5px' }}>
+                <td className='actions-col' >
+                  <button className='action-btn' onClick={() => onEditClick(expense)}>
                     <MoreHorizontal size={24} />
                   </button>
                 </td>
-
               </tr>
             ))}
           </tbody>

@@ -1,0 +1,127 @@
+.expense-table-container {
+  margin-top: 20px;
+  background-color: #151E2D;
+  border-radius: 12px;
+  border: 1px solid #2A3441;
+  overflow: hidden;
+
+  .empty-state {
+    color: #64748B;
+    text-align: center;
+    padding: 60px;
+    font-size: 20px;
+  }
+
+  .expense-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+
+    thead {
+      tr {
+        border-bottom: 1px solid #2A3441;
+        color: #94A3B8;
+        font-size: 16px;
+
+        th {
+          padding: 24px 20px;
+          user-select: none;
+          font-weight: 600;
+
+          &.sortable {
+            cursor: pointer;
+            &:hover {
+              color: white;
+            }
+          }
+
+          &.text-center {
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        border-bottom: 1px solid #2A3441;
+        color: #F8FAFC;
+        transition: background-color 0.2s;
+
+        &:hover {
+          background-color: rgba(30, 41, 59, 0.5); /* Adicionei um pequeno hover para ficar melhor! */
+        }
+
+        td {
+          padding: 20px;
+
+          &.desc-col {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 18px;
+
+            .icon-wrapper {
+              width: 48px;
+              height: 48px;
+              border-radius: 50%;
+              background-color: #1E293B;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: #06B6D4;
+              flex-shrink: 0;
+            }
+          }
+
+          &.category-col {
+            .category-pill {
+              background-color: #1E293B;
+              color: #94A3B8;
+              padding: 10px 16px;
+              border-radius: 20px;
+              font-size: 15px;
+              font-weight: 600;
+            }
+          }
+
+          &.date-col {
+            color: #94A3B8;
+            font-size: 17px;
+
+            &.capitalize {
+              text-transform: capitalize;
+            }
+          }
+
+          &.amount-col {
+            text-align: center;
+            font-weight: bold;
+            font-size: 20px;
+
+            &.expense { color: #EF4444; }
+            &.income { color: #10B981; }
+          }
+
+          &.actions-col {
+            text-align: center;
+
+            .action-btn {
+              background: none;
+              border: none;
+              color: #94A3B8;
+              cursor: pointer;
+              padding: 5px;
+              transition: color 0.2s;
+
+              &:hover {
+                color: white;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

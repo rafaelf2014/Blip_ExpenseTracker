@@ -1,0 +1,48 @@
+.summary-boxes-container {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+
+    .summary-card {
+        flex: 1;
+        background-color: #151E2D;
+        padding: 20px;
+        border-radius: 8px;
+        border: 1px solid #2A3441;
+        text-align: left;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .summary-label {
+            margin: 0 0 10px 0;
+            color: #64748B;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+
+
+            &.neutral {
+                color: white;
+            }
+
+            &.positive {
+                color: #10B981;
+            }
+
+            &.negative {
+                color: #EF4444;
+            }
+        }
+    }
+}
