@@ -83,7 +83,7 @@ app.get('/api/expenses/:userId', (req, res) => {
 app.put('/api/expenses/:id', async (req, res): Promise<any> => {
   const { id } = req.params;
   const index = db.data.expenses.findIndex((e: any) => e.id === id);
-  
+
   if (index !== -1) {
     db.data.expenses[index] = { ...db.data.expenses[index], ...req.body };
     await db.write();
@@ -101,22 +101,22 @@ app.delete('/api/expenses/:id', async (req, res): Promise<any> => {
 
 app.put('/api/users/update', async (req, res) => {
   const { oldUsername, newUsername } = req.body;
-  
+
   const user = db.data.users.find((u: any) => u.username === oldUsername);
   if (!user) {
     return res.status(404).json({ error: "User not found" });
   }
-  
+
   const nameExists = db.data.users.find((u: any) => u.username === newUsername);
   if (nameExists && oldUsername !== newUsername) {
     return res.status(400).json({ error: "Username already taken" });
   }
-  
+
   user.username = newUsername;
-  
+
   db.data.expenses.forEach((expense: any) => {
     if (expense.userId === oldUsername) {
-        expense.userId = newUsername;
+      expense.userId = newUsername;
     }
   });
 

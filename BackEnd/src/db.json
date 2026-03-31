@@ -47,6 +47,15 @@
       "category": "Transportation",
       "type": "One-time",
       "date": "2026-03-24T00:00:00.000Z"
+    },
+    {
+      "id": "1774449056066",
+      "userId": "1773510223926",
+      "description": "Padel",
+      "amount": 24,
+      "category": "Entertainment",
+      "type": "One-time",
+      "date": "2026-03-25T00:00:00.000Z"
     }
   ],
   "categories": [
