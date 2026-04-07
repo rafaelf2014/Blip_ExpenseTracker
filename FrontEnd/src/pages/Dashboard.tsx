@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Sidebar } from './Sidebar';
-import { ExpenseModal } from './ExpenseModal';
-import { EditExpenseModal } from './EditExpenseModal';
-import { ExpenseTable, type Expense } from './ExpenseTable'; 
-import { FilterControls } from './FilterControl';
-import { SummaryBoxes } from './SummaryBoxes';
+import { Sidebar } from '../components/Sidebar';
+import { ExpenseModal } from '../components/ExpenseModal';
+import { EditExpenseModal } from '../components/EditExpenseModal';
+import { ExpenseTable, type Expense } from '../components/ExpenseTable';
+import { FilterControls } from '../components/FilterControl';
+import { SummaryBoxes } from '../components/SummaryBoxes';
+import '../styles/Dashboard.scss';
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ export default function Dashboard() {
       setUsername(storedUsername);
       setUserId(storedUserId);
       fetchExpenses(storedUserId);
-    
+
       fetch('http://localhost:5000/api/expense-config')
         .then(res => res.json())
         .then(data => {
@@ -54,7 +55,7 @@ export default function Dashboard() {
     navigate('/');
   };
 
-  const fetchExpenses = async (id : string) => {
+  const fetchExpenses = async (id: string) => {
     try {
       const response = await fetch(`http://localhost:5000/api/expenses/${id}`);
       if (response.ok) {
@@ -91,7 +92,7 @@ export default function Dashboard() {
     const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = filterCategory === '' || expense.category === filterCategory;
     const matchesType = filterType === '' || expense.type === filterType;
-    
+
     const amount = Number(expense.amount);
     const matchesMin = filterMin === '' || amount >= Number(filterMin);
     const matchesMax = filterMax === '' || amount <= Number(filterMax);
@@ -117,25 +118,27 @@ export default function Dashboard() {
   const transactionCount = expenses.length;
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', backgroundColor: '#0B1221', color: 'white', fontFamily: 'sans-serif' }}>
+    <div className="dashboard-layout">
       <Sidebar />
-      <div style={{ flex: '1', padding: '40px', flexDirection: 'column', display: 'flex' }}>
-        <div style={{ width: '100%', maxWidth: '1600px', boxSizing: 'border-box', margin: '0 auto', padding: '40px', display: 'flex', flexDirection: 'column' }}>
-          <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
-            <div>
-              <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 'bold' }}>Blip Expense Tracker</h2>
-              <p style={{ margin: '5px 0 0 0', color: '#64748B', fontSize: '14px' }}>View and manage all your transactions</p>
+      <div className="dashboard-content-wrapper">
+        <div className="dashboard-container">
+          <header className="dashboard-header">
+            <div className="header-title">
+              <h2>Blip Expense Tracker</h2>
+              <p>View and manage all your transactions</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-              <span style={{ color: '#64748B', fontSize: '14px' }}>Welcome, <strong style={{ color: 'white' }}>{username}</strong>!</span>
-              <button onClick={handleLogout} style={{ padding: '8px 16px', backgroundColor: 'transparent', border: '1px solid #2A3441', color: '#94A3B8', borderRadius: '6px', cursor: 'pointer' }}>Logout</button>
+            <div className='header-user-section'>
+              <span className='welcome-text'>Welcome, <strong >{username}</strong>!</span>
+              <button onClick={handleLogout} className='logout-btn'>
+                Logout
+              </button>
             </div>
           </header>
 
-          <main style={{ textAlign: 'center' }}>
+          <main className='dashboard-main'>
             <SummaryBoxes totalSpent={totalSpent} transactionCount={transactionCount} />
-            
-            <FilterControls 
+
+            <FilterControls
               searchTerm={searchTerm} setSearchTerm={setSearchTerm}
               showFilters={showFilters} setShowFilters={setShowFilters}
               filterCategory={filterCategory} setFilterCategory={setFilterCategory}
@@ -152,7 +155,7 @@ export default function Dashboard() {
                 userId={userId} categories={categories} expenseTypes={expenseTypes}
                 onClose={() => setShowForm(false)} onExpenseAdded={() => fetchExpenses(userId)}
               />
-            )} 
+            )}
             {editingExpense && (
               <EditExpenseModal
                 expense={editingExpense}
@@ -163,7 +166,7 @@ export default function Dashboard() {
                 onDelete={handleDeleteExpense}
               />
             )}
-            
+
             <ExpenseTable expenses={filteredExpenses} onEditClick={setEditingExpense} />
           </main>
         </div>

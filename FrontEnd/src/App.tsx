@@ -2,7 +2,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './App.scss'
 import AuthPage from './components/AuthPage'
-import Dashboard from './components/Dashboard';
+import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
 
