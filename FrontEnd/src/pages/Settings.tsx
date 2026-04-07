@@ -1,7 +1,8 @@
 import { User, Save, Lock } from "lucide-react";
 import { Sidebar } from "../components/Sidebar";
 import { useState, useEffect } from "react";
-
+import toast from "react-hot-toast";
+import '../styles/Settings.scss';
 
 export default function Settings() {
     const [username, setUsername] = useState('');
@@ -29,14 +30,14 @@ export default function Settings() {
             const data = await response.json();
             if (response.ok) {
                 localStorage.setItem('username', username);
-                alert(data.message);
+                toast.success(data.message);
             }
             else {
-                alert(data.error || 'Failed to update username');
+                toast.error(data.error || 'Failed to update username');
             }
         } catch (error) {
             console.error('Error updating username:', error);
-            alert('An error occurred while updating the username');
+            toast.error('An error occurred while updating the username');
         } finally {
             setLoading(false);
         }
@@ -46,7 +47,7 @@ export default function Settings() {
         e.preventDefault();
 
         if (newPassword !== confirmPassword) {
-            return alert("New passwords do not match!");
+            return toast.error("New passwords do not match!");
         }
 
         setLoading(true);
@@ -63,47 +64,47 @@ export default function Settings() {
 
             const data = await response.json();
             if (response.ok) {
-                alert(data.message);
+                toast.success(data.message);
                 setCurrentPassword('');
                 setNewPassword('');
                 setConfirmPassword('');
             } else {
-                alert(data.error);
+                toast.error(data.error);
             }
         } catch (error) {
-            alert("Error connecting to the server");
+            toast.error("Error connecting to the server");
         } finally {
             setLoading(false);
         }
     };
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', width: '100vw', backgroundColor: '#0F172A' }}>
+        <div className="settings-layout">
             <Sidebar />
 
             <main className="settings-page">
                 {/* Header*/}
-                <div style={{ marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '36px', fontWeight: 'bold', marginBottom: '8px' }}>Settings</h1>
-                    <p style={{ color: '#94A3B8' }}>Manage your account and preferences</p>
+                <div className="settings-header">
+                    <h1>Settings</h1>
+                    <p>Manage your account and preferences</p>
                 </div>
 
                 {/* Layout Grid */}
                 <div className="settings-grid">
 
                     {/* Settings Card */}
-                    <div className="main-settings">
+                    <div className="settings-card">
                         {/* Profile Card */}
                         <div className="settings-card">
                             {/* Header  Card */}
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#06B6D4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div className="card-header">
+                                <div className="icon-wrapper">
                                     <User size={20} color="white" />
                                 </div>
-                                <h2 style={{ fontSize: '20px', fontWeight: '600' }}>Profile</h2>
+                                <h2>Profile</h2>
                             </div>
 
                             {/* Settings Form */}
-                            <form className="settings-form" onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            <form className="settings-form" onSubmit={handleSave}>
                                 <div className="form-group">
                                     <label>Username</label>
                                     <input className="form-control"
@@ -123,13 +124,14 @@ export default function Settings() {
                         </div>
                         {/* Security Card */}
                         <div className="settings-card">
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#06B6D4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div className="card-header">
+                                <div className="icon-wrapper">
                                     <Lock size={20} color="white" />
                                 </div>
-                                <h2 style={{ fontSize: '20px', fontWeight: '600' }}>Security</h2>
+                                <h2>Security</h2>
                             </div>
-                            <form className="settings-form" onSubmit={handlePasswordSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+                            <form className="settings-form" onSubmit={handlePasswordSave}>
                                 <div className="form-group">
                                     <label>Current Password</label>
                                     <input className="form-control"

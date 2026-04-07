@@ -1,0 +1,170 @@
+/* src/styles/Settings.scss */
+
+.settings-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    background-color: #0F172A;
+}
+
+.settings-page {
+    padding: 32px;
+    flex: 1;
+    color: white;
+
+    /* Estilos para o cabeçalho que criaste no TSX */
+    .settings-header {
+        margin-bottom: 32px;
+
+        h1 {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+        }
+
+        p {
+            color: #94A3B8;
+            margin: 0;
+        }
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 24px;
+
+        @media (min-width: 1024px) {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        >.settings-card {
+            grid-column: span 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            /* Removemos o fundo e a borda do "wrapper" para não ficar um cartão dentro de outro */
+            background: none;
+            border: none;
+            padding: 0;
+            backdrop-filter: none;
+
+            max-width: 650px;
+
+            @media (min-width: 1024px) {
+                grid-column: span 2;
+            }
+
+
+            .settings-card {
+                background-color: rgba(30, 41, 59, 0.5);
+                border: 1px solid #334155;
+                border-radius: 16px;
+                padding: 24px;
+                backdrop-filter: blur(4px);
+
+                .card-header {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                    margin-bottom: 24px;
+
+                    .icon-wrapper {
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 12px;
+                        background-color: #06B6D4;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    h2 {
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 0;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.settings-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        width: 100%;
+
+        label {
+            color: #94A3B8;
+            font-size: 14px;
+            font-weight: 500;
+            margin-left: 4px;
+        }
+
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: #0F172A;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+
+            &:focus {
+                outline: none;
+                border-color: #06B6D4;
+                box-shadow: 0 0 0 1px #06B6D4;
+            }
+
+            &::placeholder {
+                color: #475569;
+            }
+        }
+
+
+        select.form-control {
+            appearance: none;
+            cursor: pointer;
+        }
+    }
+
+    .save-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #06B6D4;
+        color: white;
+        font-weight: 600;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        &:hover:not(:disabled) {
+            background-color: #0891B2;
+        }
+
+        &:active:not(:disabled) {
+            transform: scale(0.98);
+        }
+
+        &:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    }
+}

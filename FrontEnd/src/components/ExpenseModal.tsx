@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import '../styles/ExpenseModal.scss';
 import '../styles/global.scss';
+import toast from 'react-hot-toast';
 
 type ExpenseModalProps = {
   userId: string;
@@ -25,14 +26,14 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
       body: JSON.stringify({ userId, description, amount, category, type, date })
     });
 
-        if (response.ok) {
-            alert('Expense added successfully!');
-            onExpenseAdded();
-            onClose();
-        } else {
-            alert('Failed to add expense. Please try again.');
-        }
-    };
+    if (response.ok) {
+      toast.success('Expense added successfully!');
+      onExpenseAdded();
+      onClose();
+    } else {
+      toast.error('Failed to add expense. Please try again.');
+    }
+  };
 
   return (
     <div className='modal-overlay'>

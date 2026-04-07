@@ -2,7 +2,7 @@
   "users": [
     {
       "id": "1773510223926",
-      "username": "Rafael",
+      "username": "rafael",
       "password": "12345"
     },
     {
@@ -56,6 +56,42 @@
       "category": "Entertainment",
       "type": "One-time",
       "date": "2026-03-25T00:00:00.000Z"
+    },
+    {
+      "id": "1775558942647",
+      "userId": "1773510223926",
+      "description": "Jogar Futebol",
+      "amount": 22,
+      "category": "Health",
+      "type": "One-time",
+      "date": "2026-04-07T00:00:00.000Z"
+    },
+    {
+      "id": "1775563644351",
+      "userId": "1773510223926",
+      "description": "Fortnite",
+      "amount": 50,
+      "category": "Entertainment",
+      "type": "One-time",
+      "date": "2026-04-07T00:00:00.000Z"
+    },
+    {
+      "id": "1775563795758",
+      "userId": "1773510223926",
+      "description": "CS GO SKINS",
+      "amount": 78,
+      "category": "Entertainment",
+      "type": "One-time",
+      "date": "2026-04-07T00:00:00.000Z"
+    },
+    {
+      "id": "1775563810382",
+      "userId": "1773510223926",
+      "description": "Bola",
+      "amount": 12,
+      "category": "Entertainment",
+      "type": "One-time",
+      "date": "2026-04-07T00:00:00.000Z"
     }
   ],
   "categories": [

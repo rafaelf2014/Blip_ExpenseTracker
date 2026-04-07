@@ -7,7 +7,7 @@ export default function Transactions() {
             <Sidebar />
             <div>
                 <h1>Control Painel</h1>
-                <p>WellCome to Transactions</p>
+                <p>WelCome to Transactions</p>
             </div>
         </div>
     );

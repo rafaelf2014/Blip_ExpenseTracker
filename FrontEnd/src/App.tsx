@@ -5,11 +5,14 @@ import AuthPage from './components/AuthPage'
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
+import { CustomToaster } from './components/CustomToaster';
 
 
 function App() {
   return (
     <BrowserRouter>
+      <CustomToaster />
+
       <Routes>
         <Route path="/" element={<AuthPage />} />
         <Route path="/dashboard" element={<Dashboard />} />

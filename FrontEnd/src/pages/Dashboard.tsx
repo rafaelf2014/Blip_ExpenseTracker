@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { Sidebar } from '../components/Sidebar';
 import { ExpenseModal } from '../components/ExpenseModal';
 import { EditExpenseModal } from '../components/EditExpenseModal';
