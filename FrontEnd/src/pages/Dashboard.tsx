@@ -8,10 +8,13 @@ import { FilterControls } from '../components/FilterControl';
 import { SummaryBoxes } from '../components/SummaryBoxes';
 import '../styles/Dashboard.scss';
 import { AiExpenseBar } from '../components/AiExpenseBar';
+import { initializeLLM } from '../components/llmService';
+import { useTranslation } from 'react-i18next';
 
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [userId, setUserId] = useState('');
 
@@ -35,7 +38,7 @@ export default function Dashboard() {
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');
     const storedUserId = localStorage.getItem('userId');
-
+    void initializeLLM(); // O carregamento fica em background
     if (!storedUsername || !storedUserId) {
       navigate('/');
     } else {
@@ -89,7 +92,7 @@ export default function Dashboard() {
     fetchExpenses(userId);
   };
 
-  
+
 
   const filteredExpenses = expenses.filter((expense) => {
     const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -127,13 +130,13 @@ export default function Dashboard() {
         <div className="dashboard-container">
           <header className="dashboard-header">
             <div className="header-title">
-              <h2>Blip Expense Tracker</h2>
-              <p>View and manage all your transactions</p>
+              <h2>{t('header_dashboard.title')}</h2>
+              <p>{t('header_dashboard.subtitle')}</p>
             </div>
             <div className='header-user-section'>
-              <span className='welcome-text'>Welcome, <strong >{username}</strong>!</span>
+              <span className='welcome-text'>{t('header_dashboard.welcome')} <strong>{username}</strong>!</span>
               <button onClick={handleLogout} className='logout-btn'>
-                Logout
+                {t('header_dashboard.logout')}
               </button>
             </div>
           </header>
@@ -141,11 +144,11 @@ export default function Dashboard() {
           <main className='dashboard-main'>
             <SummaryBoxes totalSpent={totalSpent} transactionCount={transactionCount} />
 
-            <AiExpenseBar 
-              userId={userId} 
-              categories={categories} 
-              expenseTypes={expenseTypes} 
-              onExpenseAdded={() => fetchExpenses(userId)} 
+            <AiExpenseBar
+              userId={userId}
+              categories={categories}
+              expenseTypes={expenseTypes}
+              onExpenseAdded={() => fetchExpenses(userId)}
             />
 
             <FilterControls

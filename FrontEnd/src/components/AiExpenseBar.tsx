@@ -41,7 +41,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
     
     setIsAiLoading(true);
     try {
-      await initializeLLM(); // O carregamento fica em background
+     // await initializeLLM(); // O carregamento fica em background
       const respostaStr = await extractExpenseFromText(textToProcess, categories, expenseTypes);
       const cleanJsonStr = respostaStr.replace(/```json/g, '').replace(/```/g, '').trim();
       const expenseData = JSON.parse(cleanJsonStr);

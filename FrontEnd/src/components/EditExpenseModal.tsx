@@ -3,6 +3,7 @@ import { X, Save, Trash2 } from 'lucide-react';
 import type { Expense } from './ExpenseTable';
 import '../styles/EditExpenseModal.scss';
 import { useCurrency } from '../Context/CurrencyContext';
+import { useTranslation } from 'react-i18next';
 
 type EditExpenseModalProps = {
   expense: Expense;
@@ -21,7 +22,7 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
   const [date, setDate] = useState(expense.date ? expense.date.split('T')[0] : '');
 
   const { currencySymbol } = useCurrency();
-
+  const { t } = useTranslation();
   return (
     <div className='edit-modal-overlay'>
       <div className='edit-modal-card'>
@@ -30,7 +31,7 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
           <X size={24} />
         </button>
 
-        <h3 className='modal-title'>Edit Transaction</h3>
+        <h3 className='modal-title'>{t('editExpenseModal.title')}</h3>
 
         <div className='form-fields' >
           <input className='edit-input' type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
@@ -53,23 +54,23 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
           />
 
           <select className='edit-input' value={category} onChange={(e) => setCategory(e.target.value)} >
-            <option value="">Select Category</option>
-            {categories.map(c => <option key={c} value={c}>{c}</option>)}
+            <option value="">{t('editExpenseModal.select_category')}</option>
+            {categories.map(c => <option key={c} value={c}>{t(`categories.${c.toLowerCase()}`, c)}</option>)}
           </select>
 
           <select className='edit-input' value={type} onChange={(e) => setType(e.target.value)} >
-            <option value="">Select Type</option>
-            {expenseTypes.map(t => <option key={t} value={t}>{t}</option>)}
+            <option value="">{t('editExpenseModal.select_type')}</option>
+            {expenseTypes.map(typeItem => <option key={typeItem} value={typeItem}>{t(`types.${typeItem.toLowerCase()}`, typeItem)}</option>)}
           </select>
         </div>
 
         <div className='action-buttons'>
           <button className='delete-btn' onClick={() => onDelete(expense.id)}>
-            <Trash2 size={18} /> Delete
+            <Trash2 size={18} /> {t('editExpenseModal.delete')}
           </button>
 
           <button className='save-btn' onClick={() => onSave(expense.id, { description, amount, category, type, date })}>
-            <Save size={18} /> Save Changes
+            <Save size={18} /> {t('editExpenseModal.save')}
           </button>
         </div>
 

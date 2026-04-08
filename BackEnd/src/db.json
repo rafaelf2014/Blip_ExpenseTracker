@@ -162,6 +162,15 @@
       "category": "Food",
       "type": "One-time",
       "date": "2026-04-08T00:00:00.000Z"
+    },
+    {
+      "id": "1775654805782",
+      "userId": "1773510223926",
+      "description": "Apple",
+      "amount": 5,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-07T00:00:00.000Z"
     }
   ],
   "categories": [

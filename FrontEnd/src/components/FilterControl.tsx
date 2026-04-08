@@ -1,6 +1,7 @@
 import { Check, Filter, Folder, Layers, Calendar } from "lucide-react";
 import "../styles/FilterControl.scss";
 import { useCurrency } from '../Context/CurrencyContext';
+import { useTranslation } from 'react-i18next';
 
 type FilterControlsProps = {
   searchTerm: string; setSearchTerm: (val: string) => void;
@@ -28,6 +29,7 @@ export function FilterControls({
   };
 
   const { currencySymbol } = useCurrency();
+  const { t } = useTranslation();
 
   return (
     <>
@@ -36,7 +38,7 @@ export function FilterControls({
         <div className="search-wrapper">
           <input
             type="text"
-            placeholder="Search transactions..."
+            placeholder={t('filters.search_placeholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -48,11 +50,11 @@ export function FilterControls({
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter size={16} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />
-            {showFilters ? 'Hide Filters' : 'Filters'}
+            {showFilters ? t('filters.hide_filters') : t('filters.filter')}
           </button>
 
           <button className="add-expense-btn" onClick={onAddNew}>
-            + Add Expense
+            {t('filters.add_expense')}
           </button>
         </div>
       </div>
@@ -62,39 +64,39 @@ export function FilterControls({
 
           {/* Section: Time Range */}
           <div className="filter-section">
-            <h3 className="section-title"><Calendar size={18} /> Date Range</h3>
+            <h3 className="section-title"><Calendar size={18} /> {t('filters.date_range')}</h3>
             <div className="options-grid">
               <div className={`filter-pill ${filterTime === '' ? 'active' : ''}`} onClick={() => setFilterTime('')}>
-                All Time
+                {t('filters.all_time')}
               </div>
               <div className={`filter-pill ${filterTime === 'week' ? 'active' : ''}`} onClick={() => setFilterTime('week')}>
-                This Week
+                {t('filters.week')}
               </div>
               <div className={`filter-pill ${filterTime === 'month' ? 'active' : ''}`} onClick={() => setFilterTime('month')}>
-                This Month
+                {t('filters.month')}
               </div>
               <div className={`filter-pill ${filterTime === 'year' ? 'active' : ''}`} onClick={() => setFilterTime('year')}>
-                This Year
+                {t('filters.year')}
               </div>
             </div>
           </div>
 
           {/* Section: Categories */}
           <div className="filter-section">
-            <h3 className="section-title"><Layers size={18} /> Categories</h3>
+            <h3 className="section-title"><Layers size={18} /> {t('filters.category')}</h3>
             <div className="options-grid">
 
               <div className={`category-card ${filterCategory === '' ? 'active' : ''}`} onClick={() => setFilterCategory('')}>
                 <Check size={14} className="check-icon" />
                 <Folder size={28} />
-                <span style={{ fontSize: '12px', fontWeight: 500 }}>All Categories</span>
+                <span style={{ fontSize: '12px', fontWeight: 500 }}>{t('filters.all_categories')}</span>
               </div>
 
               {categories.map((cat) => (
                 <div key={cat} className={`category-card ${filterCategory === cat ? 'active' : ''}`} onClick={() => setFilterCategory(cat)}>
                   <Check size={14} className="check-icon" />
                   <Folder size={28} />
-                  <span style={{ fontSize: '12px', fontWeight: 500 }}>{cat}</span>
+                  <span style={{ fontSize: '12px', fontWeight: 500 }}>{t(`categories.${cat.toLowerCase()}`, cat)}</span>
                 </div>
               ))}
             </div>
@@ -102,14 +104,14 @@ export function FilterControls({
 
           {/* Section: Types */}
           <div className="filter-section">
-            <h3 className="section-title"><Layers size={18} /> Transaction Type</h3>
+            <h3 className="section-title"><Layers size={18} /> {t('filters.type')}</h3>
             <div className="options-grid">
               <div className={`filter-pill ${filterType === '' ? 'active' : ''}`} onClick={() => setFilterType('')}>
-                All Types
+                {t('filters.all_types')}
               </div>
               {expenseTypes.map((type) => (
                 <div key={type} className={`filter-pill ${filterType === type ? 'active' : ''}`} onClick={() => setFilterType(type)}>
-                  {type}
+                  {t(`types.${(type).toLowerCase()}`, type)}
                 </div>
               ))}
             </div>
@@ -119,21 +121,21 @@ export function FilterControls({
           <div className="filter-footer">
             <div className="amounts-group">
               <div className="input-group">
-                <label>Min Amount ({currencySymbol})</label>
+                <label>{t('filters.min_amount')} ({currencySymbol})</label>
                 <input type="number" value={filterMin} onChange={(e) => setFilterMin(e.target.value)} placeholder="0" />
               </div>
               <div className="input-group">
-                <label>Max Amount ({currencySymbol})</label>
+                <label>{t('filters.max_amount')} ({currencySymbol})</label>
                 <input type="number" value={filterMax} onChange={(e) => setFilterMax(e.target.value)} placeholder="Any" />
               </div>
             </div>
 
             <div className="panel-actions">
               <button className="clear-btn" onClick={handleClear}>
-                Clear All
+                {t('filters.clear')}
               </button>
               <button className="apply-btn" onClick={() => setShowFilters(false)}>
-                Apply Filters
+                {t('filters.apply')}
               </button>
             </div>
           </div>

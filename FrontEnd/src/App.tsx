@@ -8,7 +8,7 @@ import Settings from './pages/Settings';
 import { CustomToaster } from './components/CustomToaster';
 import { CurrencyProvider } from './Context/CurrencyContext';
 import { DateProvider } from './Context/DateContext';
-
+import './Context/i18n.ts';
 function App() {
   return (
     <BrowserRouter>

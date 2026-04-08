@@ -3,6 +3,7 @@ import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Brief
 import "../styles/ExpenseTable.scss";
 import { useCurrency } from '../Context/CurrencyContext';
 import { useDate } from '../Context/DateContext';
+import { useTranslation } from 'react-i18next';
 export type Expense = {
   id: string;
   description: string;
@@ -26,6 +27,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
 
   const { formatCurrency } = useCurrency();
   const { formatDate } = useDate();
+  const { t } = useTranslation();
 
   // --- NOVOS ESTADOS PARA PAGINAÇÃO ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -93,29 +95,29 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   return (
     <div className='expense-table-container'>
       {expenses.length === 0 ? (
-        <p className='empty-state'>No transactions found.</p>
+        <p className='empty-state'>{t('expenseTable.empty')}</p>
       ) : (
         <>
           <table className='expense-table'>
             <thead>
               <tr>
                 <th className='sortable' onClick={() => handleSort('description')} >
-                  Transaction {getSortIcon('description')}
+                  {t('expenseTable.transaction')} {getSortIcon('description')}
                 </th>
                 <th className='sortable' onClick={() => handleSort('category')} >
-                  Category {getSortIcon('category')}
+                  {t('expenseTable.category')} {getSortIcon('category')}
                 </th>
                 <th className='sortable' onClick={() => handleSort('date')} >
-                  Date {getSortIcon('date')}
+                  {t('expenseTable.date')} {getSortIcon('date')}
                 </th>
                 <th className='sortable' onClick={() => handleSort('type')} >
-                  Type {getSortIcon('type')}
+                  {t('expenseTable.type')} {getSortIcon('type')}
                 </th>
                 <th className='sortable text-center' onClick={() => handleSort('amount')} >
-                  Price {getSortIcon('amount')}
+                  {t('expenseTable.price')} {getSortIcon('amount')}
                 </th>
                 <th className='text-center'>
-                  Actions
+                  {t('expenseTable.actions')}
                 </th>
               </tr>
             </thead>
@@ -131,14 +133,14 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
                   </td>
                   <td className='category-col'>
                     <span className='category-pill'>
-                      {expense.category}
+                      {t(`categories.${expense.category.toLowerCase()}`, expense.category)}
                     </span>
                   </td>
                   <td className='date-col' >
                     {formatDate(expense.date)}
                   </td>
                   <td className='type-col capitalize' >
-                    {expense.type || 'Standard'}
+                    {t(`types.${(expense.type || 'standard').toLowerCase()}`, expense.type || 'Standard')}
                   </td>
                   <td className={`amount-col ${Number(expense.amount) > 0 ? 'expense' : 'income'}`} >
                     {formatCurrency(Number(expense.amount))}
@@ -157,7 +159,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
           {totalPages > 1 && (
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 20px', borderTop: '1px solid #334155', backgroundColor: '#0F172A', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}>
               <span style={{ color: '#94A3B8', fontSize: '14px' }}>
-                A mostrar {startIndex + 1} a {Math.min(startIndex + itemsPerPage, sortedExpenses.length)} de {sortedExpenses.length} despesas
+                {t('expenseTable.pagination_showing', { start: startIndex + 1, end: Math.min(startIndex + itemsPerPage, sortedExpenses.length), total: sortedExpenses.length })}
               </span>
 
               <div style={{ display: 'flex', gap: '10px' }}>
@@ -166,7 +168,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
                   disabled={currentPage === 1}
                   style={{ padding: '8px 12px', backgroundColor: currentPage === 1 ? '#1E293B' : '#334155', color: currentPage === 1 ? '#475569' : 'white', border: 'none', borderRadius: '6px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
                 >
-                  <ChevronLeft size={16} /> Anterior
+                  <ChevronLeft size={16} /> {t('expenseTable.previous')}
                 </button>
 
                 <button
@@ -174,7 +176,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
                   disabled={currentPage === totalPages}
                   style={{ padding: '8px 12px', backgroundColor: currentPage === totalPages ? '#1E293B' : '#334155', color: currentPage === totalPages ? '#475569' : 'white', border: 'none', borderRadius: '6px', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
                 >
-                  Próxima <ChevronRight size={16} />
+                  {t('expenseTable.next')} <ChevronRight size={16} />
                 </button>
               </div>
             </div>

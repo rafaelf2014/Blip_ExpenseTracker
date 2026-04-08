@@ -1,0 +1,88 @@
+{
+    "header_dashboard": {
+        "title": "Blip Expense Tracker",
+        "subtitle": "View and manage all your transactions",
+        "welcome": "Welcome, ",
+        "logout": "Logout"
+    },
+    "summaryBoxes": {
+        "totalTransactions": "Total Transactions",
+        "totalIncome": "Total Income",
+        "totalExpenses": "Total Expenses",
+        "netBalance": "Net Flow"
+    },
+    "expenseTable": {
+        "transaction": "Transaction",
+        "category": "Category",
+        "date": "Date",
+        "type": "Type",
+        "price": "Price",
+        "actions": "Actions",
+        "empty": "No transactions found.",
+        "pagination_showing": "Showing {{start}} to {{end}} of {{total}} expenses",
+        "previous": "Previous",
+        "next": "Next"
+    },
+    "categories": {
+        "food": "Food",
+        "health": "Health",
+        "clothes": "Clothes",
+        "housing": "Housing",
+        "transportation": "Transportation",
+        "entertainment": "Entertainment",
+        "other": "Other"
+    },
+    "types": {
+        "one-time": "One-time",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "subscription": "Subscription"
+    },
+    "filters": {
+        "search_placeholder": "Search transactions...",
+        "add_expense": "+ Add Expense",
+        "filter": "Filter",
+        "hide_filters": "Hide Filters",
+        "category": "Category",
+        "type": "Transaction Type",
+        "date_range": "Date Range",
+        "apply": "Apply Filters",
+        "clear": "Clear Filters",
+        "all_time": "All Time",
+        "week": "This Week",
+        "month": "This Month",
+        "year": "This Year",
+        "all_categories": "All Categories",
+        "all_types": "All Types",
+        "min_amount": "Min Amount",
+        "max_amount": "Max Amount"
+    },
+    "settings": {
+        "title": "Settings",
+        "subtitle": "Manage your account and preferences",
+        "profile": "Profile",
+        "username": "Username",
+        "security": "Security",
+        "current_password": "Current Password",
+        "enter_current_password": "Enter your current password",
+        "new_password": "New Password",
+        "enter_new_password": "Enter your new password",
+        "confirm_password": "Confirm New Password",
+        "language": "Language",
+        "currency": "Currency",
+        "save": "Save Changes",
+        "preferences": "Preferences",
+        "date_format": "Date Format"
+    },
+    "editExpenseModal": {
+        "title": "Edit Transaction",
+        "category": "Category",
+        "date": "Date",
+        "type": "Type",
+        "price": "Price",
+        "save": "Save Changes",
+        "delete": "Delete",
+        "select_category": "Select Category",
+        "select_type": "Select Type"
+    }
+}
