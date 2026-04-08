@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal } from 'lucide-react';
+import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
 
 export type Expense = {
@@ -16,13 +16,16 @@ type ExpenseTableProps = {
   onEditClick: (expense: Expense) => void;
 };
 
-
 type SortColumn = 'amount' | 'category' | 'description' | 'date' | 'type' | null;
 type SortDirection = 'asc' | 'desc';
 
 export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  
+  // --- NOVOS ESTADOS PARA PAGINAÇÃO ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Podes alterar para 10 se quiseres mostrar mais por página
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
@@ -51,6 +54,19 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
     }
     return 0;
   });
+
+  // --- LÓGICA MATEMÁTICA DA PAGINAÇÃO ---
+  const totalPages = Math.ceil(sortedExpenses.length / itemsPerPage);
+  
+  // Se apagarmos o último item de uma página, recua para não ficar uma página em branco
+  if (currentPage > totalPages && totalPages > 0) {
+    setCurrentPage(totalPages);
+  }
+
+  // Corta a lista para mostrar apenas as 5 despesas desta página
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentExpenses = sortedExpenses.slice(startIndex, startIndex + itemsPerPage);
+  // --------------------------------------
 
   const getSortIcon = (column: SortColumn) => {
     if (sortColumn !== column) return ' ↕';
@@ -84,70 +100,94 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
 
   return (
     <div className='expense-table-container'>
-
       {expenses.length === 0 ? (
         <p className='empty-state'>No transactions found.</p>
       ) : (
-        <table className='expense-table'>
-          <thead>
-            <tr>
-              <th className='sortable' onClick={() => handleSort('description')} >
-                Transaction {getSortIcon('description')}
-              </th>
-              <th className='sortable' onClick={() => handleSort('category')} >
-                Category {getSortIcon('category')}
-              </th>
-              <th className='sortable' onClick={() => handleSort('date')} >
-                Date {getSortIcon('date')}
-              </th>
-              <th className='sortable' onClick={() => handleSort('type')} >
-                Type {getSortIcon('type')}
-              </th>
-              <th className='sortable text-center' onClick={() => handleSort('amount')} >
-                Price {getSortIcon('amount')}
-              </th>
-              <th className='text-center'>
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedExpenses.map((expense) => (
-              <tr key={expense.id} >
-
-                <td className='desc-col'>
-                  <div className='icon-wrapper'>
-                    {getCategoryIcon(expense.category)}
-                  </div>
-                  {expense.description}
-                </td>
-
-                <td className='category-col'>
-                  <span className='category-pill'>
-                    {expense.category}
-                  </span>
-                </td>
-
-                <td className='date-col' >
-                  {formatDate(expense.date)}
-                </td>
-
-                <td className='type-col capitalize' >
-                  {expense.type || 'Standard'}
-                </td>
-
-                <td className={`amount-col ${Number(expense.amount) > 0 ? 'expense' : 'income'}`} >
-                  ${Number(expense.amount).toFixed(2)}
-                </td>
-                <td className='actions-col' >
-                  <button className='action-btn' onClick={() => onEditClick(expense)}>
-                    <MoreHorizontal size={24} />
-                  </button>
-                </td>
+        <>
+          <table className='expense-table'>
+            <thead>
+              <tr>
+                <th className='sortable' onClick={() => handleSort('description')} >
+                  Transaction {getSortIcon('description')}
+                </th>
+                <th className='sortable' onClick={() => handleSort('category')} >
+                  Category {getSortIcon('category')}
+                </th>
+                <th className='sortable' onClick={() => handleSort('date')} >
+                  Date {getSortIcon('date')}
+                </th>
+                <th className='sortable' onClick={() => handleSort('type')} >
+                  Type {getSortIcon('type')}
+                </th>
+                <th className='sortable text-center' onClick={() => handleSort('amount')} >
+                  Price {getSortIcon('amount')}
+                </th>
+                <th className='text-center'>
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {/* ATENÇÃO AQUI: Mudámos de sortedExpenses para currentExpenses */}
+              {currentExpenses.map((expense) => (
+                <tr key={expense.id} >
+                  <td className='desc-col'>
+                    <div className='icon-wrapper'>
+                      {getCategoryIcon(expense.category)}
+                    </div>
+                    {expense.description}
+                  </td>
+                  <td className='category-col'>
+                    <span className='category-pill'>
+                      {expense.category}
+                    </span>
+                  </td>
+                  <td className='date-col' >
+                    {formatDate(expense.date)}
+                  </td>
+                  <td className='type-col capitalize' >
+                    {expense.type || 'Standard'}
+                  </td>
+                  <td className={`amount-col ${Number(expense.amount) > 0 ? 'expense' : 'income'}`} >
+                    ${Number(expense.amount).toFixed(2)}
+                  </td>
+                  <td className='actions-col' >
+                    <button className='action-btn' onClick={() => onEditClick(expense)}>
+                      <MoreHorizontal size={24} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* --- BARRA DE CONTROLOS DA PAGINAÇÃO --- */}
+          {totalPages > 1 && (
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '15px 20px', borderTop: '1px solid #334155', backgroundColor: '#0F172A', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}>
+              <span style={{ color: '#94A3B8', fontSize: '14px' }}>
+                A mostrar {startIndex + 1} a {Math.min(startIndex + itemsPerPage, sortedExpenses.length)} de {sortedExpenses.length} despesas
+              </span>
+              
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  style={{ padding: '8px 12px', backgroundColor: currentPage === 1 ? '#1E293B' : '#334155', color: currentPage === 1 ? '#475569' : 'white', border: 'none', borderRadius: '6px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+                >
+                  <ChevronLeft size={16} /> Anterior
+                </button>
+                
+                <button 
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  style={{ padding: '8px 12px', backgroundColor: currentPage === totalPages ? '#1E293B' : '#334155', color: currentPage === totalPages ? '#475569' : 'white', border: 'none', borderRadius: '6px', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}
+                >
+                  Próxima <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
