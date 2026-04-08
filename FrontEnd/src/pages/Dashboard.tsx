@@ -7,6 +7,7 @@ import { ExpenseTable, type Expense } from '../components/ExpenseTable';
 import { FilterControls } from '../components/FilterControl';
 import { SummaryBoxes } from '../components/SummaryBoxes';
 import '../styles/Dashboard.scss';
+import { AiExpenseBar } from '../components/AiExpenseBar';
 
 
 export default function Dashboard() {
@@ -88,6 +89,7 @@ export default function Dashboard() {
     fetchExpenses(userId);
   };
 
+  
 
   const filteredExpenses = expenses.filter((expense) => {
     const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -138,6 +140,13 @@ export default function Dashboard() {
 
           <main className='dashboard-main'>
             <SummaryBoxes totalSpent={totalSpent} transactionCount={transactionCount} />
+
+            <AiExpenseBar 
+              userId={userId} 
+              categories={categories} 
+              expenseTypes={expenseTypes} 
+              onExpenseAdded={() => fetchExpenses(userId)} 
+            />
 
             <FilterControls
               searchTerm={searchTerm} setSearchTerm={setSearchTerm}

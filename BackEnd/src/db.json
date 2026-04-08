@@ -83,6 +83,85 @@
       "category": "Entertainment",
       "type": "One-time",
       "date": "2026-04-07T00:00:00.000Z"
+    },
+    {
+      "id": "1775603905348",
+      "userId": "1773510223926",
+      "description": "Comida no continente",
+      "amount": 50,
+      "category": "Comida",
+      "type": "One-Time",
+      "date": "2023-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "1775604232699",
+      "userId": "1773510223926",
+      "description": "Rádio Popular",
+      "amount": 50,
+      "category": "despesas",
+      "type": "One-Time",
+      "date": "2023-02-01T00:00:00.000Z"
+    },
+    {
+      "id": "1775605297628",
+      "userId": "1773510223926",
+      "description": "Despesa no KFC",
+      "amount": 10,
+      "category": "food",
+      "type": "One-Time",
+      "date": "2023-02-20T00:00:00.000Z"
+    },
+    {
+      "id": "1775605355589",
+      "userId": "1773510223926",
+      "description": "Despesa no McDonald's",
+      "amount": 10,
+      "category": "food",
+      "date": "2023-02-20T00:00:00.000Z"
+    },
+    {
+      "id": "1775605394025",
+      "userId": "1773510223926",
+      "description": "Despesa",
+      "amount": 10,
+      "category": "Restaurant",
+      "date": "2023-02-20T00:00:00.000Z"
+    },
+    {
+      "id": "1775605562707",
+      "userId": "1773510223926",
+      "description": "aasda",
+      "amount": 123,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-07T00:00:00.000Z"
+    },
+    {
+      "id": "1775606105730",
+      "userId": "1773510223926",
+      "description": "Consulta médica",
+      "amount": 10,
+      "category": "Health",
+      "type": "One-Time",
+      "date": "2023-02-20T00:00:00.000Z"
+    },
+    {
+      "id": "1775646844082",
+      "userId": "1773510223926",
+      "description": "Shopping",
+      "amount": 10,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-08T00:00:00.000Z"
+    },
+    {
+      "id": "1775646955692",
+      "userId": "1773510223926",
+      "description": "Mac",
+      "amount": 10,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-08T00:00:00.000Z"
     }
   ],
   "categories": [

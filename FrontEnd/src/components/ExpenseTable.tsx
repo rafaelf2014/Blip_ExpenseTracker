@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal } from 'lucide-react';
+import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
 import { useCurrency } from '../Context/CurrencyContext';
 
@@ -17,13 +17,16 @@ type ExpenseTableProps = {
   onEditClick: (expense: Expense) => void;
 };
 
-
 type SortColumn = 'amount' | 'category' | 'description' | 'date' | 'type' | null;
 type SortDirection = 'asc' | 'desc';
 
 export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+  
+  // --- NOVOS ESTADOS PARA PAGINAÇÃO ---
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10; // Podes alterar para 10 se quiseres mostrar mais por página
 
   const { formatCurrency } = useCurrency();
 
@@ -54,6 +57,19 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
     }
     return 0;
   });
+
+  // --- LÓGICA MATEMÁTICA DA PAGINAÇÃO ---
+  const totalPages = Math.ceil(sortedExpenses.length / itemsPerPage);
+  
+  // Se apagarmos o último item de uma página, recua para não ficar uma página em branco
+  if (currentPage > totalPages && totalPages > 0) {
+    setCurrentPage(totalPages);
+  }
+
+  // Corta a lista para mostrar apenas as 5 despesas desta página
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentExpenses = sortedExpenses.slice(startIndex, startIndex + itemsPerPage);
+  // --------------------------------------
 
   const getSortIcon = (column: SortColumn) => {
     if (sortColumn !== column) return ' ↕';
@@ -87,7 +103,6 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
 
   return (
     <div className='expense-table-container'>
-
       {expenses.length === 0 ? (
         <p className='empty-state'>No transactions found.</p>
       ) : (
@@ -140,7 +155,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
                 </td>
 
                 <td className={`amount-col ${Number(expense.amount) > 0 ? 'expense' : 'income'}`} >
-                  {formatCurrency(expense.amount)}
+                  ${Number(expense.amount).toFixed(2)}
                 </td>
                 <td className='actions-col' >
                   <button className='action-btn' onClick={() => onEditClick(expense)}>
