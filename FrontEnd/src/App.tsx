@@ -6,19 +6,21 @@ import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
 import { CustomToaster } from './components/CustomToaster';
+import { CurrencyProvider } from './Context/CurrencyContext';
 
 
 function App() {
   return (
     <BrowserRouter>
-      <CustomToaster />
-
-      <Routes>
-        <Route path="/" element={<AuthPage />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/transactions" element={<Transactions />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
+      <CurrencyProvider>
+        <CustomToaster />
+        <Routes>
+          <Route path="/" element={<AuthPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </CurrencyProvider>
     </BrowserRouter>
   );
 }

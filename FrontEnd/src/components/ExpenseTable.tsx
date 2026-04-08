@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
+import { useCurrency } from '../Context/CurrencyContext';
 
 export type Expense = {
   id: string;
@@ -23,6 +24,8 @@ type SortDirection = 'asc' | 'desc';
 export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
+
+  const { formatCurrency } = useCurrency();
 
   const handleSort = (column: SortColumn) => {
     if (sortColumn === column) {
@@ -137,7 +140,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
                 </td>
 
                 <td className={`amount-col ${Number(expense.amount) > 0 ? 'expense' : 'income'}`} >
-                  ${Number(expense.amount).toFixed(2)}
+                  {formatCurrency(expense.amount)}
                 </td>
                 <td className='actions-col' >
                   <button className='action-btn' onClick={() => onEditClick(expense)}>

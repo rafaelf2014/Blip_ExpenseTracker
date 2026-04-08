@@ -1,8 +1,9 @@
-import { User, Save, Lock } from "lucide-react";
+import { User, Save, Lock, Palette } from "lucide-react";
 import { Sidebar } from "../components/Sidebar";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import '../styles/Settings.scss';
+import { useCurrency } from "../Context/CurrencyContext";
 
 export default function Settings() {
     const [username, setUsername] = useState('');
@@ -11,6 +12,11 @@ export default function Settings() {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    // State for preferences (currency, language, date format)
+    const { currency, setCurrency } = useCurrency();
+    const [language, setLanguage] = useState('en');
+    const [dateFormat, setDateFormat] = useState('DD/MM/YYYY');
 
     useEffect(() => {
         const storedName = localStorage.getItem('username');
@@ -77,6 +83,12 @@ export default function Settings() {
             setLoading(false);
         }
     };
+
+    const handlePreferencesSave = (e: React.FormEvent) => {
+        e.preventDefault();
+        toast.success("Preferences updated successfully!");
+    };
+
     return (
         <div className="settings-layout">
             <Sidebar />
@@ -170,6 +182,50 @@ export default function Settings() {
                                 </button>
                             </form>
                         </div>
+                        {/* Preferences Card */}
+                        <div className="settings-card">
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '24px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '12px', backgroundColor: '#06B6D4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Palette size={20} color="white" />
+                                </div>
+                                <h2 style={{ fontSize: '20px', fontWeight: '600', margin: 0, color: 'white' }}>Preferences</h2>
+                            </div>
+
+                            <form className="settings-form" onSubmit={handlePreferencesSave}>
+                                <div className="form-group">
+                                    <label>Currency</label>
+                                    <select value={currency} onChange={(e) => setCurrency(e.target.value)}>
+                                        <option value="EUR">EUR (€)</option>
+                                        <option value="USD">USD ($)</option>
+                                        <option value="GBP">GBP (£)</option>
+                                        <option value="BRL">BRL (R$)</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Language</label>
+                                    <select value={language} onChange={(e) => setLanguage(e.target.value)}>
+                                        <option value="en">English</option>
+                                        <option value="pt">Português</option>
+                                    </select>
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Date Format</label>
+                                    <select value={dateFormat} onChange={(e) => setDateFormat(e.target.value)}>
+                                        <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                        <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                        <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                    </select>
+                                </div>
+
+                                <button type="submit" className="save-button">
+                                    <Save size={18} />
+                                    Save Changes
+                                </button>
+                            </form>
+                        </div>
+
                     </div>
                 </div>
             </main>

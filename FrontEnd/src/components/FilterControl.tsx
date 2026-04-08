@@ -1,5 +1,6 @@
 import { Check, Filter, Folder, Layers, Calendar } from "lucide-react";
 import "../styles/FilterControl.scss";
+import { useCurrency } from '../Context/CurrencyContext';
 
 type FilterControlsProps = {
   searchTerm: string; setSearchTerm: (val: string) => void;
@@ -25,6 +26,8 @@ export function FilterControls({
     setFilterCategory(''); setFilterType(''); setFilterTime('');
     setFilterMin(''); setFilterMax(''); setSearchTerm('');
   };
+
+  const { currencySymbol } = useCurrency();
 
   return (
     <>
@@ -116,11 +119,11 @@ export function FilterControls({
           <div className="filter-footer">
             <div className="amounts-group">
               <div className="input-group">
-                <label>Min Amount ($)</label>
+                <label>Min Amount ({currencySymbol})</label>
                 <input type="number" value={filterMin} onChange={(e) => setFilterMin(e.target.value)} placeholder="0" />
               </div>
               <div className="input-group">
-                <label>Max Amount ($)</label>
+                <label>Max Amount ({currencySymbol})</label>
                 <input type="number" value={filterMax} onChange={(e) => setFilterMax(e.target.value)} placeholder="Any" />
               </div>
             </div>

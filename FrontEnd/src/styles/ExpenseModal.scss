@@ -31,18 +31,32 @@
         margin-bottom: 24px;
     }
 
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
     .modal-actions {
         display: flex;
         gap: 12px;
         margin-top: 16px;
 
-        .cancel-button {
-            background-color: transparent;
-            border: 1px solid #334155;
-            color: #94A3B8;
+        .btn-cancel {
+            background-color: #EF4444;
+            color: white;
 
             &:hover {
-                background-color: rgba(255, 255, 255, 0.05);
+                background-color: #DC2626;
+            }
+        }
+
+        .btn-save {
+            background-color: #10B981;
+            color: white;
+
+            &:hover {
+                background-color: #059669;
             }
         }
     }

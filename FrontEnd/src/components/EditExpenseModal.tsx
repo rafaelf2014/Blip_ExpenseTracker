@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, Save, Trash2 } from 'lucide-react';
 import type { Expense } from './ExpenseTable';
 import '../styles/EditExpenseModal.scss';
+import { useCurrency } from '../Context/CurrencyContext';
 
 type EditExpenseModalProps = {
   expense: Expense;
@@ -18,6 +19,8 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
   const [category, setCategory] = useState(expense.category);
   const [type, setType] = useState(expense.type || '');
   const [date, setDate] = useState(expense.date);
+
+  const { currencySymbol } = useCurrency();
 
   return (
     <div className='edit-modal-overlay'>

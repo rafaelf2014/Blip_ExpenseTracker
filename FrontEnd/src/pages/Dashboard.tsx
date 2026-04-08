@@ -8,6 +8,7 @@ import { FilterControls } from '../components/FilterControl';
 import { SummaryBoxes } from '../components/SummaryBoxes';
 import '../styles/Dashboard.scss';
 
+
 export default function Dashboard() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
@@ -28,6 +29,7 @@ export default function Dashboard() {
   const [filterMax, setFilterMax] = useState('');
 
   const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
+
 
   useEffect(() => {
     const storedUsername = localStorage.getItem('username');

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import '../styles/ExpenseModal.scss';
 import '../styles/global.scss';
 import toast from 'react-hot-toast';
+import { useCurrency } from '../Context/CurrencyContext';
 
 type ExpenseModalProps = {
   userId: string;
@@ -17,6 +18,8 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
   const [category, setCategory] = useState(categories.length > 0 ? categories[0] : '');
   const [type, setType] = useState(expenseTypes.length > 0 ? expenseTypes[0] : '');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+
+  const { currencySymbol } = useCurrency();
 
   const handleAddExpense = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -45,9 +48,9 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
             <label >Description</label>
             <input className='form-control' type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className='form-row'>
             <div className='form-group'>
-              <label >Amount ($) </label>
+              <label >Amount ({currencySymbol}) </label>
               <input className='form-control' type="number" placeholder="Amount" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} required />
             </div>
             <div className='form-group'>
@@ -55,7 +58,7 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
               <input className='form-control' type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div className='form-row'>
             <div className='form-group'>
               <label >Category</label>
               <select value={category} onChange={(e) => setCategory(e.target.value)} required>
@@ -71,10 +74,10 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
           </div>
 
           <div className='modal-actions'>
-            <button type="button" onClick={onClose} className='save-button cancel-button' style={{ backgroundColor: '#EF4444', color: 'white' }}  >
+            <button type="button" onClick={onClose} className='save-button btn-cancel'  >
               Cancel
             </button>
-            <button type="submit" className='save-button' style={{ backgroundColor: '#10B981', color: 'white' }} >
+            <button type="submit" className='save-button btn-save'  >
               Save Expense
             </button>
           </div>
