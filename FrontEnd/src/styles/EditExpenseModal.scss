@@ -49,6 +49,28 @@
     flex-direction: column;
     gap: 15px;
 
+    .currency-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+
+      .currency-symbol-text {
+        position: absolute;
+        left: 14px;
+        color: #94A3B8;
+        font-weight: 600;
+        font-size: 15px;
+        pointer-events: none;
+
+      }
+
+      .edit-input {
+        padding-left: 36px;
+        width: 100%;
+      }
+    }
+
     .edit-input {
       padding: 12px;
       border-radius: 8px;
@@ -69,6 +91,11 @@
       &::placeholder {
         color: #475569;
       }
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1) brightness(150%);
+      cursor: pointer;
     }
 
     select.edit-input {

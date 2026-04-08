@@ -53,10 +53,12 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
               <label >Amount ({currencySymbol}) </label>
               <input className='form-control' type="number" placeholder="Amount" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} required />
             </div>
+
             <div className='form-group'>
               <label >Date</label>
               <input className='form-control' type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
             </div>
+
           </div>
           <div className='form-row'>
             <div className='form-group'>

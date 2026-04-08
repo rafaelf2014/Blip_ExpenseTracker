@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import '../styles/Settings.scss';
 import { useCurrency } from "../Context/CurrencyContext";
+import { useDate } from "../Context/DateContext";
 
 export default function Settings() {
     const [username, setUsername] = useState('');
@@ -16,7 +17,7 @@ export default function Settings() {
     // State for preferences (currency, language, date format)
     const { currency, setCurrency } = useCurrency();
     const [language, setLanguage] = useState('en');
-    const [dateFormat, setDateFormat] = useState('DD/MM/YYYY');
+    const { dateFormat, setDateFormat } = useDate();
 
     useEffect(() => {
         const storedName = localStorage.getItem('username');

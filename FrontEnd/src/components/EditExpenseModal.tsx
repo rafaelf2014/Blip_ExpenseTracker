@@ -18,7 +18,7 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
   const [amount, setAmount] = useState(expense.amount);
   const [category, setCategory] = useState(expense.category);
   const [type, setType] = useState(expense.type || '');
-  const [date, setDate] = useState(expense.date);
+  const [date, setDate] = useState(expense.date ? expense.date.split('T')[0] : '');
 
   const { currencySymbol } = useCurrency();
 
@@ -34,8 +34,23 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
 
         <div className='form-fields' >
           <input className='edit-input' type="text" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description" />
-          <input className='edit-input' type="number" value={amount} onChange={(e) => setAmount(Number(e.target.value))} placeholder="Amount" />
-          <input className='edit-input' type="date" value={date} onChange={(e) => setDate(e.target.value)} />
+          <div className="currency-input-wrapper">
+            <span className="currency-symbol-text">{currencySymbol}</span>
+            <input
+              className='edit-input'
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(Number(e.target.value))}
+              placeholder="Amount"
+              step="0.01"
+            />
+          </div>
+          <input
+            className='edit-input'
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
 
           <select className='edit-input' value={category} onChange={(e) => setCategory(e.target.value)} >
             <option value="">Select Category</option>

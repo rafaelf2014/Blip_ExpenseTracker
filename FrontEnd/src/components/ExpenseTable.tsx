@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
 import { useCurrency } from '../Context/CurrencyContext';
-
+import { useDate } from '../Context/DateContext';
 export type Expense = {
   id: string;
   description: string;
@@ -25,6 +25,7 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const { formatCurrency } = useCurrency();
+  const { formatDate } = useDate();
 
   // --- NOVOS ESTADOS PARA PAGINAÇÃO ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -74,18 +75,6 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   const getSortIcon = (column: SortColumn) => {
     if (sortColumn !== column) return ' ↕';
     return sortDirection === 'asc' ? ' ↑' : ' ↓';
-  };
-
-  const formatDate = (dateString: string) => {
-    try {
-      const d = new Date(dateString);
-      const day = String(d.getDate()).padStart(2, '0');
-      const month = String(d.getMonth() + 1).padStart(2, '0');
-      const year = d.getFullYear();
-      return `${day}-${month}-${year}`;
-    } catch {
-      return dateString.split(' ')[0];
-    }
   };
 
   const getCategoryIcon = (category: string) => {
