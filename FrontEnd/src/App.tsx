@@ -5,6 +5,7 @@ import AuthPage from './components/AuthPage'
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Settings from './pages/Settings';
+import Analytics from './pages/Analytics';
 import { CustomToaster } from './components/CustomToaster';
 import { CurrencyProvider } from './Context/CurrencyContext';
 import { DateProvider } from './Context/DateContext';
@@ -19,6 +20,7 @@ function App() {
             <Route path="/" element={<AuthPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/transactions" element={<Transactions />} />
+            <Route path="/analytics" element={<Analytics />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </DateProvider>
