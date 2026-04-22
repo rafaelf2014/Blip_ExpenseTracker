@@ -42,7 +42,6 @@ export default function Dashboard() {
     setUsername(storedUsername);
     setUserId(storedUserId);
 
-    // Load expense-config independently
     fetch('http://localhost:5000/api/expense-config')
       .then(r => r.json())
       .then(data => { setCategories(data.categories); setExpenseTypes(data.expenseTypes); });

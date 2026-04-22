@@ -11,7 +11,7 @@ export async function initLLM() {
     if (engine) return;
     if (initPromise) { await initPromise; return; }
 
-    // Qwen2.5-1.5B: ~950MB, strong multilingual (PT/EN), reliable instruction following, Android-friendly
+    // Qwen2.5-1.5B (~950MB) — bom em PT/EN, fiável e leve
     const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
 
     initPromise = (async () => {
@@ -30,17 +30,17 @@ export async function initLLM() {
     await initPromise;
 }
 
-// ─── Text normalization ────────────────────────────────────────────────────
+// normalização de texto
 
 function normalizeText(text: string): string {
     return text
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[̀-ͯ]/g, '')  // strip diacritics: é→e, ã→a, ç→c
+        .replace(/[̀-ͯ]/g, '')  // remove acentos: é→e, ã→a, ç→c
         .replace(/[^a-z0-9\s]/g, ' ');
 }
 
-// ─── Levenshtein distance ──────────────────────────────────────────────────
+// distância de Levenshtein
 
 function levenshtein(a: string, b: string): number {
     const m = a.length, n = b.length;
@@ -55,7 +55,7 @@ function levenshtein(a: string, b: string): number {
     return dp[m][n];
 }
 
-// ─── Regex pre-extraction ──────────────────────────────────────────────────
+// extração por regex
 
 function extractAmount(text: string): number | null {
     const m = text.match(/(?:€|\$|£|eur(?:os?)?)\s*(\d+(?:[.,]\d{1,2})?)|(\d+(?:[.,]\d{1,2})?)\s*(?:€|\$|£|eur(?:os?)?)/i);
@@ -104,7 +104,7 @@ function extractDate(text: string): string {
     return fmt(today);
 }
 
-// ─── Keyword tables (PT + EN, substring prefixes for typo tolerance) ───────
+// tabelas de palavras-chave (PT + EN, prefixos para tolerância a erros de digitação)
 
 const CATEGORY_KEYWORDS: [string, string[]][] = [
     ['Food', [
@@ -162,7 +162,7 @@ const TYPE_KEYWORDS: [string, string[]][] = [
     ['Semi-Annual',  ['semestral', 'semi-annual', 'semestr']],
 ];
 
-// ─── Classifier: exact substring → fuzzy Levenshtein ──────────────────────
+// classifica por substring exacto; fallback fuzzy com Levenshtein
 
 function classifyByKeywords(
     text: string,
@@ -206,7 +206,7 @@ function normalizeToList(value: string, validList: string[]): string {
     return best;
 }
 
-// ─── LLM: description only (non-blocking) ────────────────────────────────
+// pede ao LLM só a descrição; não bloqueia se o modelo ainda não estiver carregado
 
 async function getLLMDescription(userInput: string): Promise<string> {
     if (!engine) return '';
@@ -241,8 +241,6 @@ function fallbackDescription(userInput: string): string {
         .trim()
         .slice(0, 40);
 }
-
-// ─── Main export ───────────────────────────────────────────────────────────
 
 export async function extractExpenseFromText(
     userInput: string,

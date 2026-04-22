@@ -13,13 +13,16 @@ type FilterControlsProps = {
   categories: string[];
   expenseTypes: string[];
   onAddNew: () => void;
+  hideAddButton?: boolean;
+  hideSearch?: boolean;
 };
 
 export function FilterControls({
   searchTerm, setSearchTerm, showFilters, setShowFilters,
   filterCategory, setFilterCategory, filterType, setFilterType,
   filterTime, setFilterTime, filterMin, setFilterMin,
-  filterMax, setFilterMax, categories, expenseTypes, onAddNew
+  filterMax, setFilterMax, categories, expenseTypes, onAddNew,
+  hideAddButton = false, hideSearch = false
 }: FilterControlsProps) {
 
   const handleClear = () => {
@@ -33,14 +36,16 @@ export function FilterControls({
     <>
       {/* TOP BAR (Search & Main Actions) */}
       <div className="filter-top-bar">
-        <div className="search-wrapper">
-          <input
-            type="text"
-            placeholder="Search transactions..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-        </div>
+        {!hideSearch && (
+          <div className="search-wrapper">
+            <input
+              type="text"
+              placeholder="Search transactions..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        )}
 
         <div className="action-buttons">
           <button
@@ -51,9 +56,11 @@ export function FilterControls({
             {showFilters ? 'Hide Filters' : 'Filters'}
           </button>
 
-          <button className="add-expense-btn" onClick={onAddNew}>
-            + Add Expense
-          </button>
+          {!hideAddButton && (
+            <button className="add-expense-btn" onClick={onAddNew}>
+              + Add Expense
+            </button>
+          )}
         </div>
       </div>
       {/* Expanded Filter Panel */}

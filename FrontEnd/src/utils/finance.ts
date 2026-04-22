@@ -1,13 +1,13 @@
 import type { RegularTransaction } from '../types';
 
-// Converts a Date to "YYYY-MM-DD" using LOCAL time components (avoids UTC-offset date shifts)
+// usa componentes locais para evitar desvios de fuso horário à meia-noite
 export function toLocalDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// Returns the Monday of the calendar week containing `d`
+// segunda-feira da semana actual
 export function getWeekStart(d: Date): Date {
-  const daysFromMonday = (d.getDay() + 6) % 7; // Mon=0, Tue=1, … Sun=6
+  const daysFromMonday = (d.getDay() + 6) % 7; // Seg=0, ... Dom=6
   return new Date(d.getFullYear(), d.getMonth(), d.getDate() - daysFromMonday);
 }
 
@@ -19,7 +19,7 @@ export function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
 }
 
-// Returns signed % string (e.g. "-12.3"); falls back to "0" when prev is zero/missing
+// retorna "0" quando não há dado anterior para comparar
 export function pctOrZero(curr: number, prev: number | null | undefined): string {
   if (prev == null || prev === 0) return '0';
   return ((curr - prev) / Math.abs(prev) * 100).toFixed(1);

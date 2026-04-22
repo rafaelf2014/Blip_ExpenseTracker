@@ -1,4 +1,4 @@
-import { Receipt, Settings, LayoutDashboard } from 'lucide-react';
+import { Receipt, Settings, LayoutDashboard, PieChart } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import './../styles/Sidebar.scss';
 
@@ -8,6 +8,7 @@ export function Sidebar() {
     const menuItems = [
         { id: 'dashboard', path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
         { id: 'transactions', path: '/transactions', icon: Receipt, label: 'Transactions' },
+        { id: 'analytics', path: '/analytics', icon: PieChart, label: 'Analytics' },
         { id: 'settings', path: '/settings', icon: Settings, label: 'Settings' },
     ];
 

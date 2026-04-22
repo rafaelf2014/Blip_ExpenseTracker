@@ -4,23 +4,9 @@ import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import '../styles/Settings.scss';
 import { useCurrency } from "../Context/CurrencyContext";
-
-type RegularTransaction = {
-    id: string;
-    description: string;
-    amount: number;
-    isIncome: boolean;
-    category: string;
-    frequency: 'weekly' | 'monthly' | 'yearly';
-    date: string; // ISO date of first occurrence — defines the repeating day
-};
-
-type Budget = {
-    id: string;
-    category: string;
-    limit: number;
-    period: 'weekly' | 'monthly' | 'yearly';
-};
+import { useDate } from "../Context/DateContext";
+import { useTranslation } from "react-i18next";
+import type { RegularTransaction, Budget } from '../types';
 
 const CATEGORIES = ['Food', 'Health', 'Clothes', 'Housing', 'Transportation', 'Entertainment', 'Other'];
 
@@ -58,8 +44,8 @@ export default function Settings() {
 
     // Preferences
     const { currency, setCurrency } = useCurrency();
-    const [language, setLanguage] = useState('en');
-    const [dateFormat, setDateFormat] = useState('DD/MM/YYYY');
+    const { dateFormat, setDateFormat } = useDate();
+    const { i18n } = useTranslation(); // used for language switching
 
     useEffect(() => {
         const storedName = localStorage.getItem('username');
@@ -450,8 +436,8 @@ export default function Settings() {
                                 </div>
                                 <div className="form-group">
                                     <label>Language</label>
-                                    <select className="form-control" value={language}
-                                        onChange={(e) => setLanguage(e.target.value)}>
+                                    <select className="form-control" value={i18n.language}
+                                        onChange={(e) => { i18n.changeLanguage(e.target.value); localStorage.setItem('app_language', e.target.value); }}>
                                         <option value="en">English</option>
                                         <option value="pt">Português</option>
                                     </select>

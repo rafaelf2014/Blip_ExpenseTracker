@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Save, Trash2 } from 'lucide-react';
-import type { Expense } from './ExpenseTable';
+import type { Expense } from '../types';
 import '../styles/EditExpenseModal.scss';
 
 type EditExpenseModalProps = {
@@ -17,7 +17,6 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
   const [amount, setAmount] = useState(expense.amount);
   const [category, setCategory] = useState(expense.category);
   const [type, setType] = useState(expense.type || '');
-  // Normalize to YYYY-MM-DD so the date input displays correctly
   const [date, setDate] = useState(expense.date.split('T')[0]);
 
   return (

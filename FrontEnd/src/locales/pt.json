@@ -1,0 +1,92 @@
+{
+    "header_dashboard": {
+        "title": "Blip Expense Tracker",
+        "subtitle": "Vê e gere todas as tuas transações",
+        "welcome": "Bem-vindo, ",
+        "logout": "Sair"
+    },
+    "summaryBoxes": {
+        "totalTransactions": "Total de Transações",
+        "totalIncome": "Total de Rendimentos",
+        "totalExpenses": "Total de Despesas",
+        "netBalance": "Fluxo Líquido"
+    },
+    "expenseTable": {
+        "transaction": "Transação",
+        "category": "Categoria",
+        "date": "Data",
+        "type": "Tipo",
+        "price": "Preço",
+        "actions": "Ações",
+        "empty": "Nenhuma transação encontrada.",
+        "pagination_showing": "A mostrar {{start}} a {{end}} de {{total}} despesas",
+        "previous": "Anterior",
+        "next": "Próxima"
+    },
+    "categories": {
+        "food": "Comida",
+        "health": "Saúde",
+        "clothes": "Roupas",
+        "housing": "Habitação",
+        "transportation": "Transporte",
+        "entertainment": "Entretenimento",
+        "other": "Outros",
+        "income": "Rendimento"
+    },
+    "types": {
+        "one-time": "Único",
+        "monthly": "Mensal",
+        "yearly": "Anual",
+        "subscription": "Assinatura"
+    },
+    "filters": {
+        "search_placeholder": "Pesquisar transações...",
+        "add_expense": "+ Adicionar Despesa",
+        "filter": "Filtrar",
+        "hide_filters": "Esconder Filtros",
+        "category": "Categoria",
+        "type": "Tipo de Transação",
+        "date_range": "Intervalo de Datas",
+        "apply": "Aplicar Filtros",
+        "clear": "Limpar Filtros",
+        "all_time": "Todo o Tempo",
+        "week": "Esta Semana",
+        "month": "Este Mês",
+        "year": "Este Ano",
+        "all_categories": "Todas as Categorias",
+        "all_types": "Todos os Tipos",
+        "min_amount": "Valor Mínimo",
+        "max_amount": "Valor Máximo"
+    },
+    "settings": {
+        "title": "Definições",
+        "subtitle": "Gere a tua conta e preferências",
+        "profile": "Perfil",
+        "username": "Nome de Utilizador",
+        "security": "Segurança",
+        "current_password": "Palavra-passe Atual",
+        "enter_current_password": "Introduza a sua palavra-passe atual",
+        "new_password": "Nova Palavra-passe",
+        "enter_new_password": "Introduza a sua nova palavra-passe",
+        "confirm_password": "Confirmar Nova Palavra-passe",
+        "language": "Idioma",
+        "currency": "Moeda",
+        "save": "Guardar Alterações",
+        "preferences": "Preferências",
+        "date_format": "Formato da Data"
+    },
+    "editExpenseModal": {
+        "title": "Editar Transação",
+        "category": "Categoria",
+        "date": "Data",
+        "type": "Tipo",
+        "price": "Preço",
+        "save": "Guardar Alterações",
+        "delete": "Eliminar",
+        "select_category": "Selecionar Categoria",
+        "select_type": "Selecionar Tipo"
+    },
+    "analytics": {
+        "topSpendingCategories": "Categorias com Mais Gastos"
+    }
+}

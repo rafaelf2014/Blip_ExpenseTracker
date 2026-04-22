@@ -1,0 +1,180 @@
+$bg-card: rgba(30, 41, 59, 0.5);
+$border-color: #334155;
+
+// ── Filter toggle button ──────────────────────────────────────────────────────
+
+.analytics-filters-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #1E293B;
+    border: 1px solid $border-color;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+
+    &:hover { background-color: #334155; }
+}
+
+// ── Chart cards ───────────────────────────────────────────────────────────────
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+
+    @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.chart-card {
+    background: $bg-card;
+    border: 1px solid $border-color;
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(8px);
+
+    h2 {
+        font-size: 16px;
+        font-weight: 600;
+        color: white;
+        margin: 0 0 24px 0;
+    }
+
+    .chart-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .custom-legend-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid $border-color;
+
+        .legend-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            .legend-color-wrapper {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+
+                .dot {
+                    width: 10px;
+                    height: 10px;
+                    border-radius: 50%;
+                    flex-shrink: 0;
+                }
+
+                .name {
+                    color: #94A3B8;
+                    font-size: 13px;
+                }
+            }
+
+            .value {
+                color: #F8FAFC;
+                font-size: 13px;
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+// ── Tooltip ───────────────────────────────────────────────────────────────────
+
+.custom-tooltip {
+    background-color: #0F172A;
+    border: 1px solid $border-color;
+    padding: 12px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+    .label {
+        color: #F8FAFC;
+        font-weight: 600;
+        margin-bottom: 8px;
+    }
+
+    .income  { color: #10B981; font-size: 13px; }
+    .expense { color: #EF4444; font-size: 13px; margin-top: 4px; }
+}
+
+// ── Top categories card ───────────────────────────────────────────────────────
+
+.top-categories-card {
+    .categories-list {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .category-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+
+            .category-info {
+                display: flex;
+                align-items: center;
+
+                .rank {
+                    font-weight: 700;
+                    color: #F8FAFC;
+                    margin-right: 12px;
+                    font-size: 15px;
+                    min-width: 28px;
+                }
+
+                .name {
+                    flex: 1;
+                    color: #F8FAFC;
+                    font-weight: 500;
+                    font-size: 14px;
+                }
+
+                .amount-group {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+
+                    .amount {
+                        font-weight: 700;
+                        color: #F8FAFC;
+                        font-size: 15px;
+                    }
+
+                    .percentage {
+                        color: #64748b;
+                        font-size: 13px;
+                        min-width: 50px;
+                        text-align: right;
+                    }
+                }
+            }
+
+            .progress-bar-bg {
+                width: 100%;
+                height: 6px;
+                background-color: rgba(51, 65, 85, 0.4);
+                border-radius: 6px;
+                overflow: hidden;
+
+                .progress-bar-fill {
+                    height: 100%;
+                    border-radius: 6px;
+                    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+                }
+            }
+        }
+    }
+}

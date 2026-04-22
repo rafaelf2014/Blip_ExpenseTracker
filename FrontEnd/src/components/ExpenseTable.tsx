@@ -2,9 +2,7 @@ import { useState, useEffect } from 'react';
 import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
 import { useCurrency } from '../Context/CurrencyContext';
-
-// Re-exported from shared types — import directly from '../types' in new code
-export type { Expense, NewExpense } from '../types';
+import type { Expense } from '../types';
 
 type ExpenseTableProps = {
   expenses: Expense[];
