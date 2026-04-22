@@ -3,7 +3,45 @@
     {
       "id": "1773510223926",
       "username": "rafael",
-      "password": "12345"
+      "password": "12345",
+      "currentBalance": 10000,
+      "regularTransactions": [
+        {
+          "id": "1776809740230",
+          "description": "Salary",
+          "amount": 1200,
+          "isIncome": true,
+          "category": "Other",
+          "frequency": "monthly",
+          "date": "2026-01-21"
+        }
+      ],
+      "budgets": [
+        {
+          "id": "1776811728957",
+          "category": "Food",
+          "limit": 200,
+          "period": "monthly"
+        }
+      ],
+      "balanceHistory": [
+        {
+          "month": "2026-04",
+          "balance": 10000
+        }
+      ],
+      "budgetUtilHistory": [
+        {
+          "month": "2026-04",
+          "utilization": 109
+        }
+      ],
+      "savingsRateHistory": [
+        {
+          "month": "2026-04",
+          "rate": 69
+        }
+      ]
     },
     {
       "id": "1773510856765",
@@ -44,7 +82,7 @@
       "userId": "1773510223926",
       "description": "Fnac",
       "amount": 999,
-      "category": "Transportation",
+      "category": "Entertainment",
       "type": "One-time",
       "date": "2026-03-24T00:00:00.000Z"
     },
@@ -89,8 +127,8 @@
       "userId": "1773510223926",
       "description": "Comida no continente",
       "amount": 50,
-      "category": "Comida",
-      "type": "One-Time",
+      "category": "Food",
+      "type": "One-time",
       "date": "2023-02-01T00:00:00.000Z"
     },
     {
@@ -98,8 +136,8 @@
       "userId": "1773510223926",
       "description": "Rádio Popular",
       "amount": 50,
-      "category": "despesas",
-      "type": "One-Time",
+      "category": "Other",
+      "type": "One-time",
       "date": "2023-02-01T00:00:00.000Z"
     },
     {
@@ -107,8 +145,8 @@
       "userId": "1773510223926",
       "description": "Despesa no KFC",
       "amount": 10,
-      "category": "food",
-      "type": "One-Time",
+      "category": "Food",
+      "type": "One-time",
       "date": "2023-02-20T00:00:00.000Z"
     },
     {
@@ -116,7 +154,8 @@
       "userId": "1773510223926",
       "description": "Despesa no McDonald's",
       "amount": 10,
-      "category": "food",
+      "category": "Food",
+      "type": "One-time",
       "date": "2023-02-20T00:00:00.000Z"
     },
     {
@@ -124,7 +163,8 @@
       "userId": "1773510223926",
       "description": "Despesa",
       "amount": 10,
-      "category": "Restaurant",
+      "category": "Food",
+      "type": "One-time",
       "date": "2023-02-20T00:00:00.000Z"
     },
     {
@@ -142,7 +182,7 @@
       "description": "Consulta médica",
       "amount": 10,
       "category": "Health",
-      "type": "One-Time",
+      "type": "One-time",
       "date": "2023-02-20T00:00:00.000Z"
     },
     {
@@ -162,6 +202,87 @@
       "category": "Food",
       "type": "One-time",
       "date": "2026-04-08T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800001",
+      "userId": "1773510223926",
+      "description": "Café da manhã",
+      "amount": 4.5,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-20T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800002",
+      "userId": "1773510223926",
+      "description": "Metro Lisboa",
+      "amount": 1.5,
+      "category": "Transportation",
+      "type": "One-time",
+      "date": "2026-04-20T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800003",
+      "userId": "1773510223926",
+      "description": "Almoço - Sushi",
+      "amount": 14,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-20T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800004",
+      "userId": "1773510223926",
+      "description": "Ginásio",
+      "amount": 25,
+      "category": "Health",
+      "type": "One-time",
+      "date": "2026-04-21T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800005",
+      "userId": "1773510223926",
+      "description": "Supermercado Continente",
+      "amount": 38,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-21T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800006",
+      "userId": "1773510223926",
+      "description": "Netflix",
+      "amount": 13,
+      "category": "Entertainment",
+      "type": "Monthly",
+      "date": "2026-04-21T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800007",
+      "userId": "1773510223926",
+      "description": "Pequeno-almoço pastelaria",
+      "amount": 5.5,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-22T00:00:00.000Z"
+    },
+    {
+      "id": "1776268800008",
+      "userId": "1773510223926",
+      "description": "Uber",
+      "amount": 8,
+      "category": "Transportation",
+      "type": "One-time",
+      "date": "2026-04-22T00:00:00.000Z"
+    },
+    {
+      "id": "1776814141585",
+      "userId": "1773510223926",
+      "description": "Lanche",
+      "amount": 12,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-04-22T00:00:00.000Z"
     }
   ],
   "categories": [

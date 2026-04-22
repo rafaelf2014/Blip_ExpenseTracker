@@ -1,16 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Utensils, Car, ShoppingBag, Film, Pill, Zap, DollarSign, Receipt, Briefcase, MoreHorizontal, ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
 import { useCurrency } from '../Context/CurrencyContext';
 
-export type Expense = {
-  id: string;
-  description: string;
-  amount: number;
-  category: string;
-  type: string;
-  date: string;
-};
+// Re-exported from shared types — import directly from '../types' in new code
+export type { Expense, NewExpense } from '../types';
 
 type ExpenseTableProps = {
   expenses: Expense[];
@@ -58,13 +52,14 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
     return 0;
   });
 
-  // --- LÓGICA MATEMÁTICA DA PAGINAÇÃO ---
   const totalPages = Math.ceil(sortedExpenses.length / itemsPerPage);
 
-  // Se apagarmos o último item de uma página, recua para não ficar uma página em branco
-  if (currentPage > totalPages && totalPages > 0) {
-    setCurrentPage(totalPages);
-  }
+  // Recede para a última página se o conteúdo encolher (ex: apagar o último item de uma página)
+  useEffect(() => {
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   // Corta a lista para mostrar apenas as 5 despesas desta página
   const startIndex = (currentPage - 1) * itemsPerPage;

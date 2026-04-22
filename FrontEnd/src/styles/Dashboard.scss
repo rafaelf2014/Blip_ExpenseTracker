@@ -1,82 +1,262 @@
-/* Dashboard.scss */
+$bg-main: #0B1221;
+$bg-card: rgba(30, 41, 59, 0.5);
+$border-color: #334155;
+$border-soft: rgba(51, 65, 85, 0.5);
+$text-muted: #94A3B8;
+$cyan: #06B6D4;
+$green: #10B981;
+$green-light: #34d399;
+$red: #EF4444;
+$red-light: #f87171;
+$yellow: #F59E0B;
 
-.dashboard-layout {
-    display: flex;
-    min-height: 100vh;
-    width: 100vw;
-    background-color: #0B1221;
+// ── Header ────────────────────────────────────────────────────────────────────
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.add-expense-btn {
+  background-color: $cyan;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background-color 0.2s ease;
+
+  &:hover { background-color: #0891B2; }
+}
+
+// ── Shared card mixin ─────────────────────────────────────────────────────────
+
+%card {
+  background: $bg-card;
+  border: 1px solid $border-color;
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(8px);
+}
+
+// ── Chart + Stats two-column layout ───────────────────────────────────────────
+
+.main-stats-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 900px) { grid-template-columns: 1fr; }
+}
+
+.chart-box     { @extend %card; }
+.quick-stats-box { @extend %card; }
+.recent-box    { @extend %card; }
+
+// ── Box header (title + toggle or title only) ─────────────────────────────────
+
+.box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+
+  h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
     color: white;
-    font-family: sans-serif;
+  }
 
-    .dashboard-content-wrapper {
-        flex: 1;
-        padding: 40px;
+  small {
+    color: $text-muted;
+    font-size: 12px;
+  }
+}
+
+// ── Week / Month / Year toggle ────────────────────────────────────────────────
+
+.toggle-group {
+  display: flex;
+  background: #0F172A;
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+
+  button {
+    background: transparent;
+    border: none;
+    color: $text-muted;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s ease;
+
+    &:hover { color: white; }
+
+    &.active {
+      background: $cyan;
+      color: white;
+    }
+  }
+}
+
+// ── Quick Stats ───────────────────────────────────────────────────────────────
+
+.quick-stats-box {
+  h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+  }
+}
+
+.stats-list {
+  display: flex;
+  flex-direction: column;
+  margin-top: 16px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid $border-soft;
+
+  &:first-child { padding-top: 0; }
+  &:last-child  { border-bottom: none; padding-bottom: 0; }
+
+  .stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    span {
+      color: $text-muted;
+      font-size: 13px;
+    }
+
+    strong {
+      font-size: 18px;
+      font-weight: 600;
+      color: white;
+
+      &.stat-warn { color: $yellow; }
+      &.stat-over { color: $red-light; }
+    }
+  }
+}
+
+.stat-pill {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.positive {
+    background: rgba($green, 0.15);
+    color: $green-light;
+  }
+
+  &.negative {
+    background: rgba($red, 0.15);
+    color: $red-light;
+  }
+}
+
+.stats-hint {
+  color: $text-muted;
+  font-size: 13px;
+  margin: 12px 0 0 0;
+  line-height: 1.5;
+}
+
+// ── Recent Transactions list ──────────────────────────────────────────────────
+
+.transactions-mini-list {
+  .mini-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid $border-soft;
+
+    &:first-child { padding-top: 0; }
+    &:last-child  { border-bottom: none; padding-bottom: 0; }
+
+    .item-main {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+
+      .icon-circle {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: #0F172A;
+        border: 1px solid $border-color;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: $text-muted;
+        flex-shrink: 0;
+      }
+
+      .item-details {
         display: flex;
         flex-direction: column;
-    }
+        gap: 2px;
 
-    .dashboard-container {
-        width: 100%;
-        max-width: 1600px;
-        box-sizing: border-box;
-        margin: 0 auto;
-        padding: 40px;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .dashboard-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 30px;
-
-        .header-title {
-            h2 {
-                margin: 0;
-                font-size: 24px;
-                font-weight: bold;
-            }
-
-            p {
-                margin: 5px 0 0 0;
-                color: #64748B;
-                font-size: 14px;
-            }
+        strong {
+          font-size: 14px;
+          font-weight: 500;
+          color: white;
         }
 
-        .header-user-section {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-
-            .welcome-text {
-                color: #64748B;
-                font-size: 14px;
-
-                strong {
-                    color: white;
-                }
-            }
-
-            .logout-btn {
-                padding: 8px 16px;
-                background-color: transparent;
-                border: 1px solid #2A3441;
-                color: #94A3B8;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-
-                &:hover {
-                    background-color: rgba(255, 255, 255, 0.05);
-                    color: white;
-                }
-            }
+        span {
+          font-size: 12px;
+          color: $text-muted;
         }
+      }
     }
 
-    .dashboard-main {
-        text-align: center;
+    .item-price {
+      text-align: right;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      align-items: flex-end;
+
+      strong {
+        font-size: 14px;
+        font-weight: 600;
+        &.neg { color: $red-light; }
+        &.pos { color: $green-light; }
+      }
+
+      span {
+        font-size: 12px;
+        color: $text-muted;
+      }
     }
+  }
+}
+
+.empty-state {
+  color: $text-muted;
+  font-size: 14px;
+  text-align: center;
+  padding: 24px 0;
+  margin: 0;
 }

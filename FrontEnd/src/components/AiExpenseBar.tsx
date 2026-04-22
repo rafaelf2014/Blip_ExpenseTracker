@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Mic, Loader2 } from 'lucide-react';
-import { initializeLLM, extractExpenseFromText } from './llmService';
+import toast from 'react-hot-toast';
+import { initLLM, extractExpenseFromText } from '../services/llmService';
 import { ConfirmAiModal } from './ConfirmAiModal';
+import type { NewExpense } from '../types';
 import '../styles/AiBar.scss';
 
 type AiExpenseBarProps = {
@@ -16,9 +18,9 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [quickInsert, setQuickInsert] = useState(false);
-  const [pendingAiExpense, setPendingAiExpense] = useState<any>(null);
+  const [pendingAiExpense, setPendingAiExpense] = useState<NewExpense | null>(null);
 
-  const saveAiExpense = async (expenseData: any) => {
+  const saveAiExpense = async (expenseData: NewExpense) => {
     const finalExpense = { ...expenseData, userId: userId };
     const response = await fetch('http://localhost:5000/api/expenses', {
       method: 'POST',
@@ -31,29 +33,26 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
       setPendingAiExpense(null);
       onExpenseAdded();
     } else {
-      alert('Erro ao guardar a despesa.');
+      toast.error('Erro ao guardar a despesa.');
     }
   };
 
   const handleAIAssistant = async (textOverride?: string) => {
     const textToProcess = textOverride || aiInput;
     if (!textToProcess.trim()) return;
-    
-    setIsAiLoading(true);
-    try {
-      await initializeLLM(); // O carregamento fica em background
-      const respostaStr = await extractExpenseFromText(textToProcess, categories, expenseTypes);
-      const cleanJsonStr = respostaStr.replace(/```json/g, '').replace(/```/g, '').trim();
-      const expenseData = JSON.parse(cleanJsonStr);
 
+    setIsAiLoading(true);
+    initLLM().catch(console.error); // fire-and-forget: warms model in background, keywords run immediately
+    try {
+      const expenseData = await extractExpenseFromText(textToProcess, categories, expenseTypes);
       if (quickInsert) {
         await saveAiExpense(expenseData);
       } else {
         setPendingAiExpense(expenseData);
       }
     } catch (error) {
-      console.error(error);
-      alert('A IA não conseguiu entender. Tenta reformular a frase.');
+      console.error("Erro no processamento da IA:", error);
+      toast.error('Não foi possível processar a despesa. Tenta novamente.');
     } finally {
       setIsAiLoading(false);
     }
@@ -61,7 +60,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
 
   const handleVoiceInput = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) return alert("O teu browser não suporta voz.");
+    if (!SpeechRecognition) { toast.error("O teu browser não suporta reconhecimento de voz."); return; }
 
     const recognition = new SpeechRecognition();
     recognition.lang = 'pt-PT';

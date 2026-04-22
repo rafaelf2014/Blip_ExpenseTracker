@@ -1,48 +1,93 @@
 .summary-boxes-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+  width: 100%;
+
+  align-items: flex-start;
+}
+
+.summary-card-new {
+  background-color: rgba(30, 41, 59, 0.5); // bg-slate-800/50
+  border: 1px solid #334155; // border-slate-700
+  border-radius: 16px; // rounded-2xl
+  padding: 24px;
+  backdrop-filter: blur(8px); // glassmorphism effect
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: rgba(6, 182, 212, 0.5); // hover:border-[#06B6D4]/50
+    transform: translateY(-4px);
+  }
+
+  .card-top {
     display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-    width: 100%;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
 
-    .summary-card {
-        flex: 1;
-        background-color: #151E2D;
-        padding: 20px;
-        border-radius: 8px;
-        border: 1px solid #2A3441;
-        text-align: left;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-
-        &:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .summary-label {
-            margin: 0 0 10px 0;
-            color: #64748B;
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-
-        .summary-value {
-            font-size: 24px;
-            font-weight: bold;
-
-
-            &.neutral {
-                color: white;
-            }
-
-            &.positive {
-                color: #10B981;
-            }
-
-            &.negative {
-                color: #EF4444;
-            }
-        }
+  &:last-child {
+      margin-bottom: 0; // Se não houver 'card-bottom', remove a margem
     }
+
+    .card-label {
+      color: #94a3b8; // text-slate-400
+      font-size: 14px;
+      margin: 0 0 4px 0;
+    }
+
+    .card-value {
+      color: white;
+      font-size: 30px; // text-3xl
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  /* --- Estilo das Caixas de Ícones com Gradientes --- */
+  .icon-box-wrapper {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    .icon-element {
+      width: 24px;
+      height: 24px;
+      color: white;
+    }
+
+    &.balance {
+      background: linear-gradient(135deg, #06B6D4, #0891B2);
+    }
+    &.income {
+      background: linear-gradient(135deg, #10b981, #059669);
+    }
+    &.expense {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+  }
+
+  .card-bottom {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .trend-tag {
+      font-size: 14px;
+      font-weight: 500;
+      
+      &.positive { color: #34d399; } // emerald-400
+      &.negative { color: #f87171; } // red-400
+    }
+
+    .comparison-text {
+      color: #64748b; // text-slate-500
+      font-size: 14px;
+    }
+  }
 }

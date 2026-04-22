@@ -17,7 +17,10 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState(categories.length > 0 ? categories[0] : '');
   const [type, setType] = useState(expenseTypes.length > 0 ? expenseTypes[0] : '');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [date, setDate] = useState(() => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  });
 
   const { currencySymbol } = useCurrency();
 

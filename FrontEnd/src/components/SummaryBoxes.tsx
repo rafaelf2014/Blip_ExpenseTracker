@@ -1,37 +1,37 @@
+import { type LucideIcon } from 'lucide-react';
 import '../styles/SummaryBoxes.scss';
-import { useCurrency } from '../Context/CurrencyContext';
 
-type SummaryBoxesProps = {
-  totalSpent: number;
-  transactionCount: number;
-};
+interface SummaryCardProps {
+  title: string;
+  value: string;
+  change?: string;
+  isPositive?: boolean;
+  icon: LucideIcon;
+  type: 'balance' | 'income' | 'expense';
+}
 
-export function SummaryBoxes({ totalSpent, transactionCount }: SummaryBoxesProps) {
-  const { formatCurrency } = useCurrency();
-
+export function SummaryCard({ title, value, change, isPositive, icon: Icon, type }: SummaryCardProps) {
   return (
-    <div className='summary-boxes-container'>
-
-      <div className='summary-card'>
-        <h4 className='summary-label'>Total Transactions</h4>
-        <div className='summary-value neutral'> {transactionCount} </div>
+    <div className="summary-card-new">
+      <div className="card-top">
+        <div className="text-section">
+          <p className="card-label">{title}</p>
+          <h3 className="card-value">{value}</h3>
+        </div>
+        {/* A classe do ícone muda conforme o tipo para aplicar o gradiente certo */}
+        <div className={`icon-box-wrapper ${type}`}>
+          <Icon className="icon-element" />
+        </div>
       </div>
-
-      <div className='summary-card'>
-        <h4 className='summary-label'>Total Income</h4>
-        <div className='summary-value positive'>{formatCurrency(0)}</div> {/* Placeholder for now! */}
-      </div>
-
-      <div className='summary-card'>
-        <h4 className='summary-label'>Total Expenses</h4>
-        <div className='summary-value negative'>{formatCurrency(totalSpent)}</div>
-      </div>
-
-      <div className='summary-card'>
-        <h4 className='summary-label'>Net Flow</h4>
-        <div className='summary-value positive'>{formatCurrency(0 - totalSpent)}</div>
-      </div>
-
+      
+      {change && (
+        <div className="card-bottom">
+          <span className={`trend-tag ${isPositive ? 'positive' : 'negative'}`}>
+            {isPositive ? '↑' : '↓'} {change}
+          </span>
+          <span className="comparison-text">vs. last month</span>
+        </div>
+      )}
     </div>
   );
 }

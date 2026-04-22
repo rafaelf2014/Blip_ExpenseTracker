@@ -1,0 +1,82 @@
+.dashboard-layout {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    background-color: #0B1221;
+    color: white;
+
+    .dashboard-content-wrapper {
+        flex: 1;
+        min-width: 0; // prevents flex child from overflowing
+        overflow-y: auto;
+    }
+
+    .dashboard-container {
+        width: 100%;
+        max-width: 1600px;
+        box-sizing: border-box;
+        margin: 0 auto;
+        padding: 32px 40px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 28px;
+
+        .header-title {
+            h2 {
+                margin: 0;
+                font-size: 26px;
+                font-weight: 700;
+                letter-spacing: -0.3px;
+            }
+
+            p {
+                margin: 4px 0 0 0;
+                color: #64748B;
+                font-size: 14px;
+            }
+        }
+
+        .header-user-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            .welcome-text {
+                color: #64748B;
+                font-size: 14px;
+
+                strong {
+                    color: white;
+                }
+            }
+
+            .logout-btn {
+                padding: 8px 16px;
+                background-color: transparent;
+                border: 1px solid #2A3441;
+                color: #94A3B8;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-family: inherit;
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.05);
+                    color: white;
+                }
+            }
+        }
+    }
+
+    .dashboard-main {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+}

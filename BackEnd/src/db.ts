@@ -1,11 +1,48 @@
-// backend/src/db.ts
 import { JSONFilePreset } from 'lowdb/node';
 
-// 1. Tell TypeScript exactly what a "User" looks like
+export type RegularTransaction = {
+  id: string;
+  description: string;
+  amount: number;
+  isIncome: boolean;
+  category: string;
+  frequency: 'weekly' | 'monthly' | 'yearly';
+  date: string; // ISO date of first occurrence — defines the day-of-month/week/year it repeats
+};
+
+export type Budget = {
+  id: string;
+  category: string;
+  limit: number;
+  period: 'weekly' | 'monthly' | 'yearly';
+};
+
+export type BalanceEntry = {
+  month: string; // 'YYYY-MM'
+  balance: number;
+};
+
+export type BudgetUtilEntry = {
+  month: string;
+  utilization: number; // percentage, can exceed 100
+};
+
+export type SavingsRateEntry = {
+  month: string;
+  rate: number; // percentage, can be negative
+};
+
 export type User = {
   id: string;
   username: string;
-  password: string; 
+  password: string;
+  profilePicture?: string;
+  currentBalance?: number;
+  regularTransactions?: RegularTransaction[];
+  budgets?: Budget[];
+  balanceHistory?: BalanceEntry[];
+  budgetUtilHistory?: BudgetUtilEntry[];
+  savingsRateHistory?: SavingsRateEntry[];
 };
 
 export type Expense = {
@@ -18,7 +55,6 @@ export type Expense = {
   date: string;
 };
 
-// 2. Tell TypeScript what the entire db.json file looks like
 export type DatabaseSchema = {
   users: User[];
   expenses: Expense[];
@@ -26,13 +62,11 @@ export type DatabaseSchema = {
   expenseTypes: string[];
 };
 
-// 3. Set the default empty state just in case db.json is deleted
-const defaultData: DatabaseSchema = { 
-  users: [], 
+const defaultData: DatabaseSchema = {
+  users: [],
   expenses: [],
-  categories: ['Food', 'Transport', 'Entertainment', 'Utilities', 'Health', 'Housing', 'Other'],
-  expenseTypes: ['One-time', 'Monthly', 'Yearly', 'Trimesterly', 'Semi-Annual']
+  categories: ['Food', 'Health', 'Clothes', 'Housing', 'Transportation', 'Entertainment', 'Other'],
+  expenseTypes: ['One-time', 'Monthly', 'Yearly', 'Subscription']
 };
 
-// 4. Connect to the db.json file (make sure the path matches where your file is!)
 export const db = await JSONFilePreset<DatabaseSchema>('src/db.json', defaultData);
