@@ -9,6 +9,7 @@ import { AiExpenseBar } from '../components/AiExpenseBar';
 import { Receipt, TrendingUp, Wallet, DollarSign } from 'lucide-react';
 import { useCurrency } from '../Context/CurrencyContext';
 import { useTransactions } from '../hooks/useTransactions';
+import { AiChatBot } from '../components/AiChatBot';
 
 export default function Transactions() {
   const { formatCurrency } = useCurrency();
@@ -16,7 +17,7 @@ export default function Transactions() {
     username, userId,
     showForm, setShowForm,
     categories, expenseTypes,
-    filteredExpenses,
+    expenses, filteredExpenses,
     searchTerm, setSearchTerm,
     showFilters, setShowFilters,
     filterCategory, setFilterCategory,
@@ -32,9 +33,11 @@ export default function Transactions() {
     periodLabel, displayedSpent, displayedIncome, netBalance,
   } = useTransactions();
 
+
   return (
     <div className="dashboard-layout">
       <Sidebar />
+      <AiChatBot userId={userId} categories={categories} expenseTypes={expenseTypes} expenses={expenses} onExpenseAdded={() => fetchExpenses(userId)} />
       <div className="dashboard-content-wrapper">
         <div className="dashboard-container">
           <header className="dashboard-header">
@@ -97,7 +100,7 @@ export default function Transactions() {
 
             {showForm && (
               <ExpenseModal
-                userId={userId} categories={categories} expenseTypes={expenseTypes}
+                userId={userId} categories={categories} expenseTypes={expenseTypes} expenses={expenses}
                 onClose={() => setShowForm(false)} onExpenseAdded={() => fetchExpenses(userId)}
               />
             )}
