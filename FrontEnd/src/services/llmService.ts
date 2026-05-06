@@ -1,6 +1,6 @@
 import { CreateWebWorkerMLCEngine } from "@mlc-ai/web-llm";
 import type { NewExpense } from '../types';
-import { CATEGORY_KEYWORDS, TYPE_KEYWORDS } from '../constants/keywords';
+import { CATEGORY_KEYWORDS, QUERY_CATEGORY_KEYWORDS, TYPE_KEYWORDS } from '../constants/keywords';
 
 let engine: any = null;
 let initPromise: Promise<void> | null = null;
@@ -185,8 +185,7 @@ async function getLLMDescription(userInput: string): Promise<string | null> {
 // no keyword match — ask LLM for both category and description in one call
 
 async function getLLMCategoryAndDescription(
-    userInput: string,
-    categories: string[]
+    userInput: string
 ): Promise<{ category: string; description: string } | null> {
     if (!engine) return null;
     try {
@@ -195,13 +194,28 @@ async function getLLMCategoryAndDescription(
                 {
                     role: 'system',
                     content:
-                        'You receive expense descriptions in any language (often Portuguese). ' +
-                        `Reply with JSON only, no extra text: {"description":"1-4 word English summary","category":"one of: ${categories.join(', ')}"}`,
+                        'You categorize expenses written in any language (often Portuguese or English). ' +
+                        'Reply with JSON only: {"description":"1-4 word English summary","category":"exact category name"}.\n' +
+                        'Categories and what they cover:\n' +
+                        '- Food: restaurants, groceries, delivery apps, fast food, drinks, coffee, supermarkets\n' +
+                        '- Transportation: taxi, ride-hailing, fuel, flights, public transport, parking, car repairs\n' +
+                        '- Entertainment: sports activities, streaming services, games, cinema, concerts, books, hobbies, gambling\n' +
+                        '- Utilities: electricity, water, internet, phone bills, gas, insurance\n' +
+                        '- Health: pharmacy, doctor visits, gym, supplements, therapy, dental, eye care\n' +
+                        '- Housing: rent, mortgage, repairs, furniture, appliances, cleaning supplies\n' +
+                        '- Clothes: clothing, shoes, accessories, fashion brands, jewellery, bags\n' +
+                        '- Other: anything that does not fit the above\n',
                 },
-                { role: 'user', content: userInput },
+                { role: 'user',      content: 'basketball €90'                                                    },
+                { role: 'assistant', content: '{"description":"Basketball","category":"Entertainment"}'            },
+                { role: 'user',      content: 'jantar no restaurante italiano €35'                                 },
+                { role: 'assistant', content: '{"description":"Italian restaurant dinner","category":"Food"}'      },
+                { role: 'user',      content: 'uber para o aeroporto €22'                                         },
+                { role: 'assistant', content: '{"description":"Uber to airport","category":"Transportation"}'      },
+                { role: 'user',      content: userInput },
             ],
             temperature: 0.1,
-            max_tokens: 40,
+            max_tokens: 48,
         });
         const raw   = (reply.choices[0].message.content ?? '').trim();
         const match = raw.match(/\{[\s\S]*\}/);
@@ -244,8 +258,16 @@ export async function extractExpenseFromText(
         const llmDesc = await getLLMDescription(userInput);
         description = llmDesc ?? fallbackDescription(userInput);
     } else {
+        // log unmatched input for future keyword expansion
+        const stored  = JSON.parse(localStorage.getItem('blip_unknown_terms') ?? '[]') as string[];
+        const cleaned = fallbackDescription(userInput);
+        if (cleaned && !stored.includes(cleaned)) {
+            stored.push(cleaned);
+            localStorage.setItem('blip_unknown_terms', JSON.stringify(stored));
+        }
+
         // no match — ask LLM for both
-        const llmResult = await getLLMCategoryAndDescription(userInput, categories);
+        const llmResult = await getLLMCategoryAndDescription(userInput);
         category    = llmResult ? normalizeToList(llmResult.category, categories) : 'Other';
         description = llmResult?.description ?? fallbackDescription(userInput);
     }
