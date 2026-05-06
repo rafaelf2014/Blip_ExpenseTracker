@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Sidebar } from '../components/Sidebar';
 import { ExpenseModal } from '../components/ExpenseModal';
 import { EditExpenseModal } from '../components/EditExpenseModal';
@@ -10,149 +8,29 @@ import '../styles/Transactions.scss';
 import { AiExpenseBar } from '../components/AiExpenseBar';
 import { Receipt, TrendingUp, Wallet, DollarSign } from 'lucide-react';
 import { useCurrency } from '../Context/CurrencyContext';
-import type { Expense, RegularTransaction } from '../types';
-import { getWeekStart, toLocalDateStr, calcIncome } from '../utils/finance';
-
-function calculateActualIncome(regularTransactions: RegularTransaction[], filterTime: string): number {
-  const today = new Date();
-  let start: Date;
-
-  if (filterTime === 'week')       start = getWeekStart(today);
-  else if (filterTime === 'month') start = new Date(today.getFullYear(), today.getMonth(), 1);
-  else if (filterTime === 'year')  start = new Date(today.getFullYear(), 0, 1);
-  else                             start = new Date(0);
-
-  return calcIncome(regularTransactions, start, today);
-}
+import { useTransactions } from '../hooks/useTransactions';
 
 export default function Transactions() {
-  const navigate = useNavigate();
   const { formatCurrency } = useCurrency();
-
-  const [username, setUsername] = useState('');
-  const [userId, setUserId] = useState('');
-
-  const [showForm, setShowForm] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [expenseTypes, setExpenseTypes] = useState<string[]>([]);
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-
-  // User financial settings
-  const [currentBalance, setCurrentBalance] = useState(0);
-  const [regularTransactions, setRegularTransactions] = useState<RegularTransaction[]>([]);
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [showFilters, setShowFilters] = useState(false);
-  const [filterCategory, setFilterCategory] = useState('');
-  const [filterType, setFilterType] = useState('');
-  const [filterTime, setFilterTime] = useState('');
-  const [filterMin, setFilterMin] = useState('');
-  const [filterMax, setFilterMax] = useState('');
-
-  const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
-
-  useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
-    const storedUserId = localStorage.getItem('userId');
-
-    if (!storedUsername || !storedUserId) {
-      navigate('/');
-    } else {
-      setUsername(storedUsername);
-      setUserId(storedUserId);
-      fetchExpenses(storedUserId);
-
-      fetch('http://localhost:5000/api/expense-config')
-        .then(res => res.json())
-        .then(data => {
-          setCategories(data.categories);
-          setExpenseTypes(data.expenseTypes);
-        });
-
-      fetch(`http://localhost:5000/api/users/${storedUserId}/settings`)
-        .then(res => res.json())
-        .then(data => {
-          setCurrentBalance(data.currentBalance ?? 0);
-          setRegularTransactions(data.regularTransactions ?? []);
-        })
-        .catch(console.error);
-    }
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('username');
-    navigate('/');
-  };
-
-  const fetchExpenses = async (id: string) => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/expenses/${id}`);
-      if (response.ok) {
-        const data = await response.json();
-        setExpenses(data);
-      }
-    } catch (error) {
-      console.error('Error fetching expenses:', error);
-    }
-  };
-
-  const handleUpdateExpense = async (id: string, updatedData: Omit<Expense, 'id'>) => {
-    await fetch(`http://localhost:5000/api/expenses/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updatedData)
-    });
-    setEditingExpense(null);
-    fetchExpenses(userId);
-  };
-
-  const handleDeleteExpense = async (id: string) => {
-    await fetch(`http://localhost:5000/api/expenses/${id}`, { method: 'DELETE' });
-    setEditingExpense(null);
-    fetchExpenses(userId);
-  };
-
-  // ── Filtering ────────────────────────────────────────────────────────────────
-
-  const applyTimeFilter = (expense: Expense): boolean => {
-    if (filterTime === '') return true;
-    const today = new Date();
-    const expStr = toLocalDateStr(new Date(expense.date));
-    if (filterTime === 'week') {
-      return expStr >= toLocalDateStr(getWeekStart(today)) && expStr <= toLocalDateStr(today);
-    }
-    if (filterTime === 'month') {
-      const d = new Date(expense.date);
-      return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-    }
-    if (filterTime === 'year') {
-      return new Date(expense.date).getFullYear() === today.getFullYear();
-    }
-    return true;
-  };
-
-  // Fully filtered list — used for the table
-  const filteredExpenses = expenses.filter((expense) => {
-    const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === '' || expense.category === filterCategory;
-    const matchesType = filterType === '' || expense.type === filterType;
-    const amount = Number(expense.amount);
-    const matchesMin = filterMin === '' || amount >= Number(filterMin);
-    const matchesMax = filterMax === '' || amount <= Number(filterMax);
-    return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && applyTimeFilter(expense);
-  });
-
-  // Time-only filtered list — used for summary cards (unaffected by search/category/amount filters)
-  const timeFilteredExpenses = expenses.filter(applyTimeFilter);
-
-  // ── Summary calculations ─────────────────────────────────────────────────────
-
-  const periodLabel = filterTime === 'week' ? 'Weekly' : filterTime === 'month' ? 'Monthly' : filterTime === 'year' ? 'Yearly' : '';
-
-  const displayedSpent  = timeFilteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
-  const displayedIncome = calculateActualIncome(regularTransactions, filterTime);
-  // Net flow = income received in period − expenses in period, always.
-  const netBalance = displayedIncome - displayedSpent;
+  const {
+    username, userId,
+    showForm, setShowForm,
+    categories, expenseTypes,
+    filteredExpenses,
+    searchTerm, setSearchTerm,
+    showFilters, setShowFilters,
+    filterCategory, setFilterCategory,
+    filterType, setFilterType,
+    filterTime, setFilterTime,
+    filterMin, setFilterMin,
+    filterMax, setFilterMax,
+    editingExpense, setEditingExpense,
+    fetchExpenses,
+    handleLogout,
+    handleUpdateExpense,
+    handleDeleteExpense,
+    periodLabel, displayedSpent, displayedIncome, netBalance,
+  } = useTransactions();
 
   return (
     <div className="dashboard-layout">

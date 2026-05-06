@@ -1,5 +1,6 @@
 import { CreateWebWorkerMLCEngine } from "@mlc-ai/web-llm";
 import type { NewExpense } from '../types';
+import { CATEGORY_KEYWORDS, TYPE_KEYWORDS } from '../constants/keywords';
 
 let engine: any = null;
 let initPromise: Promise<void> | null = null;
@@ -104,64 +105,6 @@ function extractDate(text: string): string {
     return fmt(today);
 }
 
-// tabelas de palavras-chave (PT + EN, prefixos para tolerância a erros de digitação)
-
-const CATEGORY_KEYWORDS: [string, string[]][] = [
-    ['Food', [
-        'comi', 'almo', 'jant', 'restaur', 'cafe', 'cafet', 'pastel', 'padari',
-        'super', 'mercear', 'minimercado', 'minipreco', 'continente', 'pingo', 'lidl', 'aldi',
-        'pizza', 'hambur', 'sushi', 'snack', 'lanche', 'petisco', 'refeic',
-        'grocery', 'food', 'lunch', 'dinner', 'breakfast', 'meal', 'drink', 'coffee', 'bakery',
-    ]],
-    ['Transportation', [
-        'uber', 'bolt', 'taxi', 'taxe', 'cabify',
-        'metro', 'autocarro', 'comboio', 'cp ', 'renfe',
-        'gasolina', 'combustiv', 'diesel', 'portagem', 'estacion', 'parking',
-        'flight', 'voo', 'aviao', 'ryanair', 'tap', 'easyjet',
-        'bicicleta', 'trotinete', 'gira',
-        'transport', 'fuel', 'bus', 'train', 'car',
-    ]],
-    ['Entertainment', [
-        'cinema', 'netflix', 'spotify', 'hbo', 'disney', 'apple tv', 'prime video',
-        'twitch', 'youtube', 'steam', 'playstation', 'xbox', 'nintendo',
-        'concerto', 'teatro', 'espetaculo', 'museu', 'parque',
-        'jogo', 'game', 'concert', 'show', 'entret', 'filme', 'movie', 'music'
-    ]],
-    ['Utilities', [
-        'eletric', 'energia', 'edp', 'endesa',
-        'agua', 'epal', 'aguas',
-        'internet', 'fibra', 'wifi', 'nos ', 'meo ', 'vodafone', 'nowo',
-        'telef', 'telemo', 'phone', 'mobile',
-        'gas', 'galp', 'goldenergy',
-        'seguro', 'luz', 'utility', 'electric', 'water',
-    ]],
-    ['Health', [
-        'farmaci', 'medic', 'clinica', 'hospital', 'urgencia',
-        'consulta', 'dentist', 'oculist', 'oftalmo', 'ortoped',
-        'fisio', 'psicolog', 'nutri', 'analise', 'exame',
-        'ginasi', 'gym', 'health', 'saude',
-    ]],
-    ['Housing', [
-        'renda', 'aluguel', 'condomi', 'hipoteca', 'mortgage',
-        'obras', 'reparac', 'canalizador', 'eletricista',
-        'ikea', 'leroy', 'mobilia', 'movel',
-        'rent', 'housing', 'condomin', 'imobili',
-    ]],
-    ['Clothes', [
-        'roupa', 'vestuario', 'calcado', 'sapato', 'tenis', 'bota',
-        'zara', 'hm', 'primark', 'mango', 'pull', 'bershka', 'stradivari',
-        'nike', 'adidas', 'puma', 'new balance',
-        'cloth', 'shirt', 'trouser', 'jacket', 'dress', 'jeans', 'fashion',
-    ]],
-];
-
-const TYPE_KEYWORDS: [string, string[]][] = [
-    ['Monthly',      ['mensal', 'monthly', 'subscri', 'subscription', 'recorrent', 'recurring', 'mes']],
-    ['Yearly',       ['anual', 'annual', 'yearly', 'ano']],
-    ['Trimesterly',  ['trimestral', 'quarterly', 'trimest']],
-    ['Semi-Annual',  ['semestral', 'semi-annual', 'semestr']],
-];
-
 // classifica por substring exacto; fallback fuzzy com Levenshtein
 
 function classifyByKeywords(
@@ -206,10 +149,17 @@ function normalizeToList(value: string, validList: string[]): string {
     return best;
 }
 
-// pede ao LLM só a descrição; não bloqueia se o modelo ainda não estiver carregado
+// function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+//     return Promise.race([
+//         promise,
+//         new Promise<null>(resolve => setTimeout(() => resolve(null), ms)),
+//     ]);
+// }
 
-async function getLLMDescription(userInput: string): Promise<string> {
-    if (!engine) return '';
+// keyword matched — only ask LLM for description
+
+async function getLLMDescription(userInput: string): Promise<string | null> {
+    if (!engine) return null;
     try {
         const reply = await engine.chat.completions.create({
             messages: [
@@ -226,9 +176,42 @@ async function getLLMDescription(userInput: string): Promise<string> {
             max_tokens: 20,
         });
         const raw = (reply.choices[0].message.content ?? '').trim();
-        return raw.replace(/^["'.]+|["'.]+$/g, '');
+        return raw.replace(/^["'.]+|["'.]+$/g, '') || null;
     } catch {
-        return '';
+        return null;
+    }
+}
+
+// no keyword match — ask LLM for both category and description in one call
+
+async function getLLMCategoryAndDescription(
+    userInput: string,
+    categories: string[]
+): Promise<{ category: string; description: string } | null> {
+    if (!engine) return null;
+    try {
+        const reply = await engine.chat.completions.create({
+            messages: [
+                {
+                    role: 'system',
+                    content:
+                        'You receive expense descriptions in any language (often Portuguese). ' +
+                        `Reply with JSON only, no extra text: {"description":"1-4 word English summary","category":"one of: ${categories.join(', ')}"}`,
+                },
+                { role: 'user', content: userInput },
+            ],
+            temperature: 0.1,
+            max_tokens: 40,
+        });
+        const raw   = (reply.choices[0].message.content ?? '').trim();
+        const match = raw.match(/\{[\s\S]*\}/);
+        if (!match) return null;
+        const parsed = JSON.parse(match[0]);
+        if (!parsed.description || !parsed.category) return null;
+        return { description: String(parsed.description), category: String(parsed.category) };
+    } catch (e) {
+        console.error('[LLM category+description error]', e);
+        return null;
     }
 }
 
@@ -247,12 +230,25 @@ export async function extractExpenseFromText(
     categories: string[],
     types: string[]
 ): Promise<NewExpense> {
-    const amount   = extractAmount(userInput);
-    const date     = extractDate(userInput);
-    const category = normalizeToList(classifyByKeywords(userInput, CATEGORY_KEYWORDS, 'Other'), categories);
-    const type     = normalizeToList(classifyByKeywords(userInput, TYPE_KEYWORDS, 'One-time'), types);
-    const llmDesc  = await getLLMDescription(userInput);
-    const description = llmDesc || fallbackDescription(userInput);
+    const amount     = extractAmount(userInput);
+    const date       = extractDate(userInput);
+    const type       = normalizeToList(classifyByKeywords(userInput, TYPE_KEYWORDS, 'One-time'), types);
+    const kwCategory = classifyByKeywords(userInput, CATEGORY_KEYWORDS, '');
+
+    let category: string;
+    let description: string;
+
+    if (kwCategory) {
+        // keyword or Levenshtein matched — only ask LLM for description
+        category = normalizeToList(kwCategory, categories);
+        const llmDesc = await getLLMDescription(userInput);
+        description = llmDesc ?? fallbackDescription(userInput);
+    } else {
+        // no match — ask LLM for both
+        const llmResult = await getLLMCategoryAndDescription(userInput, categories);
+        category    = llmResult ? normalizeToList(llmResult.category, categories) : 'Other';
+        description = llmResult?.description ?? fallbackDescription(userInput);
+    }
 
     return { description, amount: amount ?? 0, date, category, type };
 }

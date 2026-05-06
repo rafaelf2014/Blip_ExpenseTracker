@@ -108,6 +108,24 @@ $border-color: #334155;
 
     .income  { color: #10B981; font-size: 13px; }
     .expense { color: #EF4444; font-size: 13px; margin-top: 4px; }
+
+    &.pie-tooltip {
+        min-width: 130px;
+
+        .label { margin-bottom: 4px; }
+    }
+
+    .pie-value {
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0 0 4px 0;
+    }
+
+    .pie-percent {
+        color: #94A3B8;
+        font-size: 12px;
+        margin: 0;
+    }
 }
 
 // ── Top categories card ───────────────────────────────────────────────────────

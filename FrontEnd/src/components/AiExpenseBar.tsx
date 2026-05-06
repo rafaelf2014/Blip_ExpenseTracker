@@ -5,6 +5,7 @@ import { initLLM, extractExpenseFromText } from '../services/llmService';
 import { ConfirmAiModal } from './ConfirmAiModal';
 import type { NewExpense } from '../types';
 import '../styles/AiBar.scss';
+import { API_BASE } from '../constants/api';
 
 type AiExpenseBarProps = {
   userId: string;
@@ -22,7 +23,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
 
   const saveAiExpense = async (expenseData: NewExpense) => {
     const finalExpense = { ...expenseData, userId: userId };
-    const response = await fetch('http://localhost:5000/api/expenses', {
+    const response = await fetch(`${API_BASE}/expenses`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(finalExpense)

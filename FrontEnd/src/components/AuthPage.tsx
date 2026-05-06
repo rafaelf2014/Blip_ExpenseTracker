@@ -4,6 +4,7 @@ import type { SubmitEventHandler } from 'react';
 import { Receipt } from 'lucide-react';
 import '../styles/AuthPage.scss';
 import toast from 'react-hot-toast';
+import { API_BASE } from '../constants/api';
 
 export default function AuthPage() {
   const [username, setUsername] = useState('');
@@ -14,9 +15,9 @@ export default function AuthPage() {
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault();
 
-    const endpoint = isLogin ? 'api/login' : 'api/register';
+    const endpoint = isLogin ? 'login' : 'register';
 
-    const response = await fetch(`http://localhost:5000/${endpoint}`, {
+    const response = await fetch(`${API_BASE}/${endpoint}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ username, password })

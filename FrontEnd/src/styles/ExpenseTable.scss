@@ -127,4 +127,46 @@
       }
     }
   }
+
+  .table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-top: 1px solid #334155;
+    background-color: #0F172A;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+
+    .pagination-info {
+      color: #94A3B8;
+      font-size: 14px;
+    }
+
+    .pagination-controls {
+      display: flex;
+      gap: 10px;
+    }
+
+    .pagination-btn {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 8px 12px;
+      background-color: #334155;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+
+      &:hover:not(:disabled) { background-color: #475569; }
+
+      &:disabled {
+        background-color: #1E293B;
+        color: #475569;
+        cursor: not-allowed;
+      }
+    }
+  }
 }

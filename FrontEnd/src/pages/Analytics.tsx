@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { FilterControls } from '../components/FilterControl';
 import { SummaryCard } from '../components/SummaryBoxes';
@@ -8,168 +7,22 @@ import '../styles/Transactions.scss';
 import '../styles/Analytics.scss';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../Context/CurrencyContext';
-import type { Expense, RegularTransaction } from '../types';
-import { getWeekStart, toLocalDateStr, calcIncome } from '../utils/finance';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 export default function Analytics() {
     const { t } = useTranslation();
     const { formatCurrency } = useCurrency();
-
-    const [categoryData, setCategoryData] = useState<any[]>([]);
-    const [trendData, setTrendData] = useState<any[]>([]);
-
-    const [stats, setStats] = useState({
-        avgMonthlyIncome: 0,
-        avgMonthlyExpense: 0,
-        avgDaily: 0,
-        topCategory: 'N/A'
-    });
-
-    const [rawExpenses, setRawExpenses] = useState<Expense[]>([]);
-    const [regularTransactions, setRegularTransactions] = useState<RegularTransaction[]>([]);
-    const [categories, setCategories] = useState<string[]>([]);
-    const [expenseTypes, setExpenseTypes] = useState<string[]>([]);
-
-    const [searchTerm, setSearchTerm] = useState('');
-    const [showFilters, setShowFilters] = useState(false);
-    const [filterCategory, setFilterCategory] = useState('');
-    const [filterType, setFilterType] = useState('');
-    const [filterTime, setFilterTime] = useState('');
-    const [filterMin, setFilterMin] = useState('');
-    const [filterMax, setFilterMax] = useState('');
-
-    useEffect(() => {
-        const storedUserId = localStorage.getItem('userId');
-        if (storedUserId) {
-            fetch(`http://localhost:5000/api/expenses/${storedUserId}`)
-                .then(res => res.json())
-                .then(data => setRawExpenses(data))
-                .catch(err => console.error('Error loading analytics data:', err));
-            fetch(`http://localhost:5000/api/users/${storedUserId}/settings`)
-                .then(res => res.json())
-                .then(data => setRegularTransactions(data.regularTransactions ?? []))
-                .catch(console.error);
-        }
-        fetch('http://localhost:5000/api/expense-config')
-            .then(res => res.json())
-            .then(data => {
-                setCategories(data.categories);
-                setExpenseTypes(data.expenseTypes);
-            });
-    }, []);
-
-    useEffect(() => {
-        const today = new Date();
-        const todayStr = toLocalDateStr(today);
-        const weekStartStr = toLocalDateStr(getWeekStart(today));
-
-        const filtered = rawExpenses.filter((expense) => {
-            const matchesSearch = expense.description.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesCategory = filterCategory === '' || expense.category === filterCategory;
-            const matchesType = filterType === '' || expense.type === filterType;
-            const amount = Number(expense.amount);
-            const matchesMin = filterMin === '' || amount >= Number(filterMin);
-            const matchesMax = filterMax === '' || amount <= Number(filterMax);
-
-            let matchesTime = true;
-            if (filterTime !== '') {
-                const expStr = toLocalDateStr(new Date(expense.date));
-                if (filterTime === 'week') {
-                    matchesTime = expStr >= weekStartStr && expStr <= todayStr;
-                } else if (filterTime === 'month') {
-                    const d = new Date(expense.date);
-                    matchesTime = d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-                } else if (filterTime === 'year') {
-                    matchesTime = new Date(expense.date).getFullYear() === today.getFullYear();
-                }
-            }
-            return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && matchesTime;
-        });
-
-        // Compute income for the active period using regularTransactions
-        let periodStart: Date;
-        if (filterTime === 'week')       periodStart = getWeekStart(today);
-        else if (filterTime === 'month') periodStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        else if (filterTime === 'year')  periodStart = new Date(today.getFullYear(), 0, 1);
-        else {
-            const earliest = rawExpenses.reduce((min, e) => Math.min(min, new Date(e.date).getTime()), Infinity);
-            periodStart = isFinite(earliest) ? new Date(earliest) : new Date(0);
-        }
-        const totalIncome = calcIncome(regularTransactions, periodStart, today);
-
-        processAnalyticsData(filtered, filterTime, totalIncome);
-    }, [rawExpenses, regularTransactions, searchTerm, filterCategory, filterType, filterTime, filterMin, filterMax]);
-
-    const processAnalyticsData = (expenses: Expense[], activeFilter: string, totalIncome: number) => {
-        const COLORS = ['#06b6d4', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#6366f1', '#64748b'];
-
-        let totalExpense = 0;
-        const categoryTotals: Record<string, number> = {};
-        const monthlyData: Record<string, { income: number; expenses: number }> = {};
-
-        expenses.forEach(exp => {
-            const amount = Number(exp.amount);
-            const date = new Date(exp.date);
-            const month = date.toLocaleString('default', { month: 'short' });
-
-            if (!monthlyData[month]) monthlyData[month] = { income: 0, expenses: 0 };
-
-            totalExpense += amount;
-            monthlyData[month].expenses += amount;
-            categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + amount;
-        });
-
-        const newCategoryData = Object.keys(categoryTotals)
-            .map((key, index) => ({ name: key, value: Number(categoryTotals[key].toFixed(2)), color: COLORS[index % COLORS.length] }))
-            .filter(item => item.value > 0)
-            .sort((a, b) => b.value - a.value);
-
-        const newTrendData = Object.keys(monthlyData).map(month => ({
-            month,
-            income: Number(monthlyData[month].income.toFixed(2)),
-            expenses: Number(monthlyData[month].expenses.toFixed(2))
-        }));
-
-        const topCat = newCategoryData.length > 0 ? newCategoryData[0].name : 'N/A';
-
-        // ── Period metrics ────────────────────────────────────────────────────
-        const today = new Date();
-        let numDays: number;
-        let numMonths: number;
-
-        if (activeFilter === 'week') {
-            numDays = 7;
-            numMonths = 1; // handled via * 4 below
-        } else if (activeFilter === 'month') {
-            numDays = today.getDate(); // days elapsed in current month
-            numMonths = 1;
-        } else if (activeFilter === 'year') {
-            const yearStart = new Date(today.getFullYear(), 0, 1);
-            numDays = Math.ceil((today.getTime() - yearStart.getTime()) / 86400000) + 1;
-            numMonths = today.getMonth() + 1; // months elapsed this year
-        } else {
-            // All time: span from earliest expense to today
-            if (expenses.length > 0) {
-                const earliest = expenses.reduce((min, e) => {
-                    const t = new Date(e.date).getTime();
-                    return t < min ? t : min;
-                }, Infinity);
-                numDays = Math.ceil((today.getTime() - earliest) / 86400000) + 1;
-            } else {
-                numDays = 1;
-            }
-            numMonths = Object.keys(monthlyData).length || 1;
-        }
-
-        const avgDaily = totalExpense / Math.max(numDays, 1);
-        // For weekly filter, extrapolate to monthly (week * 4); otherwise divide by months elapsed
-        const avgMonthlyExpense = activeFilter === 'week' ? totalExpense * 4 : totalExpense / Math.max(numMonths, 1);
-        const avgMonthlyIncome  = activeFilter === 'week' ? totalIncome  * 4 : totalIncome  / Math.max(numMonths, 1);
-
-        setCategoryData(newCategoryData);
-        setTrendData(newTrendData);
-        setStats({ avgMonthlyIncome, avgMonthlyExpense, avgDaily, topCategory: topCat });
-    };
+    const {
+        categoryData, trendData, stats,
+        categories, expenseTypes,
+        searchTerm, setSearchTerm,
+        showFilters, setShowFilters,
+        filterCategory, setFilterCategory,
+        filterType, setFilterType,
+        filterTime, setFilterTime,
+        filterMin, setFilterMin,
+        filterMax, setFilterMax,
+    } = useAnalytics();
 
     const CustomTooltip = ({ active, payload, label }: any) => {
         if (active && payload && payload.length) {
@@ -186,18 +39,18 @@ export default function Analytics() {
 
     const PieCustomTooltip = ({ active, payload }: any) => {
         if (active && payload && payload.length) {
-            const data = payload[0].payload;
+            const data  = payload[0].payload;
             const total = categoryData.reduce((sum, item) => sum + item.value, 0);
             const percent = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0.0';
             return (
-                <div className="custom-tooltip" style={{ minWidth: '130px' }}>
-                    <p className="label" style={{ color: '#F8FAFC', marginBottom: '4px' }}>
+                <div className="custom-tooltip pie-tooltip">
+                    <p className="label">
                         {t(`categories.${String(data.name).toLowerCase()}`, { defaultValue: data.name })}
                     </p>
-                    <p style={{ color: data.color, fontSize: '16px', fontWeight: 'bold', margin: '0 0 4px 0' }}>
+                    <p className="pie-value" style={{ color: data.color }}>
                         {formatCurrency(data.value)}
                     </p>
-                    <p style={{ color: '#94A3B8', fontSize: '12px', margin: 0 }}>{percent}%</p>
+                    <p className="pie-percent">{percent}%</p>
                 </div>
             );
         }
