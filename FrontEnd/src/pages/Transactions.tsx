@@ -12,15 +12,16 @@ import { Receipt, TrendingUp, Wallet, DollarSign } from 'lucide-react';
 import { useCurrency } from '../Context/CurrencyContext';
 import type { Expense, RegularTransaction } from '../types';
 import { getWeekStart, toLocalDateStr, calcIncome } from '../utils/finance';
+import { AiChatBot } from '../components/AiChatBot';
 
 function calculateActualIncome(regularTransactions: RegularTransaction[], filterTime: string): number {
   const today = new Date();
   let start: Date;
 
-  if (filterTime === 'week')       start = getWeekStart(today);
+  if (filterTime === 'week') start = getWeekStart(today);
   else if (filterTime === 'month') start = new Date(today.getFullYear(), today.getMonth(), 1);
-  else if (filterTime === 'year')  start = new Date(today.getFullYear(), 0, 1);
-  else                             start = new Date(0);
+  else if (filterTime === 'year') start = new Date(today.getFullYear(), 0, 1);
+  else start = new Date(0);
 
   return calcIncome(regularTransactions, start, today);
 }
@@ -149,7 +150,7 @@ export default function Transactions() {
 
   const periodLabel = filterTime === 'week' ? 'Weekly' : filterTime === 'month' ? 'Monthly' : filterTime === 'year' ? 'Yearly' : '';
 
-  const displayedSpent  = timeFilteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+  const displayedSpent = timeFilteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
   const displayedIncome = calculateActualIncome(regularTransactions, filterTime);
   // Net flow = income received in period − expenses in period, always.
   const netBalance = displayedIncome - displayedSpent;
@@ -157,6 +158,7 @@ export default function Transactions() {
   return (
     <div className="dashboard-layout">
       <Sidebar />
+      <AiChatBot userId={userId} categories={categories} expenseTypes={expenseTypes} expenses={expenses} onExpenseAdded={() => { }} />
       <div className="dashboard-content-wrapper">
         <div className="dashboard-container">
           <header className="dashboard-header">
@@ -219,7 +221,7 @@ export default function Transactions() {
 
             {showForm && (
               <ExpenseModal
-                userId={userId} categories={categories} expenseTypes={expenseTypes}
+                userId={userId} categories={categories} expenseTypes={expenseTypes} expenses={expenses}
                 onClose={() => setShowForm(false)} onExpenseAdded={() => fetchExpenses(userId)}
               />
             )}

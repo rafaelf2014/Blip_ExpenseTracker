@@ -8,6 +8,7 @@ type ExpenseModalProps = {
   userId: string;
   categories: string[];
   expenseTypes: string[];
+  expenses: any[];
   onClose: () => void;
   onExpenseAdded: () => void;
 };
