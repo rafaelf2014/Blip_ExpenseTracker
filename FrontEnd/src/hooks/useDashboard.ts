@@ -39,7 +39,7 @@ export function useDashboard() {
             .then(r => r.json())
             .then(data => { setCategories(data.categories); setExpenseTypes(data.expenseTypes); });
 
-        // carrega despesas + settings em paralelo para calcular o snapshot de uma vez
+        // carrega despesas + settings
         Promise.all([
             fetch(`${API_BASE}/expenses/${storedUserId}`).then(r => r.json()),
             fetch(`${API_BASE}/users/${storedUserId}/settings`).then(r => r.json()),
@@ -92,7 +92,6 @@ export function useDashboard() {
         if (res.ok) setExpenses(await res.json());
     };
 
-    // ── Derivações ────────────────────────────────────────────────────────────
 
     const today          = new Date();
     const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);

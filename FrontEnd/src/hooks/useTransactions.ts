@@ -87,7 +87,6 @@ export function useTransactions() {
         fetchExpenses(userId);
     };
 
-    // ── Filtragem ─────────────────────────────────────────────────────────────
 
     const applyTimeFilter = (expense: Expense): boolean => {
         if (filterTime === '') return true;

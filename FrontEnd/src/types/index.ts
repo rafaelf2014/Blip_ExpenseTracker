@@ -1,5 +1,3 @@
-// Shared domain types — import these instead of defining locally in each page/component
-
 export type Expense = {
   id: string;
   userId?: string;

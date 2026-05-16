@@ -105,8 +105,6 @@ function extractDate(text: string): string {
     return fmt(today);
 }
 
-// classifica por substring exacto; fallback fuzzy com Levenshtein
-
 function classifyByKeywords(
     text: string,
     rules: [string, string[]][],
@@ -156,8 +154,6 @@ function normalizeToList(value: string, validList: string[]): string {
 //     ]);
 // }
 
-// keyword matched — only ask LLM for description
-
 async function getLLMDescription(userInput: string): Promise<string | null> {
     if (!engine) return null;
     try {
@@ -182,7 +178,6 @@ async function getLLMDescription(userInput: string): Promise<string | null> {
     }
 }
 
-// no keyword match — ask LLM for both category and description in one call
 
 async function getLLMCategoryAndDescription(
     userInput: string
@@ -271,11 +266,8 @@ export async function extractExpenseFromText(
     return { description, amount: amount ?? 0, date, category, type };
 }
 
-//Function for intent detection: ADD vs QUERY 
 export function detectChatIntent(userInput: string): 'ADD' | 'QUERY' {
     const norm = normalizeText(userInput);
-
-    // KeyWords 
     const queryKeywords = ['quanto', 'qual', 'quais', 'resumo', 'total', 'analisa', 'mostra', 'gastei'];
     const addKeywords = ['paguei', 'comprei', 'custou', 'adiciona', 'regista'];
 
@@ -288,10 +280,8 @@ export function detectChatIntent(userInput: string): 'ADD' | 'QUERY' {
 export async function askFinancialQuestion(userInput: string, expenses: any[], categories: string[]): Promise<string> {
     const norm = normalizeText(userInput);
 
-    // 2. EXTRAÇÃO DA CATEGORIA
     const targetCategory = classifyByKeywords(userInput, QUERY_CATEGORY_KEYWORDS, 'ALL');
 
-    // 3. EXTRAÇÃO ROBUSTA DE DATAS E PERÍODOS DINÂMICOS
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1; // 1 a 12
@@ -300,14 +290,13 @@ export async function askFinancialQuestion(userInput: string, expenses: any[], c
     let tMonth: number | null = null;
     let tDay: number | null = null;
 
-    // Variáveis para lidar com intervalos (Ranges)
     let minDate: string | null = null;
     let maxDate: string | null = null;
 
     let isRelative = false;
     let customDateContext = "";
 
-    // A. Verificar formato explícito (DD/MM/YYYY ou YYYY-MM-DD)
+    // Verificar formato explícito (DD/MM/YYYY ou YYYY-MM-DD)
     const explicit = norm.match(/(\d{4}-\d{2}-\d{2})|(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
     if (explicit) {
         if (explicit[1]) {
@@ -317,9 +306,7 @@ export async function askFinancialQuestion(userInput: string, expenses: any[], c
             tDay = parseInt(explicit[2]); tMonth = parseInt(explicit[3]); tYear = parseInt(explicit[4]);
         }
     } else {
-        // B. VERIFICAR PERÍODOS RELATIVOS DINÂMICOS (A MÁGICA DOS NÚMEROS!)
 
-        // Padrões Regex para apanhar os números. O "?" significa que o "s" é opcional (suporta "dia" ou "dias")
         const matchDias = norm.match(/(?:ultim[oa]s?|utlim[oa]s?)\s+(\d+)\s+dias?/);
         const matchSemanas = norm.match(/(?:ultim[oa]s?|utlim[oa]s?)\s+(\d+)\s+semanas?/);
         const matchMeses = norm.match(/(?:ultim[oa]s?|utlim[oa]s?)\s+(\d+)\s+meses?/);
@@ -382,7 +369,6 @@ export async function askFinancialQuestion(userInput: string, expenses: any[], c
             isRelative = true; customDateContext = "na última semana";
 
         } else {
-            // Dias da semana (ex: "na ultima quinta")
             const dayMap: Record<string, number> = {
                 domingo: 0, sunday: 0, segunda: 1, monday: 1, terca: 2, tuesday: 2,
                 quarta: 3, wednesday: 3, quinta: 4, thursday: 4, sexta: 5, friday: 5, sabado: 6, saturday: 6,
@@ -399,7 +385,7 @@ export async function askFinancialQuestion(userInput: string, expenses: any[], c
             }
         }
 
-        // C. Verificar Linguagem Natural ("dia 22", "22 de abril", "em 2026")
+        // Verificar Linguagem Natural ("dia 22", "22 de abril", "em 2026")
         if (!isRelative) {
             const dayMatch = norm.match(/\bdia\s+(\d{1,2})\b/);
             const dayDeMatch = norm.match(/\b(\d{1,2})\s+de\b/);
@@ -420,7 +406,6 @@ export async function askFinancialQuestion(userInput: string, expenses: any[], c
         }
     }
 
-    // 4. FILTRAGEM DE DADOS INFALÍVEL
     const filteredExpenses = expenses.filter(exp => {
         if (targetCategory !== 'ALL' && exp.category !== targetCategory) return false;
 
@@ -434,7 +419,6 @@ export async function askFinancialQuestion(userInput: string, expenses: any[], c
             expDay = parseInt(parts[0]); expMonth = parseInt(parts[1]); expYear = parseInt(parts[2]);
         }
 
-        // Filtro de RANGE (usado para "últimos X dias/semanas")
         if (minDate && maxDate) {
             const normalizedExpDate = `${expYear}-${String(expMonth).padStart(2, '0')}-${String(expDay).padStart(2, '0')}`;
             if (normalizedExpDate < minDate) return false;
@@ -448,7 +432,6 @@ export async function askFinancialQuestion(userInput: string, expenses: any[], c
         return true;
     });
 
-    // 5. CALCULAR E FORMULAR A RESPOSTA
     const totalSpent = filteredExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
     const catStr = targetCategory === 'ALL' ? 'todas as categorias' : targetCategory;
 
