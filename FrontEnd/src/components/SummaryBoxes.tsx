@@ -1,5 +1,8 @@
 import { type LucideIcon } from 'lucide-react';
 import '../styles/SummaryBoxes.scss';
+import { useTranslation } from 'react-i18next';
+
+
 
 interface SummaryCardProps {
   title: string;
@@ -11,6 +14,7 @@ interface SummaryCardProps {
 }
 
 export function SummaryCard({ title, value, change, isPositive, icon: Icon, type }: SummaryCardProps) {
+  const { t } = useTranslation();
   return (
     <div className="summary-card-new">
       <div className="card-top">
@@ -23,13 +27,13 @@ export function SummaryCard({ title, value, change, isPositive, icon: Icon, type
           <Icon className="icon-element" />
         </div>
       </div>
-      
+
       {change && (
         <div className="card-bottom">
           <span className={`trend-tag ${isPositive ? 'positive' : 'negative'}`}>
             {isPositive ? '↑' : '↓'} {change}
           </span>
-          <span className="comparison-text">vs. last month</span>
+          <span className="comparison-text">{t('summaryBox.last_month')}</span>
         </div>
       )}
     </div>

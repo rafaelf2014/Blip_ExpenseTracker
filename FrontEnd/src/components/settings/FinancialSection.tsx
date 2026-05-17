@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { DollarSign, Save, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { RegularTransaction } from '../../types';
 import { CATEGORIES } from '../../constants/categories';
+import { useTranslation } from 'react-i18next';
+import { useCurrency } from '../../Context/CurrencyContext';
 
 interface FinancialSectionProps {
     currentBalance: number;
@@ -13,13 +15,14 @@ interface FinancialSectionProps {
 }
 
 export function FinancialSection({ currentBalance, setCurrentBalance, regularTransactions, setRegularTransactions, saveFinancial }: FinancialSectionProps) {
-    const [rtDesc, setRtDesc]           = useState('');
-    const [rtAmount, setRtAmount]       = useState('');
-    const [rtIsIncome, setRtIsIncome]   = useState(true);
-    const [rtCategory, setRtCategory]   = useState(CATEGORIES[0]);
+    const [rtDesc, setRtDesc] = useState('');
+    const [rtAmount, setRtAmount] = useState('');
+    const [rtIsIncome, setRtIsIncome] = useState(true);
+    const [rtCategory, setRtCategory] = useState(CATEGORIES[0]);
     const [rtFrequency, setRtFrequency] = useState<RegularTransaction['frequency']>('monthly');
-    const [rtDate, setRtDate]           = useState(new Date().toISOString().split('T')[0]);
-
+    const [rtDate, setRtDate] = useState(new Date().toISOString().split('T')[0]);
+    const { t } = useTranslation();
+    const { currencySymbol } = useCurrency();
     const addRegularTransaction = () => {
         if (!rtDesc.trim() || !rtAmount) return toast.error('Fill in description and amount');
         setRegularTransactions(prev => [...prev, {
@@ -41,14 +44,14 @@ export function FinancialSection({ currentBalance, setCurrentBalance, regularTra
                 <div className="card-icon" style={{ backgroundColor: '#10B981' }}>
                     <DollarSign size={20} color="white" />
                 </div>
-                <h2>Financial Setup</h2>
+                <h2>{t('settings.financial.title')}</h2>
             </div>
 
             <div className="financial-section">
-                <h3 className="section-subtitle">Current Balance</h3>
-                <p className="section-hint">Your real account balance right now — used as the baseline for projections.</p>
+                <h3 className="section-subtitle">{t('settings.financial.balance_Title')}</h3>
+                <p className="section-hint">{t('settings.financial.balance_subTitle')}</p>
                 <div className="form-group">
-                    <label>Balance (€)</label>
+                    <label>{t('settings.financial.balance')} ({currencySymbol})</label>
                     <input className="form-control balance-input" type="number" value={currentBalance}
                         onChange={(e) => setCurrentBalance(Number(e.target.value))}
                         placeholder="0.00" step="0.01" />
@@ -58,35 +61,35 @@ export function FinancialSection({ currentBalance, setCurrentBalance, regularTra
             <div className="section-divider" />
 
             <div className="financial-section">
-                <h3 className="section-subtitle">Regular Transactions</h3>
-                <p className="section-hint">Salary, rent, subscriptions — anything that repeats automatically.</p>
+                <h3 className="section-subtitle">{t('settings.financial.transactions_Title')}</h3>
+                <p className="section-hint">{t('settings.financial.transactions_subTitle')}</p>
 
                 <div className="add-rt-form">
                     <input className="form-control" type="text" value={rtDesc}
-                        onChange={e => setRtDesc(e.target.value)} placeholder="Description (e.g. Salary)" />
+                        onChange={e => setRtDesc(e.target.value)} placeholder={t('settings.financial.description')} />
                     <input className="form-control" type="number" value={rtAmount}
-                        onChange={e => setRtAmount(e.target.value)} placeholder="Amount (€)" step="0.01" min="0" />
+                        onChange={e => setRtAmount(e.target.value)} placeholder={t('settings.financial.amount', { currencySymbol })} step="0.01" min="0" />
                     <input className="form-control" type="date" value={rtDate}
                         onChange={e => setRtDate(e.target.value)}
                         title="First occurrence — determines which day of the month/week/year this repeats" />
                     <div className="income-expense-toggle">
                         <button type="button" className={`toggle-btn ${rtIsIncome ? 'active-income' : ''}`} onClick={() => setRtIsIncome(true)}>
-                            + Income
+                            + {t('settings.financial.income')}
                         </button>
                         <button type="button" className={`toggle-btn ${!rtIsIncome ? 'active-expense' : ''}`} onClick={() => setRtIsIncome(false)}>
-                            − Expense
+                            − {t('settings.financial.expense')}
                         </button>
                     </div>
                     <select className="form-control" value={rtCategory} onChange={e => setRtCategory(e.target.value)}>
-                        {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                        {CATEGORIES.map(c => <option key={c} value={c}>{t(`categories.${c.toLowerCase()}`)}</option>)}
                     </select>
                     <select className="form-control" value={rtFrequency} onChange={e => setRtFrequency(e.target.value as RegularTransaction['frequency'])}>
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
+                        <option value="weekly">{t('dates.weekly')}</option>
+                        <option value="monthly">{t('dates.monthly')}</option>
+                        <option value="yearly">{t('dates.yearly')}</option>
                     </select>
                     <button type="button" className="add-btn" onClick={addRegularTransaction}>
-                        <Plus size={15} /> Add
+                        <Plus size={15} /> {t('settings.financial.add')}
                     </button>
                 </div>
 
@@ -110,7 +113,7 @@ export function FinancialSection({ currentBalance, setCurrentBalance, regularTra
             </div>
 
             <button className="save-button" style={{ marginTop: '8px' }} onClick={saveFinancial}>
-                <Save size={16} /> Save Financial Settings
+                <Save size={16} /> {t('settings.save')}
             </button>
         </div>
     );

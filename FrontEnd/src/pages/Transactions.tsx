@@ -10,6 +10,7 @@ import { Receipt, TrendingUp, Wallet, DollarSign } from 'lucide-react';
 import { useCurrency } from '../Context/CurrencyContext';
 import { useTransactions } from '../hooks/useTransactions';
 import { AiChatBot } from '../components/AiChatBot';
+import { useTranslation } from 'react-i18next';
 
 export default function Transactions() {
   const { formatCurrency } = useCurrency();
@@ -32,6 +33,7 @@ export default function Transactions() {
     handleDeleteExpense,
     periodLabel, displayedSpent, displayedIncome, netBalance,
   } = useTransactions();
+  const { t } = useTranslation();
 
 
   return (
@@ -42,36 +44,36 @@ export default function Transactions() {
         <div className="dashboard-container">
           <header className="dashboard-header">
             <div className="header-title">
-              <h2>Transactions</h2>
-              <p>View and manage all your transactions</p>
+              <h2>{t('header_transactions.title')}</h2>
+              <p>{t('header_transactions.subtitle')}</p>
             </div>
             <div className='header-user-section'>
-              <span className='welcome-text'>Welcome, <strong>{username}</strong>!</span>
-              <button onClick={handleLogout} className='logout-btn'>Logout</button>
+              <span className='welcome-text'>{t('header_transactions.welcome')}{username}!</span>
+              <button onClick={handleLogout} className='logout-btn'>{t('header_transactions.logout')}</button>
             </div>
           </header>
 
           <div className="summary-boxes-container">
             <SummaryCard
-              title="Transactions"
+              title={t('summaryBoxes.totalTransactions')}
               value={`${filteredExpenses.length}`}
               icon={Receipt}
               type="expense"
             />
             <SummaryCard
-              title={periodLabel ? `${periodLabel} Spent` : 'Total Spent'}
+              title={t('summaryBoxes.totalExpenses')}
               value={formatCurrency(displayedSpent)}
               icon={Wallet}
               type="balance"
             />
             <SummaryCard
-              title={periodLabel ? `${periodLabel} Income` : 'Total Income'}
+              title={t('summaryBoxes.totalIncome')}
               value={formatCurrency(displayedIncome)}
               icon={TrendingUp}
               type="income"
             />
             <SummaryCard
-              title={periodLabel ? `${periodLabel} Net Flow` : 'Total Net Flow'}
+              title={t('summaryBoxes.netBalance')}
               value={formatCurrency(netBalance)}
               icon={DollarSign}
               type={netBalance >= 0 ? 'income' : 'expense'}

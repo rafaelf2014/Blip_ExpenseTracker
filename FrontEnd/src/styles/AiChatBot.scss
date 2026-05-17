@@ -37,8 +37,6 @@
         position: absolute;
         bottom: 80px;
         right: 0;
-        width: 360px;
-        height: 550px;
         background-color: #0F172A;
         border-radius: 12px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -50,12 +48,39 @@
         transform: scale(0.9) translateY(20px);
         opacity: 0;
         pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
 
         &.open {
             transform: scale(1) translateY(0);
             opacity: 1;
             pointer-events: all;
+        }
+
+        .resizer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 24px;
+            height: 24px;
+            cursor: nwse-resize;
+            z-index: 100;
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 10px 10px 0 0;
+                border-color: rgba(255, 255, 255, 0.3) transparent transparent transparent;
+                transition: border-color 0.2s;
+            }
+
+            &:hover::before {
+                border-color: #00C9DB transparent transparent transparent;
+            }
         }
 
         .chat-header {

@@ -1,5 +1,5 @@
 {
-    "header_dashboard": {
+    "header_transactions": {
         "title": "Blip Expense Tracker",
         "subtitle": "Vê e gere todas as tuas transações",
         "welcome": "Bem-vindo, ",
@@ -53,27 +53,57 @@
         "week": "Esta Semana",
         "month": "Este Mês",
         "year": "Este Ano",
-        "all_categories": "Todas as Categorias",
+        "all_categories": " Todas as Categorias",
         "all_types": "Todos os Tipos",
         "min_amount": "Valor Mínimo",
-        "max_amount": "Valor Máximo"
+        "max_amount": "Valor Máximo",
+        "ammount_any": "Qualquer Valor"
     },
     "settings": {
         "title": "Definições",
         "subtitle": "Gere a tua conta e preferências",
-        "profile": "Perfil",
-        "username": "Nome de Utilizador",
-        "security": "Segurança",
-        "current_password": "Palavra-passe Atual",
-        "enter_current_password": "Introduza a sua palavra-passe atual",
-        "new_password": "Nova Palavra-passe",
-        "enter_new_password": "Introduza a sua nova palavra-passe",
-        "confirm_password": "Confirmar Nova Palavra-passe",
-        "language": "Idioma",
-        "currency": "Moeda",
-        "save": "Guardar Alterações",
-        "preferences": "Preferências",
-        "date_format": "Formato da Data"
+        "profile": {
+            "title": "Perfil",
+            "username": "Nome de Usuário",
+            "username_placeholder": "Introduza o seu nome de usuário",
+            "image": "Clique para alterar"
+        },
+        "security": {
+            "title": "Segurança",
+            "current_password": "Senha Atual",
+            "enter_current_password": "Introduza a sua senha atual",
+            "new_password": "Nova Senha",
+            "enter_new_password": "Introduza a sua nova senha",
+            "confirm_password": "Confirmar Nova Senha",
+            "enter_confirm_password": "Confirme a sua nova senha"
+        },
+        "preferences": {
+            "title": "Preferências",
+            "updated": "Preferências atualizadas!",
+            "currency": "Moeda",
+            "language": "Idioma",
+            "date_format": "Formato da Data"
+        },
+        "categoryBudget": {
+            "title": " Orçamentos por Categoria",
+            "description": "Defina limites de gastos mensais (ou semanais/anuais) por categoria.",
+            "add_budget": "Adicionar Orçamento",
+            "limit": "Limite"
+        },
+        "financial": {
+            "title": "Configurações Financeiras",
+            "balance_Title": "Saldo Atual",
+            "balance_subTitle": "Configure seu saldo inicial para um acompanhamento preciso",
+            "balance": "Saldo",
+            "transactions_Title": "Transações Regulares",
+            "transactions_subTitle": "Salário, aluguel, assinaturas — qualquer coisa que se repita automaticamente.",
+            "description": "Descrição (ex: Salário)",
+            "amount": "Valor",
+            "income": "Entrada",
+            "expense": "Despesa",
+            "add": "Adicionar"
+        },
+        "save": "Guardar Alterações"
     },
     "editExpenseModal": {
         "title": "Editar Transação",
@@ -86,7 +116,145 @@
         "select_category": "Selecionar Categoria",
         "select_type": "Selecionar Tipo"
     },
+    "addExpenseModal": {
+        "title": "Adicionar Transação",
+        "description": "Descrição",
+        "ammount": "Valor",
+        "category": "Categoria",
+        "date": "Data",
+        "type": "Tipo",
+        "price": "Preço",
+        "save": "Adicionar Transação",
+        "cancel": "Cancelar"
+    },
+    "aiExpenseBar": {
+        "placeholder": "Descreve a tua despesa (ex: 'Almoço no restaurante por 15 euros')",
+        "loading": "A processar a tua despesa...",
+        "error": "Ocorreu um erro ao processar a tua despesa. Por favor, tenta novamente.",
+        "quick_insert": "Inserção Rápida (Ignorar janela de confirmação)",
+        "button_send": "Enviar",
+        "linstening": "A ouvir...",
+        "error_saving": "Erro ao guardar a despesa.",
+        "error_processing": "Erro no processamento da IA.",
+        "error_voice": "O teu browser não suporta reconhecimento de voz."
+    },
+    "aiConfirmationModal": {
+        "title": "Confirmação de Despesa",
+        "description": "A IA processou a tua descrição e criou a seguinte despesa. Por favor, confirma os detalhes antes de guardar.",
+        "category": "Categoria",
+        "date": "Data",
+        "type": "Tipo",
+        "price": "Preço",
+        "save": "Confirmar e Guardar",
+        "select_category": "Selecionar Categoria",
+        "select_type": "Selecionar Tipo"
+    },
     "analytics": {
-        "topSpendingCategories": "Categorias com Mais Gastos"
+        "title": "Análise",
+        "subtitle": "Análises profundas sobre os teus dados financeiros",
+        "title_graphicPizza": "Categorias de Despesas",
+        "title_graphicLine": "Tendência de Renda vs Despesas",
+        "topSpendingCategories": "Categorias com mais gastos",
+        "summary_income": "Renda Mensal Média",
+        "summary_expenses": "Despesas Mensais Médias",
+        "summary_daily": "Gasto Diário Médio",
+        "summary_mostCategory": "Categoria mais gasta",
+        "no_data": "Sem dados disponíveis para o período selecionado."
+    },
+    "aiChat": {
+        "title": " AI Assistente",
+        "subTitle": "Sempre Online",
+        "thinking": "A pensar ...",
+        "listening": "A ouvir ...",
+        "ask_placeholder": "Pergunta-me sobre as tuas finanças...",
+        "reg_message": "Despesa registada com sucesso!",
+        "error_savemessage": "Ocorreu um erro ao tentar guardar a despesa.",
+        "error_saving": "Erro ao guardar a despesa.",
+        "first_message": "Olá! Sou o teu assistente financeiro IA. Posso ajudar-te a registar despesas rapidamente. Tenta dizer algo como: 'Paguei 40€ de eletricidade ontem'.",
+        "processing_message": "Analisei o teu pedido. Por favor, confirma os dados no ecrã.",
+        "error_processing": "Ocorreu um erro ao processar o teu pedido.",
+        "error_voice": "O teu browser não suporta reconhecimento de voz.",
+        "error_understanding": "Desculpa, não consegui entender a tua descrição. Podes tentar reformular?",
+        "voice_start": "A ouvir... Podes falar!",
+        "error_microphone": "Acesso ao microfone bloqueado pelo browser!",
+        "error_voice_generic": "Ocorreu um erro de voz. ",
+        "error_existing_recording": "Já existe uma gravação em curso."
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "subtitle": "Bem-vindo de volta, {{username}}! Aqui está a sua visão geral financeira.",
+        "summary_balance": "Saldo Total",
+        "summary_income": "Renda Mensal",
+        "summary_expenses": "Despesas Mensais",
+        "quick_stats": "Estatísticas Rápidas",
+        "quick_stats_income": "Renda Diária Média",
+        "quick_stats_expenses": "Despesa Mais Elevada",
+        "quick_stats_budget": "Utilização do Orçamento",
+        "recent_transactions": "Transações Recentes",
+        "no_recent_transactions": "Nenhuma transação recente para exibir.",
+        "weekly_expenses": "Despesas Semanais",
+        "monthly_expenses": "Despesas Mensais",
+        "yearly_expenses": "Despesas Anuais",
+        "spent": "Gasto"
+    },
+    "summaryBox": {
+        "last_month": "vs Mês Passado"
+    },
+    "dates": {
+        "months": {
+            "january": "Janeiro",
+            "february": "Fevereiro",
+            "march": "Março",
+            "april": "Abril",
+            "may": "Maio",
+            "june": "Junho",
+            "july": "Julho",
+            "august": "Agosto",
+            "september": "Setembro",
+            "october": "Outubro",
+            "november": "Novembro",
+            "december": "Dezembro"
+        },
+        "short_months": {
+            "january": "Jan",
+            "february": "Fev",
+            "march": "Mar",
+            "april": "Abr",
+            "may": "Mai",
+            "june": "Jun",
+            "july": "Jul",
+            "august": "Ago",
+            "september": "Set",
+            "october": "Out",
+            "november": "Nov",
+            "december": "Dez"
+        },
+        "weekdays": {
+            "sunday": "Domingo",
+            "monday": "Segunda-feira",
+            "tuesday": "Terça-feira",
+            "wednesday": "Quarta-feira",
+            "thursday": "Quinta-feira",
+            "friday": "Sexta-feira",
+            "saturday": "Sábado"
+        },
+        "short_weekdays": {
+            "sunday": "Dom",
+            "monday": "Seg",
+            "tuesday": "Ter",
+            "wednesday": "Qua",
+            "thursday": "Qui",
+            "friday": "Sex",
+            "saturday": "Sáb"
+        },
+        "week": "Semana",
+        "month": "Mês",
+        "year": "Ano",
+        "monthly": "Mensal",
+        "weekly": "Semanal",
+        "yearly": "Anual",
+        "last_7_days": "Últimos 7 dias",
+        "this_month": "Este mês",
+        "this_year": "Este ano"
     }
 }

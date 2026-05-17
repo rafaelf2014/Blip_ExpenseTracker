@@ -6,6 +6,7 @@ import { ConfirmAiModal } from './ConfirmAiModal';
 import { API_BASE } from '../constants/api';
 import type { NewExpense } from '../types';
 import '../styles/AiChatBot.scss';
+import { useTranslation } from 'react-i18next';
 
 type AiChatBotProps = {
     userId: string;
@@ -23,12 +24,50 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
     const [isAiLoading, setIsAiLoading] = useState(false);
     const [isListening, setIsListening] = useState(false);
     const [pendingAiExpense, setPendingAiExpense] = useState<NewExpense | null>(null);
+    const { t } = useTranslation();
+
+    const [dimensions, setDimensions] = useState({ width: 450, height: 550 });
+    const isResizing = useRef(false);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        e.preventDefault();
+        isResizing.current = true;
+
+        const startX = e.clientX;
+        const startY = e.clientY;
+        const startWidth = dimensions.width;
+        const startHeight = dimensions.height;
+
+        const onMouseMove = (moveEvent: MouseEvent) => {
+            if (!isResizing.current) return;
+
+            const deltaX = startX - moveEvent.clientX;
+            const deltaY = startY - moveEvent.clientY;
+
+            const maxHeight = window.innerHeight - 100;
+            const maxWidth = window.innerWidth - 60;
+
+            setDimensions({
+                width: Math.min(Math.max(350, startWidth + deltaX), maxWidth),
+                height: Math.min(Math.max(400, startHeight + deltaY), maxHeight)
+            });
+        };
+
+        const onMouseUp = () => {
+            isResizing.current = false;
+            document.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseup', onMouseUp);
+        };
+
+        document.addEventListener('mousemove', onMouseMove);
+        document.addEventListener('mouseup', onMouseUp);
+    };
 
     // Estado para as mensagens do chat
     const [messages, setMessages] = useState<Message[]>([
         {
             id: 1,
-            text: "Olá! Sou o teu assistente financeiro IA. Posso ajudar-te a registar despesas rapidamente. Tenta dizer algo como: 'Paguei 40€ de eletricidade ontem'.",
+            text: t('aiChat.first_message'),
             sender: 'bot'
         }
     ]);
@@ -55,10 +94,10 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
         if (response.ok) {
             setPendingAiExpense(null);
             onExpenseAdded();
-            addMessage("Despesa registada com sucesso! 🚀", "bot");
+            addMessage(t('aiChat.reg_message'), "bot");
         } else {
-            toast.error('Erro ao guardar a despesa.');
-            addMessage("Ocorreu um erro ao tentar guardar a despesa.", "bot");
+            toast.error(t('aiChat.error_saving'));
+            addMessage(t('aiChat.error_savemessage'), "bot");
         }
     };
 
@@ -83,12 +122,12 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
                 // ADIÇÃO: O fluxo normal que já tinhas
                 const expenseData = await extractExpenseFromText(textToProcess, categories, expenseTypes);
                 setPendingAiExpense(expenseData);
-                addMessage("Analisei o teu pedido. Por favor, confirma os dados no ecrã.", "bot");
+                addMessage(t('aiChat.processing_message'), "bot");
             }
 
         } catch (error) {
-            console.error("Erro no processamento da IA:", error);
-            addMessage("Desculpa, não consegui entender o teu pedido. Podes tentar de novo?", "bot");
+            console.error(t('aiChat.error_processing'), error);
+            addMessage(t('aiChat.error_understanding'), "bot");
         } finally {
             setIsAiLoading(false);
         }
@@ -99,7 +138,7 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
 
         if (!SpeechRecognition) {
-            toast.error("O teu browser não suporta voz. Usa o Google Chrome!");
+            toast.error(t('aiChat.error_voice'));
             return;
         }
 
@@ -109,7 +148,7 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
 
         recognition.onstart = () => {
             setIsListening(true);
-            toast.success("A ouvir... Podes falar!");
+            toast.success(t('aiChat.voice_start'));
         };
 
         recognition.onresult = (event: any) => {
@@ -120,11 +159,11 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
         // Agora vais saber exatamente porque é que falha!
         recognition.onerror = (event: any) => {
             setIsListening(false);
-            console.error("Erro no microfone:", event.error);
+            console.error(t('aiChat.error_voice_generic'), event.error);
             if (event.error === 'not-allowed') {
-                toast.error("Acesso ao microfone bloqueado pelo browser!");
+                toast.error(t('aiChat.error_microphone'));
             } else {
-                toast.error(`Erro de voz: ${event.error}`);
+                toast.error(t('aiChat.error_voice_generic') + event.error);
             }
         };
 
@@ -133,21 +172,22 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
         try {
             recognition.start();
         } catch (e) {
-            toast.error("Já existe uma gravação em curso.");
+            toast.error(t('aiChat.error_existing_recording'));
         }
     };
 
     return (
         <div className="ai-fab-container">
             {/* ... O Resto do teu HTML mantém-se exatamente igual à resposta anterior! ... */}
-            <div className={`ai-chat-window ${isOpen ? 'open' : ''}`}>
-
+            <div className={`ai-chat-window ${isOpen ? 'open' : ''}`}
+                style={{ width: `${dimensions.width}px`, height: `${dimensions.height}px` }}>
+                <div className="resizer" onMouseDown={handleMouseDown}></div>
                 <div className="chat-header">
                     <div className="header-info">
                         <div className="bot-avatar"><Bot size={22} color="#00C9DB" /></div>
                         <div className="header-titles">
-                            <h3>AI Assistant ✨</h3>
-                            <p>Always online</p>
+                            <h3>{t('aiChat.title')} ✨</h3>
+                            <p>{t('aiChat.subTitle')}</p>
                         </div>
                     </div>
                     <button onClick={() => setIsOpen(false)} className="close-btn"><X size={20} /></button>
@@ -163,7 +203,7 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
                     {isAiLoading && (
                         <div className="message-row bot">
                             <div className="msg-avatar"><Bot size={16} /></div>
-                            <div className="message-bubble loading"><Loader2 className="spin" size={16} /> A pensar...</div>
+                            <div className="message-bubble loading"><Loader2 className="spin" size={16} /> {t('aiChat.thinking')}</div>
                         </div>
                     )}
                     <div ref={messagesEndRef} />
@@ -173,7 +213,7 @@ export function AiChatBot({ userId, categories, expenseTypes, expenses, onExpens
                     <input
                         type="text" value={inputValue} onChange={(e) => setInputValue(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && handleSendMessage(inputValue)}
-                        placeholder={isListening ? "A ouvir..." : "Ask about your expenses..."} disabled={isAiLoading}
+                        placeholder={isListening ? t('aiChat.listening') : t('aiChat.ask_placeholder')} disabled={isAiLoading}
                     />
                     <button onClick={handleVoiceInput} disabled={isAiLoading || isListening} className={`action-btn mic ${isListening ? 'listening' : ''}`}>
                         <Mic size={18} />

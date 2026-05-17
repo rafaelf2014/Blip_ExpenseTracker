@@ -7,11 +7,11 @@ import { useTranslation } from 'react-i18next';
 export function PreferencesSection() {
     const { currency, setCurrency } = useCurrency();
     const { dateFormat, setDateFormat } = useDate();
-    const { i18n } = useTranslation();
+    const { i18n, t } = useTranslation();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        toast.success('Preferences updated!');
+        toast.success(t('settings.preferences.updated'));
     };
 
     return (
@@ -20,12 +20,12 @@ export function PreferencesSection() {
                 <div className="card-icon" style={{ backgroundColor: '#8B5CF6' }}>
                     <Palette size={20} color="white" />
                 </div>
-                <h2>Preferences</h2>
+                <h2>{t('settings.preferences.title')}</h2>
             </div>
             <form className="settings-form" onSubmit={handleSubmit}>
                 <div className="prefs-grid">
                     <div className="form-group">
-                        <label>Currency</label>
+                        <label>{t('settings.preferences.currency')}</label>
                         <select className="form-control" value={currency} onChange={(e) => setCurrency(e.target.value)}>
                             <option value="EUR">EUR (€)</option>
                             <option value="USD">USD ($)</option>
@@ -34,7 +34,7 @@ export function PreferencesSection() {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Language</label>
+                        <label>{t('settings.preferences.language')}</label>
                         <select className="form-control" value={i18n.language}
                             onChange={(e) => { i18n.changeLanguage(e.target.value); localStorage.setItem('app_language', e.target.value); }}>
                             <option value="en">English</option>
@@ -42,7 +42,7 @@ export function PreferencesSection() {
                         </select>
                     </div>
                     <div className="form-group">
-                        <label>Date Format</label>
+                        <label>{t('settings.preferences.date_format')}</label>
                         <select className="form-control" value={dateFormat} onChange={(e) => setDateFormat(e.target.value)}>
                             <option value="DD/MM/YYYY">DD/MM/YYYY</option>
                             <option value="MM/DD/YYYY">MM/DD/YYYY</option>
@@ -51,7 +51,7 @@ export function PreferencesSection() {
                     </div>
                 </div>
                 <button type="submit" className="save-button">
-                    <Save size={16} /> Save Preferences
+                    <Save size={16} /> {t('settings.save')}
                 </button>
             </form>
         </div>

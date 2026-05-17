@@ -1,5 +1,5 @@
 {
-    "header_dashboard": {
+    "header_transactions": {
         "title": "Blip Expense Tracker",
         "subtitle": "View and manage all your transactions",
         "welcome": "Welcome, ",
@@ -61,19 +61,48 @@
     "settings": {
         "title": "Settings",
         "subtitle": "Manage your account and preferences",
-        "profile": "Profile",
-        "username": "Username",
-        "security": "Security",
-        "current_password": "Current Password",
-        "enter_current_password": "Enter your current password",
-        "new_password": "New Password",
-        "enter_new_password": "Enter your new password",
-        "confirm_password": "Confirm New Password",
-        "language": "Language",
-        "currency": "Currency",
-        "save": "Save Changes",
-        "preferences": "Preferences",
-        "date_format": "Date Format"
+        "profile": {
+            "title": "Profile",
+            "username": "Username",
+            "username_placeholder": "Enter your username",
+            "image": "Click to change"
+        },
+        "security": {
+            "title": "Security",
+            "current_password": "Current Password",
+            "enter_current_password": "Enter your current password",
+            "new_password": "New Password",
+            "enter_new_password": "Enter your new password",
+            "confirm_password": "Confirm New Password",
+            "enter_confirm_password": "Confirm your new password"
+        },
+        "preferences": {
+            "title": "Preferences",
+            "updated": "Preferences updated!",
+            "currency": "Currency",
+            "language": "Language",
+            "date_format": "Date Format"
+        },
+        "categoryBudget": {
+            "title": "Category Budgets",
+            "description": "Set monthly (or weekly/yearly) spending caps per category.",
+            "add_budget": "Add  Budget",
+            "limit": "Limit"
+        },
+        "financial":{
+            "title": "Financial Setup",
+            "balance_Title":"Current Balance",
+            "balance_subTitle":"Your real account balance right now — used as the baseline for projections.",
+            "balance":"balance",
+            "transactions_Title":"Regular Transactions",
+            "transactions_subTitle":"Salary, rent, subscriptions — anything that repeats automatically.",
+            "description":"Description (e.g. Salary )",
+            "amount":"Amount",
+            "income":"Income",
+            "expense":"Expense",
+            "add":"Add"
+        },
+        "save": "Save Changes"
     },
     "editExpenseModal": {
         "title": "Edit Transaction",
@@ -86,7 +115,145 @@
         "select_category": "Select Category",
         "select_type": "Select Type"
     },
+    "addExpenseModal": {
+        "title": "Add Transaction",
+        "description": "Description",
+        "ammount": "Amount",
+        "category": "Category",
+        "date": "Date",
+        "type": "Type",
+        "price": "Price",
+        "save": "Add Transaction",
+        "cancel": "Cancel"
+    },
+    "aiExpenseBar": {
+        "placeholder": "Describe your expense (e.g., 'Lunch at restaurant for 15 euros')",
+        "loading": "Processing your expense...",
+        "error": "An error occurred while processing your expense. Please try again.",
+        "quick_insert": "Quick Insert (Skip Confirmation Dialog)",
+        "button_send": "Send",
+        "listening": "Listening...",
+        "error_saving": "Error saving the expense.",
+        "error_processing": "Error processing the AI request.",
+        "error_voice": "Your browser does not support voice recognition."
+    },
+    "aiConfirmationModal": {
+        "title": "Expense Confirmation",
+        "description": "The AI has processed your description and created the following expense. Please confirm the details before saving.",
+        "category": "Category",
+        "date": "Date",
+        "type": "Type",
+        "price": "Price",
+        "save": "Confirm and Save",
+        "select_category": "Select Category",
+        "select_type": "Select Type"
+    },
     "analytics": {
-        "topSpendingCategories": "Top Spending Categories"
+        "title": "Analytics",
+        "subtitle": "Deep insights into your financial data",
+        "title_graphicPizza": "Expenses Categories",
+        "title_graphicLine": "Income vs Expenses Trend",
+        "topSpendingCategories": "Top Spending Categories",
+        "summary_income": "Avg Monthly Income",
+        "summary_expenses": "Avg Monthly Expenses",
+        "summary_daily": "Avg Daily Spend",
+        "summary_mostCategory": "Most Spent Category",
+        "no_data": "No data available for the selected period."
+    },
+    "aiChat": {
+        "title": " AI Assistant",
+        "subTitle": "Always Online",
+        "thinking": "Thinking...",
+        "listening": "Listening...",
+        "ask_placeholder": "Ask me about your finances...",
+        "reg_message": "Expense added successfully!",
+        "error_savemessage": "An error occurred while trying to save the expense.",
+        "error_saving": "Error saving the expense.",
+        "first_message": "Hello! I'm your AI financial assistant. I can help you quickly record expenses. Try saying something like: 'I paid 40€ for electricity yesterday.'",
+        "processing_message": "Processing your request. Please confirm the details on the screen.",
+        "error_processing": "An error occurred while processing your request.",
+        "error_voice": "Your browser does not support voice recognition.",
+        "error_understanding": "Sorry, I couldn't understand your description. You can try rephrasing?",
+        "voice_start": "Listening... You can speak now!",
+        "error_microphone": "Access to the microphone is blocked by the browser!",
+        "error_voice_generic": "An voice error occurred. ",
+        "error_existing_recording": "A recording is already in progress."
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "subtitle": "Welcome back, {{username}}! Here's your financial overview.",
+        "summary_balance": "Total Balance",
+        "summary_income": "Monthly Income",
+        "summary_expenses": "Monthly Expenses",
+        "quick_stats": "Quick Stats",
+        "quick_stats_income": "Avg Daily Income",
+        "quick_stats_expenses": "Largest Expense",
+        "quick_stats_budget": "Budget Utilization",
+        "recent_transactions": "Recent Transactions",
+        "no_recent_transactions": "No recent transactions to display.",
+        "weekly_expenses": "Weekly Expenses",
+        "monthly_expenses": "Monthly Expenses",
+        "yearly_expenses": "Yearly Expenses",
+        "spent": "Spent"
+    },
+    "summaryBox": {
+        "last_month": "vs Last Month"
+    },
+    "dates": {
+        "months": {
+            "january": "January",
+            "february": "February",
+            "march": "March",
+            "april": "April",
+            "may": "May",
+            "june": "June",
+            "july": "July",
+            "august": "August",
+            "september": "September",
+            "october": "October",
+            "november": "November",
+            "december": "December"
+        },
+        "short_months": {
+            "january": "Jan",
+            "february": "Feb",
+            "march": "Mar",
+            "april": "Apr",
+            "may": "May",
+            "june": "Jun",
+            "july": "Jul",
+            "august": "Aug",
+            "september": "Sep",
+            "october": "Oct",
+            "november": "Nov",
+            "december": "Dec"
+        },
+        "weekdays": {
+            "sunday": "Sunday",
+            "monday": "Monday",
+            "tuesday": "Tuesday",
+            "wednesday": "Wednesday",
+            "thursday": "Thursday",
+            "friday": "Friday",
+            "saturday": "Saturday"
+        },
+        "short_weekdays": {
+            "sunday": "Sun",
+            "monday": "Mon",
+            "tuesday": "Tue",
+            "wednesday": "Wed",
+            "thursday": "Thu",
+            "friday": "Fri",
+            "saturday": "Sat"
+        },
+        "week": "Week",
+        "month": "Month",
+        "year": "Year",
+        "monthly": "Monthly",
+        "weekly": "Weekly",
+        "yearly": "Yearly",
+        "last_7_days": "Last 7 days",
+        "this_month": "This month",
+        "this_year": "This year"
     }
 }

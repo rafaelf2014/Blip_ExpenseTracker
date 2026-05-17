@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import { useCurrency } from '../Context/CurrencyContext';
 import { ModalBase } from './ModalBase';
 import { API_BASE } from '../constants/api';
+import { useTranslation } from 'react-i18next';
 
 type ExpenseModalProps = {
   userId: string;
@@ -17,15 +18,16 @@ type ExpenseModalProps = {
 
 export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpenseAdded }: ExpenseModalProps) {
   const [description, setDescription] = useState('');
-  const [amount, setAmount]           = useState('');
-  const [category, setCategory]       = useState(categories.length > 0 ? categories[0] : '');
-  const [type, setType]               = useState(expenseTypes.length > 0 ? expenseTypes[0] : '');
+  const [amount, setAmount] = useState('');
+  const [category, setCategory] = useState(categories.length > 0 ? categories[0] : '');
+  const [type, setType] = useState(expenseTypes.length > 0 ? expenseTypes[0] : '');
   const [date, setDate] = useState(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   });
 
   const { currencySymbol } = useCurrency();
+  const { t } = useTranslation();
 
   const handleAddExpense = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -46,40 +48,40 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
 
   return (
     <ModalBase>
-      <h3 className='modal-title'>Add New Expense</h3>
+      <h3 className='modal-title'>{t('addExpenseModal.title')}</h3>
 
       <form className="settings-form" onSubmit={handleAddExpense}>
         <div className='form-group'>
-          <label>Description</label>
-          <input className='form-control' type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+          <label>{t('addExpenseModal.description')}</label>
+          <input className='form-control' type="text" placeholder={t('addExpenseModal.description')} value={description} onChange={(e) => setDescription(e.target.value)} required />
         </div>
         <div className='form-row'>
           <div className='form-group'>
-            <label>Amount ({currencySymbol})</label>
-            <input className='form-control' type="number" placeholder="Amount" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} required />
+            <label>{t('addExpenseModal.ammount')} ({currencySymbol})</label>
+            <input className='form-control' type="number" placeholder={t('addExpenseModal.ammount')} step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} required />
           </div>
           <div className='form-group'>
-            <label>Date</label>
+            <label>{t('addExpenseModal.date')}</label>
             <input className='form-control' type="date" value={date} onChange={(e) => setDate(e.target.value)} required />
           </div>
         </div>
         <div className='form-row'>
           <div className='form-group'>
-            <label>Category</label>
+            <label>{t('addExpenseModal.category')}</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)} required>
-              {categories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+              {categories.map((cat) => <option key={cat} value={cat}>{t(`categories.${cat.toLowerCase()}`)}</option>)}
             </select>
           </div>
           <div className='form-group'>
-            <label>Type</label>
+            <label>{t('addExpenseModal.type')}</label>
             <select value={type} onChange={(e) => setType(e.target.value)} required>
-              {expenseTypes.map((t) => <option key={t} value={t}>{t}</option>)}
+              {expenseTypes.map((ty) => <option key={ty} value={ty}>{t(`types.${ty.toLowerCase()}`)}</option>)}
             </select>
           </div>
         </div>
         <div className='modal-actions'>
-          <button type="button" onClick={onClose} className='save-button btn-cancel'>Cancel</button>
-          <button type="submit" className='save-button btn-save'>Save Expense</button>
+          <button type="button" onClick={onClose} className='save-button btn-cancel'>{t('addExpenseModal.cancel')}</button>
+          <button type="submit" className='save-button btn-save'>{t('addExpenseModal.save')}</button>
         </div>
       </form>
     </ModalBase>

@@ -6,6 +6,7 @@ import { ConfirmAiModal } from './ConfirmAiModal';
 import type { NewExpense } from '../types';
 import '../styles/AiBar.scss';
 import { API_BASE } from '../constants/api';
+import { useTranslation } from 'react-i18next';
 
 type AiExpenseBarProps = {
   userId: string;
@@ -20,6 +21,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
   const [isListening, setIsListening] = useState(false);
   const [quickInsert, setQuickInsert] = useState(false);
   const [pendingAiExpense, setPendingAiExpense] = useState<NewExpense | null>(null);
+  const { t } = useTranslation();
 
   const saveAiExpense = async (expenseData: NewExpense) => {
     const finalExpense = { ...expenseData, userId: userId };
@@ -34,7 +36,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
       setPendingAiExpense(null);
       onExpenseAdded();
     } else {
-      toast.error('Erro ao guardar a despesa.');
+      toast.error(t('aiExpenseBar.error_saving'));
     }
   };
 
@@ -52,8 +54,8 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
         setPendingAiExpense(expenseData);
       }
     } catch (error) {
-      console.error("Erro no processamento da IA:", error);
-      toast.error('Não foi possível processar a despesa. Tenta novamente.');
+      console.error(t('aiExpenseBar.error_processing'), error);
+      toast.error(t('aiExpenseBar.error'));
     } finally {
       setIsAiLoading(false);
     }
@@ -61,7 +63,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
 
   const handleVoiceInput = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) { toast.error("O teu browser não suporta reconhecimento de voz."); return; }
+    if (!SpeechRecognition) { toast.error(t('aiExpenseBar.error_voice')); return; }
 
     const recognition = new SpeechRecognition();
     recognition.lang = 'pt-PT';
@@ -69,12 +71,12 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
 
     recognition.onstart = () => {
       setIsListening(true);
-      setAiInput(''); 
+      setAiInput('');
     };
 
     recognition.onresult = (event: any) => {
       const transcript = event.results[0][0].transcript;
-      setAiInput(transcript); 
+      setAiInput(transcript);
       handleAIAssistant(transcript); // O Auto-envio por voz acontece aqui!
     };
 
@@ -87,7 +89,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
   return (
     <div className="ai-bar-container">
       <div className="ai-input-group">
-        <button 
+        <button
           onClick={handleVoiceInput}
           disabled={isAiLoading || isListening}
           className={`mic-btn ${isListening ? 'listening' : ''}`}
@@ -96,28 +98,28 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
           <Mic size={24} />
         </button>
 
-        <input 
-          type="text" 
+        <input
+          type="text"
           value={aiInput}
           onChange={(e) => setAiInput(e.target.value)}
-          placeholder={isListening ? "A ouvir..." : "Ex: Paguei 40€ de eletricidade ontem..."}
+          placeholder={isListening ? t('aiExpenseBar.listening') : t('aiExpenseBar.placeholder')}
           disabled={isAiLoading}
           className="ai-input"
         />
-        
-        <button 
+
+        <button
           onClick={() => handleAIAssistant()}
           disabled={isAiLoading || !aiInput.trim()}
           className="send-btn"
         >
-          {isAiLoading ? <Loader2 className="spin-anim" size={24} /> : 'Enviar'}
+          {isAiLoading ? <Loader2 className="spin-anim" size={24} /> : t('aiExpenseBar.button_send')}
         </button>
       </div>
-      
+
       <div className="ai-controls">
         <label className="quick-insert-label">
           <input type="checkbox" checked={quickInsert} onChange={(e) => setQuickInsert(e.target.checked)} />
-          Quick Insert (Ignorar janela de confirmação)
+          {t('aiExpenseBar.quick_insert')}
         </label>
       </div>
 

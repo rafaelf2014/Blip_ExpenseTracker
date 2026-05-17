@@ -6,7 +6,7 @@ import { SecuritySection } from '../components/settings/SecuritySection';
 import { FinancialSection } from '../components/settings/FinancialSection';
 import { BudgetsSection } from '../components/settings/BudgetsSection';
 import { PreferencesSection } from '../components/settings/PreferencesSection';
-
+import { useTranslation } from 'react-i18next';
 export default function Settings() {
     const {
         username, setUsername,
@@ -17,14 +17,15 @@ export default function Settings() {
         budgets, setBudgets,
         saveProfile, savePassword, saveFinancial, saveBudgets,
     } = useSettings();
+    const { t } = useTranslation();
 
     return (
         <div className="settings-layout">
             <Sidebar />
             <main className="settings-page">
                 <div className="settings-header">
-                    <h1>Settings</h1>
-                    <p>Manage your account and preferences</p>
+                    <h1>{t('settings.title')}</h1>
+                    <p>{t('settings.subtitle')}</p>
                 </div>
                 <div className="settings-grid">
                     <div className="settings-row-two">
