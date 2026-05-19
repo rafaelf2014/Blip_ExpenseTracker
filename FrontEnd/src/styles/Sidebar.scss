@@ -11,6 +11,21 @@
     position: sticky;
     top: 0;
     margin: 0;
+    transition: width 0.3s ease;
+
+    @media (max-width: 768px) {
+        width: 100% !important;
+        height: 70px;
+        flex-direction: row;
+        position: fixed;
+        bottom: 0;
+        top: auto;
+        border-right: none;
+        border-top: 1px solid #1E293B;
+        padding: 0;
+        z-index: 1000;
+
+    }
 
     .sidebar-logo {
         width: 68px;
@@ -22,6 +37,11 @@
         justify-content: center;
         margin-bottom: 2rem;
         box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+        transition: all 0.3s ease;
+
+        @media (max-width: 768px) {
+            display: none;
+        }
     }
 
     .sidebar-nav {
@@ -31,6 +51,13 @@
         gap: 2rem;
         flex: 1;
         width: 100%;
+
+        @media (max-width: 768px) {
+            flex-direction: row;
+            justify-content: space-evenly;
+            gap: 0;
+            padding: 0 1rem;
+        }
 
         .nav-item {
             width: 56px;
@@ -44,6 +71,11 @@
             position: relative;
             text-decoration: none;
 
+            @media (max-width: 768px) {
+                width: 48px;
+                height: 48px;
+            }
+
             &:hover {
                 background-color: #1E293B;
                 color: white;
@@ -51,6 +83,10 @@
                 .tooltip {
                     opacity: 1;
                     transform: translateX(0);
+
+                    @media (max-width: 768px) {
+                        display: none;
+                    }
                 }
             }
 
@@ -59,6 +95,16 @@
                 color: white;
                 box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
             }
+        }
+    }
+
+    &.collapsed {
+        width: 48px;
+
+        .sidebar-logo {
+            width: 36px;
+            height: 28px;
+            border-radius: 8px;
         }
     }
 }

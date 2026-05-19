@@ -5,6 +5,10 @@
     background-color: #0B1221;
     color: white;
 
+    @media (max-width: 768px) {
+        flex-direction: column;
+    }
+
     .dashboard-content-wrapper {
         flex: 1;
         min-width: 0; // prevents flex child from overflowing
@@ -19,6 +23,11 @@
         padding: 32px 40px;
         display: flex;
         flex-direction: column;
+
+        @media (max-width: 768px) {
+            padding: 24px 16px;
+            padding-bottom: 20px;
+        }
     }
 
     .dashboard-header {
@@ -27,12 +36,22 @@
         align-items: flex-start;
         margin-bottom: 28px;
 
+        @media (max-width: 768px) {
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
         .header-title {
             h2 {
                 margin: 0;
                 font-size: 26px;
                 font-weight: 700;
                 letter-spacing: -0.3px;
+
+                @media (max-width: 768px) {
+                    font-size: 22px;
+                }
             }
 
             p {
@@ -47,6 +66,11 @@
             align-items: center;
             gap: 15px;
 
+            @media (max-width: 768px) {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             .welcome-text {
                 color: #64748B;
                 font-size: 14px;
@@ -54,6 +78,7 @@
                 strong {
                     color: white;
                 }
+
             }
 
             .logout-btn {
@@ -78,5 +103,9 @@
         display: flex;
         flex-direction: column;
         gap: 20px;
+
+        @media (max-width: 768px) {
+            gap: 16px;
+        }
     }
 }

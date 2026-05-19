@@ -190,7 +190,7 @@ export default function Dashboard() {
                     </div>
                     <div className="item-price">
                       <strong className="neg">-{formatCurrency(Number(exp.amount))}</strong>
-                      <span>{formatDate(exp.date )}</span>
+                      <span>{formatDate(exp.date)}</span>
                     </div>
                   </div>
                 ))}

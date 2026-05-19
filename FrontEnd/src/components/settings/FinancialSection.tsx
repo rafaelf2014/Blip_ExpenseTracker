@@ -1,4 +1,4 @@
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { DollarSign, Save, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { RegularTransaction } from '../../types';
