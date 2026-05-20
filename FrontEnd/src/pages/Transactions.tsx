@@ -31,18 +31,18 @@ export default function Transactions() {
     handleLogout,
     handleUpdateExpense,
     handleDeleteExpense,
-    periodLabel, displayedSpent, displayedIncome, netBalance,
+    displayedSpent, displayedIncome, netBalance,
   } = useTransactions();
   const { t } = useTranslation();
 
 
   return (
-    <div className="dashboard-layout">
+    <div className="transactions-layout">
       <Sidebar />
       <AiChatBot userId={userId} categories={categories} expenseTypes={expenseTypes} expenses={expenses} onExpenseAdded={() => fetchExpenses(userId)} />
-      <div className="dashboard-content-wrapper">
-        <div className="dashboard-container">
-          <header className="dashboard-header">
+      <div className="transactions-content-wrapper">
+        <div className="transactions-container">
+          <header className="transactions-header">
             <div className="header-title">
               <h2>{t('header_transactions.title')}</h2>
               <p>{t('header_transactions.subtitle')}</p>
@@ -80,7 +80,7 @@ export default function Transactions() {
             />
           </div>
 
-          <main className='dashboard-main'>
+          <main className='transactions-main'>
             <AiExpenseBar
               userId={userId}
               categories={categories}

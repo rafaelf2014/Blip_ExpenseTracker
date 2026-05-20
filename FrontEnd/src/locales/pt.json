@@ -182,7 +182,7 @@
     },
     "dashboard": {
         "title": "Dashboard",
-        "subtitle": "Bem-vindo de volta, {{username}}! Aqui está a sua visão geral financeira.",
+        "subtitle": "Bem-vindo de volta, {{username}}! Aqui está a tua visão geral financeira.",
         "summary_balance": "Saldo Total",
         "summary_income": "Renda Mensal",
         "summary_expenses": "Despesas Mensais",
