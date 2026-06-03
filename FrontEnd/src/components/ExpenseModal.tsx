@@ -10,7 +10,6 @@ type ExpenseModalProps = {
   userId: string;
   categories: string[];
   expenseTypes: string[];
-  expenses: any[];
   onClose: () => void;
   onExpenseAdded: () => void;
 };
@@ -37,6 +36,7 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
 
     if (response.ok) {
       toast.success('Expense added successfully!');
+      window.dispatchEvent(new Event('blip:expense-added'));
       onExpenseAdded();
       onClose();
     } else {

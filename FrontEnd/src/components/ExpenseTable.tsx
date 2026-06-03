@@ -7,13 +7,14 @@ import { getCategoryIcon } from '../utils/iconMapping';
 
 type ExpenseTableProps = {
   expenses: Expense[];
+  totalCount: number;
   onEditClick: (expense: Expense) => void;
 };
 
 type SortColumn = 'amount' | 'category' | 'description' | 'date' | 'type' | null;
 type SortDirection = 'asc' | 'desc';
 
-export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
+export function ExpenseTable({ expenses, totalCount, onEditClick }: ExpenseTableProps) {
   const [sortColumn, setSortColumn] = useState<SortColumn>('date');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -73,7 +74,9 @@ export function ExpenseTable({ expenses, onEditClick }: ExpenseTableProps) {
   return (
     <div className='expense-table-container'>
       {expenses.length === 0 ? (
-        <p className='empty-state'>No transactions found.</p>
+        <p className='empty-state'>
+          {totalCount === 0 ? 'No transactions yet. Add your first expense!' : 'No results match your filters.'}
+        </p>
       ) : (
         <>
           <table className='expense-table'>

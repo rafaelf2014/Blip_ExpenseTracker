@@ -1,4 +1,4 @@
-import type { RegularTransaction } from '../types';
+import type { Expense, RegularTransaction } from '../types';
 
 // usa componentes locais para evitar desvios de fuso horário à meia-noite
 export function toLocalDateStr(d: Date): string {
@@ -67,4 +67,26 @@ export function calcIncome(regularTransactions: RegularTransaction[], start: Dat
   return regularTransactions
     .filter(rt => rt.isIncome)
     .reduce((sum, rt) => sum + countOccurrences(rt, start, end) * rt.amount, 0);
+}
+
+// Returns a predicate for filtering expenses by a named time period.
+// Date bounds are computed once per call, not once per expense.
+export function makeTimeFilter(filterTime: string): (e: Expense) => boolean {
+  if (filterTime === '') return () => true;
+  const today        = new Date();
+  const todayStr     = toLocalDateStr(today);
+  const weekStartStr = toLocalDateStr(getWeekStart(today));
+  const thisMonth    = today.getMonth();
+  const thisYear     = today.getFullYear();
+  return (e: Expense) => {
+    const expStr = toLocalDateStr(new Date(e.date));
+    if (filterTime === 'week')  return expStr >= weekStartStr && expStr <= todayStr;
+    if (filterTime === 'month') { const d = new Date(e.date); return d.getMonth() === thisMonth && d.getFullYear() === thisYear; }
+    if (filterTime === 'year')  return new Date(e.date).getFullYear() === thisYear;
+    return true;
+  };
+}
+
+export function filterByTime(expenses: Expense[], filterTime: string): Expense[] {
+  return expenses.filter(makeTimeFilter(filterTime));
 }

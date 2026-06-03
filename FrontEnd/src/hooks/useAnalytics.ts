@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { API_BASE } from '../constants/api';
 import type { Expense, RegularTransaction } from '../types';
-import { getWeekStart, toLocalDateStr, calcIncome } from '../utils/finance';
+import { getWeekStart, calcIncome, makeTimeFilter } from '../utils/finance';
 
 const COLORS = ['#06b6d4', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#6366f1', '#64748b'];
 
@@ -46,9 +46,8 @@ export function useAnalytics() {
     }, []);
 
     useEffect(() => {
-        const today        = new Date();
-        const todayStr     = toLocalDateStr(today);
-        const weekStartStr = toLocalDateStr(getWeekStart(today));
+        const today      = new Date();
+        const timeFilter = makeTimeFilter(filterTime);
 
         const filtered = rawExpenses.filter(e => {
             const matchesSearch   = e.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -57,19 +56,7 @@ export function useAnalytics() {
             const amount          = Number(e.amount);
             const matchesMin      = filterMin === '' || amount >= Number(filterMin);
             const matchesMax      = filterMax === '' || amount <= Number(filterMax);
-
-            let matchesTime = true;
-            if (filterTime !== '') {
-                const expStr = toLocalDateStr(new Date(e.date));
-                if (filterTime === 'week')
-                    matchesTime = expStr >= weekStartStr && expStr <= todayStr;
-                else if (filterTime === 'month') {
-                    const d = new Date(e.date);
-                    matchesTime = d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-                } else if (filterTime === 'year')
-                    matchesTime = new Date(e.date).getFullYear() === today.getFullYear();
-            }
-            return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && matchesTime;
+            return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && timeFilter(e);
         });
 
         let periodStart: Date;
@@ -82,19 +69,27 @@ export function useAnalytics() {
         }
         const totalIncome = calcIncome(regularTransactions, periodStart, today);
 
-        // ── processa dados dos gráficos ───────────────────────────────────────
 
         let totalExpense = 0;
         const categoryTotals: Record<string, number> = {};
-        const monthlyData: Record<string, { income: number; expenses: number }> = {};
+        const monthlyData: Record<string, { income: number; expenses: number; label: string }> = {};
 
         filtered.forEach(exp => {
             const amount = Number(exp.amount);
-            const month  = new Date(exp.date).toLocaleString('default', { month: 'short' });
-            if (!monthlyData[month]) monthlyData[month] = { income: 0, expenses: 0 };
+            const d      = new Date(exp.date);
+            const key    = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+            const label  = d.toLocaleString('default', { month: 'short' });
+            if (!monthlyData[key]) monthlyData[key] = { income: 0, expenses: 0, label };
             totalExpense += amount;
-            monthlyData[month].expenses += amount;
+            monthlyData[key].expenses += amount;
             categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + amount;
+        });
+
+        Object.keys(monthlyData).forEach(key => {
+            const [year, month] = key.split('-').map(Number);
+            const start = new Date(year, month - 1, 1);
+            const end   = new Date(year, month, 0);
+            monthlyData[key].income = calcIncome(regularTransactions, start, end);
         });
 
         const newCategoryData = Object.keys(categoryTotals)
@@ -102,11 +97,13 @@ export function useAnalytics() {
             .filter(item => item.value > 0)
             .sort((a, b) => b.value - a.value);
 
-        const newTrendData = Object.keys(monthlyData).map(month => ({
-            month,
-            income:   Number(monthlyData[month].income.toFixed(2)),
-            expenses: Number(monthlyData[month].expenses.toFixed(2)),
-        }));
+        const newTrendData = Object.keys(monthlyData)
+            .sort()
+            .map(key => ({
+                month:    monthlyData[key].label,
+                income:   Number(monthlyData[key].income.toFixed(2)),
+                expenses: Number(monthlyData[key].expenses.toFixed(2)),
+            }));
 
         let numDays: number, numMonths: number;
         if (filterTime === 'week') {

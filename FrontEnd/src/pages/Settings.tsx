@@ -6,6 +6,7 @@ import { SecuritySection } from '../components/settings/SecuritySection';
 import { FinancialSection } from '../components/settings/FinancialSection';
 import { BudgetsSection } from '../components/settings/BudgetsSection';
 import { PreferencesSection } from '../components/settings/PreferencesSection';
+import { DevToolsSection } from '../components/settings/DevToolsSection';
 
 export default function Settings() {
     const {
@@ -42,6 +43,7 @@ export default function Settings() {
                     />
                     <BudgetsSection budgets={budgets} setBudgets={setBudgets} saveBudgets={saveBudgets} />
                     <PreferencesSection />
+                    <DevToolsSection />
                 </div>
             </main>
         </div>

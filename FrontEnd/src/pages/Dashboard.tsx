@@ -8,14 +8,12 @@ import { useCurrency } from '../Context/CurrencyContext';
 import { useDashboard } from '../hooks/useDashboard';
 import { formatDate } from '../utils/finance';
 import { getCategoryIcon } from '../utils/iconMapping';
-import { AiChatBot } from '../components/AiChatBot';
 
 export default function Dashboard() {
   const { formatCurrency } = useCurrency();
   const {
     showForm, setShowForm, username, userId,
     categories, expenseTypes, currentBalance,
-    expenses,
     chartPeriod, setChartPeriod,
     fetchExpenses,
     monthSpent, monthIncome,
@@ -43,7 +41,6 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
   return (
     <div className="dashboard-layout">
       <Sidebar />
-      <AiChatBot userId={userId} categories={categories} expenseTypes={expenseTypes} expenses={expenses} onExpenseAdded={() => fetchExpenses(userId)} />
       <div className="dashboard-content-wrapper">
         <div className="dashboard-container">
 
@@ -204,7 +201,6 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
           userId={userId}
           categories={categories}
           expenseTypes={expenseTypes}
-          expenses={expenses}
           onClose={() => setShowForm(false)}
           onExpenseAdded={() => fetchExpenses(userId)}
         />

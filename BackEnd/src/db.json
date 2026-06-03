@@ -32,6 +32,10 @@
         {
           "month": "2026-05",
           "balance": 10000
+        },
+        {
+          "month": "2026-06",
+          "balance": 10000
         }
       ],
       "budgetUtilHistory": [
@@ -41,6 +45,10 @@
         },
         {
           "month": "2026-05",
+          "utilization": 0
+        },
+        {
+          "month": "2026-06",
           "utilization": 0
         }
       ],
@@ -52,6 +60,10 @@
         {
           "month": "2026-05",
           "rate": 0
+        },
+        {
+          "month": "2026-06",
+          "rate": 0
         }
       ]
     },
@@ -59,6 +71,29 @@
       "id": "1773510856765",
       "username": "rafael2014",
       "password": "12345"
+    },
+    {
+      "id": "1780489433682",
+      "username": "testuser_playwright",
+      "password": "testpass123",
+      "balanceHistory": [
+        {
+          "month": "2026-06",
+          "balance": 0
+        }
+      ],
+      "budgetUtilHistory": [
+        {
+          "month": "2026-06",
+          "utilization": 0
+        }
+      ],
+      "savingsRateHistory": [
+        {
+          "month": "2026-06",
+          "rate": 0
+        }
+      ]
     }
   ],
   "expenses": [

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { API_BASE } from '../constants/api';
 import type { Expense, RegularTransaction } from '../types';
-import { getWeekStart, toLocalDateStr, calcIncome } from '../utils/finance';
+import { getWeekStart, calcIncome, makeTimeFilter } from '../utils/finance';
 
 function incomeForPeriod(regularTransactions: RegularTransaction[], filterTime: string): number {
     const today = new Date();
@@ -38,27 +39,25 @@ export function useTransactions() {
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         const storedUserId   = localStorage.getItem('userId');
+        if (!storedUsername || !storedUserId) return;
 
-        if (!storedUsername || !storedUserId) {
-            navigate('/');
-        } else {
-            setUsername(storedUsername);
-            setUserId(storedUserId);
-            fetchExpenses(storedUserId);
+        setUsername(storedUsername);
+        setUserId(storedUserId);
+        fetchExpenses(storedUserId);
 
-            fetch(`${API_BASE}/expense-config`)
-                .then(res => res.json())
-                .then(data => { setCategories(data.categories); setExpenseTypes(data.expenseTypes); });
+        fetch(`${API_BASE}/expense-config`)
+            .then(res => res.json())
+            .then(data => { setCategories(data.categories); setExpenseTypes(data.expenseTypes); });
 
-            fetch(`${API_BASE}/users/${storedUserId}/settings`)
-                .then(res => res.json())
-                .then(data => setRegularTransactions(data.regularTransactions ?? []))
-                .catch(console.error);
-        }
-    }, [navigate]);
+        fetch(`${API_BASE}/users/${storedUserId}/settings`)
+            .then(res => res.json())
+            .then(data => setRegularTransactions(data.regularTransactions ?? []))
+            .catch(console.error);
+    }, []);
 
     const handleLogout = () => {
         localStorage.removeItem('username');
+        localStorage.removeItem('userId');
         navigate('/');
     };
 
@@ -71,37 +70,41 @@ export function useTransactions() {
         }
     };
 
+    useEffect(() => {
+        if (!userId) return;
+        const handler = () => fetchExpenses(userId);
+        window.addEventListener('blip:expense-added', handler);
+        return () => window.removeEventListener('blip:expense-added', handler);
+    }, [userId]);
+
     const handleUpdateExpense = async (id: string, updatedData: Omit<Expense, 'id'>) => {
-        await fetch(`${API_BASE}/expenses/${id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(updatedData),
-        });
-        setEditingExpense(null);
-        fetchExpenses(userId);
+        try {
+            const res = await fetch(`${API_BASE}/expenses/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData),
+            });
+            if (!res.ok) { toast.error('Erro ao atualizar a despesa.'); return; }
+            setEditingExpense(null);
+            fetchExpenses(userId);
+        } catch {
+            toast.error('Erro de ligação ao servidor.');
+        }
     };
 
     const handleDeleteExpense = async (id: string) => {
-        await fetch(`${API_BASE}/expenses/${id}`, { method: 'DELETE' });
-        setEditingExpense(null);
-        fetchExpenses(userId);
-    };
-
-
-    const applyTimeFilter = (expense: Expense): boolean => {
-        if (filterTime === '') return true;
-        const today  = new Date();
-        const expStr = toLocalDateStr(new Date(expense.date));
-        if (filterTime === 'week')
-            return expStr >= toLocalDateStr(getWeekStart(today)) && expStr <= toLocalDateStr(today);
-        if (filterTime === 'month') {
-            const d = new Date(expense.date);
-            return d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+        try {
+            const res = await fetch(`${API_BASE}/expenses/${id}`, { method: 'DELETE' });
+            if (!res.ok) { toast.error('Erro ao eliminar a despesa.'); return; }
+            setEditingExpense(null);
+            fetchExpenses(userId);
+        } catch {
+            toast.error('Erro de ligação ao servidor.');
         }
-        if (filterTime === 'year')
-            return new Date(expense.date).getFullYear() === today.getFullYear();
-        return true;
     };
+
+
+    const timeFilter = makeTimeFilter(filterTime);
 
     const filteredExpenses = expenses.filter(e => {
         const matchesSearch   = e.description.toLowerCase().includes(searchTerm.toLowerCase());
@@ -110,11 +113,11 @@ export function useTransactions() {
         const amount          = Number(e.amount);
         const matchesMin      = filterMin === '' || amount >= Number(filterMin);
         const matchesMax      = filterMax === '' || amount <= Number(filterMax);
-        return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && applyTimeFilter(e);
+        return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && timeFilter(e);
     });
 
     // cartões de resumo usam só o filtro de tempo (não pesquisa/categoria/valor)
-    const timeFilteredExpenses = expenses.filter(applyTimeFilter);
+    const timeFilteredExpenses = expenses.filter(timeFilter);
 
     const periodLabel     = filterTime === 'week' ? 'Weekly' : filterTime === 'month' ? 'Monthly' : filterTime === 'year' ? 'Yearly' : '';
     const displayedSpent  = timeFilteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import './App.scss'
 import AuthPage from './components/AuthPage'
 import Dashboard from './pages/Dashboard';
@@ -8,7 +8,13 @@ import Settings from './pages/Settings';
 import { CustomToaster } from './components/CustomToaster';
 import { CurrencyProvider } from './Context/CurrencyContext';
 import { DateProvider } from './Context/DateContext';
+import { AiChatBot } from './components/AiChatBot';
 import './Context/i18n';
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  if (!localStorage.getItem('userId')) return <Navigate to="/" replace />;
+  return <>{children}</>;
+}
 
 function App() {
   return (
@@ -18,11 +24,12 @@ function App() {
           <CustomToaster />
           <Routes>
             <Route path="/" element={<AuthPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/transactions" element={<Transactions />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route path="/dashboard"    element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+            <Route path="/transactions" element={<ProtectedRoute><Transactions /></ProtectedRoute>} />
+            <Route path="/analytics"    element={<ProtectedRoute><Analytics /></ProtectedRoute>} />
+            <Route path="/settings"     element={<ProtectedRoute><Settings /></ProtectedRoute>} />
           </Routes>
+          <AiChatBot />
         </DateProvider>
       </CurrencyProvider>
     </BrowserRouter>

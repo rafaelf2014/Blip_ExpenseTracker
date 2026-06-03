@@ -92,18 +92,16 @@ export const CATEGORY_KEYWORDS: [string, string[]][] = [
 ];
 
 export const QUERY_CATEGORY_KEYWORDS: [string, string[]][] = [
-    ['Food',           ['comida', 'alimentacao', 'restaurante', 'supermercado', 'refeicao', 'food', 'mercado']],
-    ['Transportation', ['transporte', 'gasolina', 'combustivel', 'viagem', 'uber', 'transport', 'taxi']],
-    ['Entertainment',  ['entretenimento', 'lazer', 'cinema', 'jogos', 'musica', 'entertainment', 'leisure']],
-    ['Utilities',      ['eletricidade', 'internet', 'gas natural', 'fatura', 'utilities', 'servicos']],
-    ['Health',         ['saude', 'farmacia', 'medico', 'clinica', 'hospital', 'health']],
-    ['Housing',        ['habitacao', 'renda', 'aluguel', 'housing', 'casa']],
-    ['Clothes',        ['roupa', 'vestuario', 'calcado', 'clothes', 'clothing']],
+    ['Food',           ['comida', 'alimentacao', 'restaurante', 'supermercado', 'refeicao', 'food', 'mercado', 'groceries', 'grocery', 'supermarket', 'dining', 'eating']],
+    ['Transportation', ['transporte', 'gasolina', 'combustivel', 'viagem', 'uber', 'transport', 'taxi', 'travel', 'commute', 'flight', 'car', 'fuel']],
+    ['Entertainment',  ['entretenimento', 'lazer', 'cinema', 'jogos', 'musica', 'entertainment', 'leisure', 'gaming', 'streaming', 'movies', 'movie', 'hobby']],
+    ['Utilities',      ['eletricidade', 'internet', 'gas natural', 'fatura', 'utilities', 'servicos', 'bills', 'bill', 'electricity', 'water bill', 'phone bill']],
+    ['Health',         ['saude', 'farmacia', 'medico', 'clinica', 'hospital', 'health', 'medical', 'healthcare', 'pharmacy', 'doctor', 'medicine']],
+    ['Housing',        ['habitacao', 'renda', 'aluguel', 'housing', 'casa', 'rent', 'mortgage', 'home']],
+    ['Clothes',        ['roupa', 'vestuario', 'calcado', 'clothes', 'clothing', 'fashion', 'apparel', 'shopping']],
 ];
 
 export const TYPE_KEYWORDS: [string, string[]][] = [
     ['Monthly',      ['mensal', 'monthly', 'subscri', 'subscription', 'recorrent', 'recurring', 'mes']],
     ['Yearly',       ['anual', 'annual', 'yearly', 'ano']],
-    ['Trimesterly',  ['trimestral', 'quarterly', 'trimest']],
-    ['Semi-Annual',  ['semestral', 'semi-annual', 'semestr']],
 ];

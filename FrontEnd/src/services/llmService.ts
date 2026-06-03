@@ -1,5 +1,6 @@
 import { CreateWebWorkerMLCEngine } from "@mlc-ai/web-llm";
-import type { NewExpense } from '../types';
+import type { NewExpense, Expense, RegularTransaction, Budget } from '../types';
+import { calcIncome } from '../utils/finance';
 import { CATEGORY_KEYWORDS, QUERY_CATEGORY_KEYWORDS, TYPE_KEYWORDS } from '../constants/keywords';
 
 let engine: any = null;
@@ -16,14 +17,16 @@ export async function initLLM() {
     const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
 
     initPromise = (async () => {
+        const worker = new Worker(new URL('./webllm-worker.ts', import.meta.url), { type: 'module' });
         try {
             engine = await CreateWebWorkerMLCEngine(
-                new Worker(new URL('./webllm-worker.ts', import.meta.url), { type: 'module' }),
+                worker,
                 selectedModel,
                 { initProgressCallback }
             );
             console.log("Modelo carregado.");
         } catch (e) {
+            worker.terminate();
             console.error(e);
             initPromise = null;
         }
@@ -147,17 +150,17 @@ function normalizeToList(value: string, validList: string[]): string {
     return best;
 }
 
-// function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
-//     return Promise.race([
-//         promise,
-//         new Promise<null>(resolve => setTimeout(() => resolve(null), ms)),
-//     ]);
-// }
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
+    return Promise.race([
+        promise,
+        new Promise<null>(resolve => setTimeout(() => resolve(null), ms)),
+    ]);
+}
 
 async function getLLMDescription(userInput: string): Promise<string | null> {
     if (!engine) return null;
     try {
-        const reply = await engine.chat.completions.create({
+        const reply = await withTimeout(engine.chat.completions.create({
             messages: [
                 {
                     role: 'system',
@@ -170,7 +173,8 @@ async function getLLMDescription(userInput: string): Promise<string | null> {
             ],
             temperature: 0.1,
             max_tokens: 20,
-        });
+        }) as Promise<any>, 15000);
+        if (!reply) return null;
         const raw = (reply.choices[0].message.content ?? '').trim();
         return raw.replace(/^["'.]+|["'.]+$/g, '') || null;
     } catch {
@@ -184,7 +188,7 @@ async function getLLMCategoryAndDescription(
 ): Promise<{ category: string; description: string } | null> {
     if (!engine) return null;
     try {
-        const reply = await engine.chat.completions.create({
+        const reply = await withTimeout(engine.chat.completions.create({
             messages: [
                 {
                     role: 'system',
@@ -211,7 +215,7 @@ async function getLLMCategoryAndDescription(
             ],
             temperature: 0.1,
             max_tokens: 48,
-        });
+        }) as Promise<any>, 30000);
         const raw   = (reply.choices[0].message.content ?? '').trim();
         const match = raw.match(/\{[\s\S]*\}/);
         if (!match) return null;
@@ -266,185 +270,390 @@ export async function extractExpenseFromText(
     return { description, amount: amount ?? 0, date, category, type };
 }
 
-export function detectChatIntent(userInput: string): 'ADD' | 'QUERY' {
-    const norm = normalizeText(userInput);
-    const queryKeywords = ['quanto', 'qual', 'quais', 'resumo', 'total', 'analisa', 'mostra', 'gastei'];
-    const addKeywords = ['paguei', 'comprei', 'custou', 'adiciona', 'regista'];
+type QueryType = 'TOTAL' | 'MAX' | 'AVERAGE' | 'LIST' | 'BUDGET' | 'INCOME' | 'COUNT'
+    | 'MOST_FREQUENT' | 'DISTINCT_CATEGORIES' | 'PERCENTAGE' | 'DUPLICATES' | 'ROUND_AMOUNTS';
 
-    if (addKeywords.some(kw => norm.includes(kw))) return 'ADD';
-    if (queryKeywords.some(kw => norm.includes(kw))) return 'QUERY';
-
-    return 'ADD';
+function detectQueryType(norm: string): QueryType {
+    if (/duplicat|repetid|mesmo valor|same amount/.test(norm))                                               return 'DUPLICATES';
+    if (/round amount|exact amount|exact dollar|montante redondo|numero redondo|valor redondo/.test(norm))   return 'ROUND_AMOUNTS';
+    if (/percent|percentagem|quota|share of|parte do total/.test(norm))                                     return 'PERCENTAGE';
+    if (/most[\s-]?(?:used|frequent|common)|categoria mais usada|mais frequen/.test(norm))                  return 'MOST_FREQUENT';
+    if (/distinct categor|different categor|how many categor|quantas categorias diferentes/.test(norm))     return 'DISTINCT_CATEGORIES';
+    if (/maior|mais caro|maximo|maior gasto|largest|biggest|highest|most expensive/.test(norm))             return 'MAX';
+    if (/media|medio|average|avg|gasto medio/.test(norm))                                                   return 'AVERAGE';
+    if (/lista|listar|mostrar|ver|quais|transacoes|ultimas despesas|show|list|display/.test(norm))          return 'LIST';
+    if (/orcamento|budget|limite|posso gastar|quanto falta|remaining|room left/.test(norm))                 return 'BUDGET';
+    if (/recebi|rendimento|income|ganho|salario|ganhei|earned|salary/.test(norm))                           return 'INCOME';
+    if (/quantas|quantos|numero de|vezes|how many|count|number of/.test(norm))                              return 'COUNT';
+    return 'TOTAL';
 }
 
-export async function askFinancialQuestion(userInput: string, expenses: any[], categories: string[]): Promise<string> {
+export function detectChatIntent(userInput: string): 'QUERY' | 'UNKNOWN' {
     const norm = normalizeText(userInput);
+    const queryKeywords = [
+        // Portuguese
+        'quanto', 'qual', 'quais', 'lista', 'mostra', 'analisa', 'resumo', 'total',
+        'media', 'maior', 'menor', 'orcamento', 'recebi', 'rendimento', 'quantas', 'quantos',
+        'historico', 'maximo', 'duplicad', 'repetid', 'redondo', 'frequen', 'gastei', 'gasto',
+        // English
+        'how much', 'how many', 'show', 'list', 'what', 'which', 'largest', 'biggest',
+        'average', 'budget', 'income', 'salary', 'percentage', 'percent', 'duplicate',
+        'most used', 'frequent', 'distinct', 'spent', 'spend',
+    ];
+    if (queryKeywords.some(kw => norm.includes(kw))) return 'QUERY';
+    return 'UNKNOWN';
+}
 
-    const targetCategory = classifyByKeywords(userInput, QUERY_CATEGORY_KEYWORDS, 'ALL');
-
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const currentMonth = today.getMonth() + 1; // 1 a 12
+function parseDateContext(norm: string, today: Date): {
+    tYear: number | null; tMonth: number | null; tDay: number | null;
+    minDate: string | null; maxDate: string | null; customDateContext: string;
+} {
+    const currentYear  = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+    const fmt = (d: Date) =>
+        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 
     let tYear: number | null = null;
     let tMonth: number | null = null;
     let tDay: number | null = null;
 
-    let minDate: string | null = null;
-    let maxDate: string | null = null;
-
-    let isRelative = false;
-    let customDateContext = "";
-
-    // Verificar formato explícito (DD/MM/YYYY ou YYYY-MM-DD)
+    // Explicit numeric date (YYYY-MM-DD or DD/MM/YYYY)
     const explicit = norm.match(/(\d{4}-\d{2}-\d{2})|(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
     if (explicit) {
         if (explicit[1]) {
             const p = explicit[1].split('-');
-            tYear = parseInt(p[0]); tMonth = parseInt(p[1]); tDay = parseInt(p[2]);
+            tYear = +p[0]; tMonth = +p[1]; tDay = +p[2];
         } else {
-            tDay = parseInt(explicit[2]); tMonth = parseInt(explicit[3]); tYear = parseInt(explicit[4]);
+            tDay = +explicit[2]; tMonth = +explicit[3]; tYear = +explicit[4];
         }
-    } else {
+        return { tYear, tMonth, tDay, minDate: null, maxDate: null, customDateContext: `a ${tDay}/${tMonth}/${tYear}` };
+    }
 
-        const matchDias = norm.match(/(?:ultim[oa]s?|utlim[oa]s?)\s+(\d+)\s+dias?/);
-        const matchSemanas = norm.match(/(?:ultim[oa]s?|utlim[oa]s?)\s+(\d+)\s+semanas?/);
-        const matchMeses = norm.match(/(?:ultim[oa]s?|utlim[oa]s?)\s+(\d+)\s+meses?/);
-
-        if (matchDias) {
-            const dias = parseInt(matchDias[1]);
-            const d = new Date(today);
-            d.setDate(d.getDate() - dias);
-            minDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            maxDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            isRelative = true; customDateContext = `nos últimos ${dias} dias`;
-
-        } else if (matchSemanas) {
-            const semanas = parseInt(matchSemanas[1]);
-            const d = new Date(today);
-            d.setDate(d.getDate() - (semanas * 7)); // Multiplica as semanas por 7 dias
-            minDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            maxDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            isRelative = true; customDateContext = `nas últimas ${semanas} semanas`;
-
-        } else if (matchMeses) {
-            const meses = parseInt(matchMeses[1]);
-            const d = new Date(today);
-            d.setMonth(d.getMonth() - meses);
-            minDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            maxDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            isRelative = true; customDateContext = `nos últimos ${meses} meses`;
-
-        } else if (norm.includes('hoje') || norm.includes('today')) {
-            tYear = currentYear; tMonth = currentMonth; tDay = today.getDate();
-            isRelative = true; customDateContext = "hoje";
-
-        } else if (norm.includes('ontem') || norm.includes('yesterday')) {
-            const d = new Date(today); d.setDate(d.getDate() - 1);
-            tYear = d.getFullYear(); tMonth = d.getMonth() + 1; tDay = d.getDate();
-            isRelative = true; customDateContext = "ontem";
-
-        } else if (norm.includes('ultimo ano') || norm.includes('ano passado')) {
-            tYear = currentYear - 1;
-            isRelative = true; customDateContext = "no último ano";
-
-        } else if (norm.includes('este ano')) {
-            tYear = currentYear;
-            isRelative = true; customDateContext = "este ano";
-
-        } else if (norm.includes('ultimo mes') || norm.includes('mes passado')) {
-            tMonth = currentMonth === 1 ? 12 : currentMonth - 1;
-            tYear = currentMonth === 1 ? currentYear - 1 : currentYear;
-            isRelative = true; customDateContext = "no último mês";
-
-        } else if (norm.includes('este mes') || norm.includes('neste mes')) {
-            tMonth = currentMonth; tYear = currentYear;
-            isRelative = true; customDateContext = "este mês";
-
-        } else if (norm.includes('ultima semana') || norm.includes('semana passada')) {
-            const d = new Date(today);
-            d.setDate(d.getDate() - 7);
-            minDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-            maxDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-            isRelative = true; customDateContext = "na última semana";
-
-        } else {
-            const dayMap: Record<string, number> = {
-                domingo: 0, sunday: 0, segunda: 1, monday: 1, terca: 2, tuesday: 2,
-                quarta: 3, wednesday: 3, quinta: 4, thursday: 4, sexta: 5, friday: 5, sabado: 6, saturday: 6,
-            };
-            for (const [name, dow] of Object.entries(dayMap)) {
-                if (norm.includes(name)) {
-                    const d = new Date(today);
-                    const diff = (today.getDay() - dow + 7) % 7 || 7;
-                    d.setDate(today.getDate() - diff);
-                    tYear = d.getFullYear(); tMonth = d.getMonth() + 1; tDay = d.getDate();
-                    isRelative = true; customDateContext = `na última ${name}`;
-                    break;
-                }
-            }
-        }
-
-        // Verificar Linguagem Natural ("dia 22", "22 de abril", "em 2026")
-        if (!isRelative) {
-            const dayMatch = norm.match(/\bdia\s+(\d{1,2})\b/);
-            const dayDeMatch = norm.match(/\b(\d{1,2})\s+de\b/);
-
-            if (dayMatch) tDay = parseInt(dayMatch[1]);
-            else if (dayDeMatch) tDay = parseInt(dayDeMatch[1]);
-
-            const months = ['janeiro', 'fevereiro', 'marco', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
-            for (let i = 0; i < months.length; i++) {
-                if (norm.includes(months[i])) { tMonth = i + 1; break; }
-            }
-
-            const yearMatch = norm.match(/\b(20\d{2})\b/);
-            if (yearMatch) tYear = parseInt(yearMatch[1]);
-
-            if (tDay !== null && tMonth === null) tMonth = currentMonth;
-            if (tMonth !== null && tYear === null) tYear = currentYear;
+    // Quarter detection
+    const quarterPatterns: [RegExp, number][] = [
+        [/\bq1\b|first quarter|1st quarter|primeiro trimestre/, 1],
+        [/\bq2\b|second quarter|2nd quarter|segundo trimestre/, 2],
+        [/\bq3\b|third quarter|3rd quarter|terceiro trimestre/, 3],
+        [/\bq4\b|fourth quarter|4th quarter|quarto trimestre/, 4],
+    ];
+    for (const [pattern, q] of quarterPatterns) {
+        if (pattern.test(norm)) {
+            const ym = norm.match(/\b(20\d{2})\b/);
+            const qYear = ym ? +ym[1] : currentYear;
+            const sm = (q - 1) * 3 + 1;
+            const em = q * 3;
+            const minDate = `${qYear}-${String(sm).padStart(2, '0')}-01`;
+            const maxDate = `${qYear}-${String(em).padStart(2, '0')}-${String(new Date(qYear, em, 0).getDate()).padStart(2, '0')}`;
+            return { tYear, tMonth, tDay, minDate, maxDate, customDateContext: `no Q${q} de ${qYear}` };
         }
     }
+    if (/last quarter|ultimo trimestre/.test(norm)) {
+        const cq = Math.ceil(currentMonth / 3);
+        const lq = cq === 1 ? 4 : cq - 1;
+        const ly = cq === 1 ? currentYear - 1 : currentYear;
+        const sm = (lq - 1) * 3 + 1; const em = lq * 3;
+        return {
+            tYear, tMonth, tDay,
+            minDate: `${ly}-${String(sm).padStart(2, '0')}-01`,
+            maxDate: `${ly}-${String(em).padStart(2, '0')}-${String(new Date(ly, em, 0).getDate()).padStart(2, '0')}`,
+            customDateContext: 'no último trimestre',
+        };
+    }
+    if (/this quarter|este trimestre/.test(norm)) {
+        const cq = Math.ceil(currentMonth / 3);
+        const sm = (cq - 1) * 3 + 1; const em = cq * 3;
+        return {
+            tYear, tMonth, tDay,
+            minDate: `${currentYear}-${String(sm).padStart(2, '0')}-01`,
+            maxDate: `${currentYear}-${String(em).padStart(2, '0')}-${String(new Date(currentYear, em, 0).getDate()).padStart(2, '0')}`,
+            customDateContext: 'neste trimestre',
+        };
+    }
+
+    // "last/past N days/weeks/months"
+    const matchDias    = norm.match(/(?:ultim[oa]s?|utlim[oa]s?|last|past)\s+(\d+)\s+(?:dias?|days?)/);
+    const matchSemanas = norm.match(/(?:ultim[oa]s?|utlim[oa]s?|last|past)\s+(\d+)\s+(?:semanas?|weeks?)/);
+    const matchMeses   = norm.match(/(?:ultim[oa]s?|utlim[oa]s?|last|past)\s+(\d+)\s+(?:meses?|months?)/);
+    if (matchDias) {
+        const n = +matchDias[1]; const d = new Date(today); d.setDate(d.getDate() - n);
+        return { tYear, tMonth, tDay, minDate: fmt(d), maxDate: fmt(today), customDateContext: `nos últimos ${n} dias` };
+    }
+    if (matchSemanas) {
+        const n = +matchSemanas[1]; const d = new Date(today); d.setDate(d.getDate() - n * 7);
+        return { tYear, tMonth, tDay, minDate: fmt(d), maxDate: fmt(today), customDateContext: `nas últimas ${n} semanas` };
+    }
+    if (matchMeses) {
+        const n = +matchMeses[1]; const d = new Date(today); d.setMonth(d.getMonth() - n);
+        return { tYear, tMonth, tDay, minDate: fmt(d), maxDate: fmt(today), customDateContext: `nos últimos ${n} meses` };
+    }
+
+    // Named relative periods
+    if (/\bhoje\b|\btoday\b/.test(norm))
+        return { tYear: currentYear, tMonth: currentMonth, tDay: today.getDate(), minDate: null, maxDate: null, customDateContext: 'hoje' };
+    if (/\bontem\b|\byesterday\b/.test(norm)) {
+        const d = new Date(today); d.setDate(d.getDate() - 1);
+        return { tYear: d.getFullYear(), tMonth: d.getMonth() + 1, tDay: d.getDate(), minDate: null, maxDate: null, customDateContext: 'ontem' };
+    }
+    if (/ultimo ano|ano passado|last year/.test(norm))
+        return { tYear: currentYear - 1, tMonth, tDay, minDate: null, maxDate: null, customDateContext: 'no último ano' };
+    if (/este ano|this year/.test(norm))
+        return { tYear: currentYear, tMonth, tDay, minDate: null, maxDate: null, customDateContext: 'este ano' };
+    if (/ultimo mes|mes passado|last month/.test(norm)) {
+        const m = currentMonth === 1 ? 12 : currentMonth - 1;
+        const y = currentMonth === 1 ? currentYear - 1 : currentYear;
+        return { tYear: y, tMonth: m, tDay, minDate: null, maxDate: null, customDateContext: 'no último mês' };
+    }
+    if (/este mes|neste mes|this month/.test(norm))
+        return { tYear: currentYear, tMonth: currentMonth, tDay, minDate: null, maxDate: null, customDateContext: 'este mês' };
+    if (/ultima semana|semana passada|last week/.test(norm)) {
+        const d = new Date(today); d.setDate(d.getDate() - 7);
+        return { tYear, tMonth, tDay, minDate: fmt(d), maxDate: fmt(today), customDateContext: 'na última semana' };
+    }
+    if (/this week|esta semana/.test(norm)) {
+        const d = new Date(today);
+        const dayOfWeek = today.getDay();
+        const daysFromMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Monday = 0 offset
+        d.setDate(d.getDate() - daysFromMonday);
+        return { tYear, tMonth, tDay, minDate: fmt(d), maxDate: fmt(today), customDateContext: 'esta semana' };
+    }
+
+    // Day of week
+    const dayMap: Record<string, number> = {
+        domingo: 0, sunday: 0, segunda: 1, monday: 1, terca: 2, tuesday: 2,
+        quarta: 3, wednesday: 3, quinta: 4, thursday: 4, sexta: 5, friday: 5, sabado: 6, saturday: 6,
+    };
+    for (const [name, dow] of Object.entries(dayMap)) {
+        if (norm.includes(name)) {
+            const d = new Date(today);
+            const diff = (today.getDay() - dow + 7) % 7 || 7;
+            d.setDate(today.getDate() - diff);
+            return { tYear: d.getFullYear(), tMonth: d.getMonth() + 1, tDay: d.getDate(), minDate: null, maxDate: null, customDateContext: `na última ${name}` };
+        }
+    }
+
+    // Natural language: "dia 22", "22 de abril", "April 14th"
+    const ordinalMatch = norm.match(/\b(\d{1,2})(?:st|nd|rd|th)\b/);
+    const dayMatch     = norm.match(/\bdia\s+(\d{1,2})\b/);
+    const dayDeMatch   = norm.match(/\b(\d{1,2})\s+de\b/);
+    if (ordinalMatch)    tDay = +ordinalMatch[1];
+    else if (dayMatch)   tDay = +dayMatch[1];
+    else if (dayDeMatch) tDay = +dayDeMatch[1];
+
+    const monthNames: string[][] = [
+        ['janeiro', 'january'],  ['fevereiro', 'february'], ['marco', 'march'],
+        ['abril', 'april'],      ['maio', 'may'],            ['junho', 'june'],
+        ['julho', 'july'],       ['agosto', 'august'],       ['setembro', 'september'],
+        ['outubro', 'october'],  ['novembro', 'november'],   ['dezembro', 'december'],
+    ];
+    for (let i = 0; i < monthNames.length; i++) {
+        if (monthNames[i].some(name => norm.includes(name))) { tMonth = i + 1; break; }
+    }
+
+    const yearMatch = norm.match(/\b(20\d{2})\b/);
+    if (yearMatch) tYear = +yearMatch[1];
+
+    if (tDay !== null && tMonth === null) tMonth = currentMonth;
+    if (tMonth !== null && tYear === null) tYear = currentYear;
+
+    let customDateContext = '';
+    if (tDay && tMonth && tYear)  customDateContext = `a ${tDay}/${tMonth}/${tYear}`;
+    else if (tMonth && tYear)     customDateContext = `no mês ${tMonth} de ${tYear}`;
+    else if (tYear)               customDateContext = `no ano ${tYear}`;
+
+    return { tYear, tMonth, tDay, minDate: null, maxDate: null, customDateContext };
+}
+
+export async function askFinancialQuestion(
+    userInput: string,
+    expenses: Expense[],
+    regularTransactions: RegularTransaction[],
+    budgets: Budget[]
+): Promise<string> {
+    const norm = normalizeText(userInput);
+    const targetCategory = classifyByKeywords(userInput, QUERY_CATEGORY_KEYWORDS, 'ALL');
+
+    const today        = new Date();
+    const currentYear  = today.getFullYear();
+    const currentMonth = today.getMonth() + 1;
+
+    const { tYear, tMonth, tDay, minDate, maxDate, customDateContext } = parseDateContext(norm, today);
+
+    // Amount filters — negative lookahead prevents "over 2 months" from matching as an amount
+    const noTimeUnit = '(?!\\s*(?:days?|weeks?|months?|years?|dias?|semanas?|meses?|anos?))';
+    const aboveM    = norm.match(new RegExp(`(?:over|above|more than|greater than|acima de|mais de)\\s*[$€£]?\\s*(\\d+(?:[.,]\\d{1,2})?)${noTimeUnit}`));
+    const belowM    = norm.match(new RegExp(`(?:under|below|less than|lower than|abaixo de|menos de)\\s*[$€£]?\\s*(\\d+(?:[.,]\\d{1,2})?)${noTimeUnit}`));
+    const filterMin = aboveM ? parseFloat(aboveM[1].replace(',', '.')) : null;
+    const filterMax = belowM ? parseFloat(belowM[1].replace(',', '.')) : null;
+    const roundOnly = /round amount|exact amount|exact dollar|montante redondo|numero redondo|valor redondo/.test(norm);
+
+    const filterByDate = (exp: Expense): boolean => {
+        const dateStr = exp.date.includes('T') ? exp.date.split('T')[0] : exp.date;
+        const parts   = dateStr.split('-');
+        let ey: number, em: number, ed: number;
+        if (parts[0].length === 4) { ey = +parts[0]; em = +parts[1]; ed = +parts[2]; }
+        else                       { ed = +parts[0]; em = +parts[1]; ey = +parts[2]; }
+        if (minDate && maxDate) {
+            const nd = `${ey}-${String(em).padStart(2, '0')}-${String(ed).padStart(2, '0')}`;
+            return nd >= minDate && nd <= maxDate;
+        }
+        if (tYear  !== null && ey !== tYear)  return false;
+        if (tMonth !== null && em !== tMonth) return false;
+        if (tDay   !== null && ed !== tDay)   return false;
+        return true;
+    };
 
     const filteredExpenses = expenses.filter(exp => {
         if (targetCategory !== 'ALL' && exp.category !== targetCategory) return false;
-
-        const dateStr = exp.date.includes('T') ? exp.date.split('T')[0] : exp.date;
-        const parts = dateStr.split('-');
-        let expYear, expMonth, expDay;
-
-        if (parts[0].length === 4) {
-            expYear = parseInt(parts[0]); expMonth = parseInt(parts[1]); expDay = parseInt(parts[2]);
-        } else {
-            expDay = parseInt(parts[0]); expMonth = parseInt(parts[1]); expYear = parseInt(parts[2]);
-        }
-
-        if (minDate && maxDate) {
-            const normalizedExpDate = `${expYear}-${String(expMonth).padStart(2, '0')}-${String(expDay).padStart(2, '0')}`;
-            if (normalizedExpDate < minDate) return false;
-            if (normalizedExpDate > maxDate) return false;
-        } else {
-            if (tYear !== null && expYear !== tYear) return false;
-            if (tMonth !== null && expMonth !== tMonth) return false;
-            if (tDay !== null && expDay !== tDay) return false;
-        }
-
+        if (!filterByDate(exp))                                           return false;
+        if (filterMin !== null && Number(exp.amount) <= filterMin)        return false;
+        if (filterMax !== null && Number(exp.amount) >= filterMax)        return false;
+        if (roundOnly && Number(exp.amount) % 1 !== 0)                   return false;
         return true;
     });
 
-    const totalSpent = filteredExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
-    const catStr = targetCategory === 'ALL' ? 'todas as categorias' : targetCategory;
+    const totalSpent    = filteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
+    const catStr        = targetCategory === 'ALL' ? 'todas as categorias' : targetCategory;
+    const dateResultStr = customDateContext || 'no total histórico';
+    const queryType     = detectQueryType(norm);
 
-    let dateResultStr = "no total histórico";
+    const fmtD = (s: string) => {
+        const d = new Date(s);
+        return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}`;
+    };
 
-    if (customDateContext) dateResultStr = customDateContext;
-    else if (tDay && tMonth && tYear) dateResultStr = `a ${tDay}/${tMonth}/${tYear}`;
-    else if (tMonth && tYear) dateResultStr = `no mês ${tMonth} de ${tYear}`;
-    else if (tYear) dateResultStr = `no ano ${tYear}`;
-
-    if (totalSpent === 0) {
-        return `Não encontrei despesas em ${catStr} ${dateResultStr}.`;
+    // INCOME
+    if (queryType === 'INCOME') {
+        if (regularTransactions.length === 0)
+            return 'Não tens receitas regulares configuradas. Define-as nas Definições.';
+        const incomeStart = tMonth && tYear ? new Date(tYear, tMonth - 1, 1)
+            : tYear   ? new Date(tYear, 0, 1)
+            : minDate ? new Date(minDate)
+            : new Date(today.getFullYear(), today.getMonth(), 1);
+        const incomeEnd = tMonth && tYear ? new Date(tYear, tMonth, 0)
+            : tYear   ? new Date(tYear, 11, 31)
+            : maxDate ? new Date(maxDate)
+            : today;
+        return `A tua receita estimada ${dateResultStr}: ${calcIncome(regularTransactions, incomeStart, incomeEnd).toFixed(2)}€.`;
     }
 
-    return `O teu gasto foi de ${totalSpent.toFixed(2)}€ em ${catStr} ${dateResultStr}. (Soma de ${filteredExpenses.length} registo/s).`;
-} 
+    // BUDGET
+    if (queryType === 'BUDGET') {
+        if (budgets.length === 0)
+            return 'Não tens orçamentos definidos. Define-os nas Definições.';
+
+        let relevantBudgets = budgets;
+        if (targetCategory !== 'ALL') {
+            const exact = budgets.filter(b => b.category.toLowerCase() === targetCategory.toLowerCase());
+            if (exact.length > 0) {
+                relevantBudgets = exact;
+            } else {
+                const nc    = normalizeText(targetCategory);
+                const fuzzy = budgets.filter(b => {
+                    const bn = normalizeText(b.category);
+                    return bn.includes(nc) || nc.includes(bn) || levenshtein(bn, nc) <= 2;
+                });
+                relevantBudgets = fuzzy.length > 0 ? fuzzy : budgets;
+            }
+        }
+
+        const budgetMonth = tMonth ?? currentMonth;
+        const budgetYear  = tYear  ?? currentYear;
+
+        const scored = relevantBudgets.map(b => {
+            const spent = expenses
+                .filter(exp => {
+                    if (exp.category !== b.category) return false;
+                    const ds = exp.date.includes('T') ? exp.date.split('T')[0] : exp.date;
+                    const [y, m] = ds.split('-').map(Number);
+                    if (b.period === 'monthly') return y === budgetYear && m === budgetMonth;
+                    if (b.period === 'yearly')  return y === budgetYear;
+                    return new Date(ds) >= new Date(new Date(today).setDate(today.getDate() - 7));
+                })
+                .reduce((s, e) => s + Number(e.amount), 0);
+            const pct = b.limit > 0 ? Math.round((spent / b.limit) * 100) : 0;
+            return { b, spent, pct };
+        }).sort((a, z) => z.pct - a.pct);
+
+        const lines = scored.map(({ b, spent, pct }) => {
+            const status = pct >= 100 ? '(Excedido!)' : pct >= 80 ? '(Quase no limite)' : '(OK)';
+            return `• ${b.category}: ${spent.toFixed(2)}€ / ${b.limit.toFixed(2)}€ (${pct}%) ${status}`;
+        });
+        return `Estado dos teus orçamentos:\n${lines.join('\n')}`;
+    }
+
+    // MOST FREQUENT CATEGORY
+    if (queryType === 'MOST_FREQUENT') {
+        if (filteredExpenses.length === 0) return `Não encontrei despesas ${dateResultStr}.`;
+        const counts: Record<string, number> = {};
+        for (const e of filteredExpenses) counts[e.category] = (counts[e.category] ?? 0) + 1;
+        const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+        const lines  = sorted.slice(0, 5).map(([cat, n]) => `• ${cat}: ${n} transação/ões`).join('\n');
+        return `Categorias mais usadas ${dateResultStr}:\n${lines}`;
+    }
+
+    // DISTINCT CATEGORIES
+    if (queryType === 'DISTINCT_CATEGORIES') {
+        const cats = new Set(filteredExpenses.map(e => e.category));
+        if (cats.size === 0) return `Não encontrei despesas ${dateResultStr}.`;
+        return `Usaste ${cats.size} categoria(s) ${dateResultStr}: ${[...cats].join(', ')}.`;
+    }
+
+    // PERCENTAGE OF TOTAL
+    if (queryType === 'PERCENTAGE') {
+        if (targetCategory === 'ALL')
+            return 'Especifica uma categoria para calcular a percentagem (ex: "percentage of food this month").';
+        const allTotal = expenses.filter(filterByDate).reduce((s, e) => s + Number(e.amount), 0);
+        if (allTotal === 0) return `Não tens despesas ${dateResultStr}.`;
+        const pct = Math.round((totalSpent / allTotal) * 100);
+        return `${catStr} representa ${pct}% do total gasto ${dateResultStr} (${totalSpent.toFixed(2)}€ de ${allTotal.toFixed(2)}€).`;
+    }
+
+    // DUPLICATE DETECTION
+    if (queryType === 'DUPLICATES') {
+        const groups: Record<string, number> = {};
+        for (const e of filteredExpenses) {
+            const key = `${e.date.split('T')[0]}_${e.category}_${Number(e.amount).toFixed(2)}`;
+            groups[key] = (groups[key] ?? 0) + 1;
+        }
+        const dupes = Object.entries(groups).filter(([, n]) => n > 1);
+        if (dupes.length === 0) return `Não encontrei transações duplicadas ${dateResultStr}.`;
+        const lines = dupes.map(([key, n]) => {
+            const [date, cat, amount] = key.split('_');
+            return `• ${amount}€ em ${cat} a ${date} (${n}x)`;
+        }).join('\n');
+        return `Encontrei ${dupes.length} grupo(s) de duplicados ${dateResultStr}:\n${lines}`;
+    }
+
+    if (filteredExpenses.length === 0)
+        return `Não encontrei despesas em ${catStr} ${dateResultStr}.`;
+
+    // ROUND AMOUNTS
+    if (queryType === 'ROUND_AMOUNTS') {
+        const rows = filteredExpenses.slice(0, 10).map(e => `• ${e.description} — ${Number(e.amount).toFixed(2)}€ (${fmtD(e.date)})`).join('\n');
+        const more = filteredExpenses.length > 10 ? `\n... e mais ${filteredExpenses.length - 10}.` : '';
+        return `${filteredExpenses.length} transação/ões com montante redondo ${dateResultStr}:\n${rows}${more}`;
+    }
+
+    if (queryType === 'COUNT')
+        return `Encontrei ${filteredExpenses.length} despesa(s) em ${catStr} ${dateResultStr}.`;
+
+    if (queryType === 'MAX') {
+        const maxExp  = filteredExpenses.reduce((a, b) => Number(a.amount) >= Number(b.amount) ? a : b);
+        const catInfo = targetCategory === 'ALL' ? ` — categoria: ${maxExp.category}` : '';
+        return `A maior despesa ${dateResultStr}: "${maxExp.description}" com ${Number(maxExp.amount).toFixed(2)}€${catInfo}.`;
+    }
+
+    if (queryType === 'AVERAGE') {
+        const avg = totalSpent / filteredExpenses.length;
+        return `Gasto médio em ${catStr} ${dateResultStr}: ${avg.toFixed(2)}€ (${filteredExpenses.length} transação/ões).`;
+    }
+
+    if (queryType === 'LIST') {
+        const sorted = [...filteredExpenses].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const rows   = sorted.slice(0, 5).map(e => `• ${e.description} — ${Number(e.amount).toFixed(2)}€ (${fmtD(e.date)})`).join('\n');
+        const more   = filteredExpenses.length > 5 ? `\n... e mais ${filteredExpenses.length - 5} despesa(s).` : '';
+        return `${filteredExpenses.length} despesa(s) em ${catStr} ${dateResultStr}:\n${rows}${more}`;
+    }
+
+    return `O teu gasto foi de ${totalSpent.toFixed(2)}€ em ${catStr} ${dateResultStr}. (${filteredExpenses.length} registo/s).`;
+}
