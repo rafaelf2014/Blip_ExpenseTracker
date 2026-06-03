@@ -6,11 +6,23 @@
   overflow: hidden;
   backdrop-filter: blur(10px);
 
+  @media (max-width: 768px) {
+    margin-top: 10px;
+    border-radius: 12px;
+
+    margin-bottom: 80px;
+  }
+
   .empty-state {
     color: #64748B;
     text-align: center;
     padding: 60px;
     font-size: 20px;
+
+    @media (max-width: 768px) {
+      padding: 40px 20px;
+      font-size: 16px;
+    }
   }
 
   .expense-table {
@@ -21,6 +33,11 @@
     thead {
       background-color: rgba(15, 23, 42, 0.5);
       border-bottom: 1px solid #334155;
+
+      @media (max-width: 768px) {
+        display: none;
+      }
+
       tr {
         border-bottom: 1px solid #2A3441;
         color: #94A3B8;
@@ -33,6 +50,7 @@
 
           &.sortable {
             cursor: pointer;
+
             &:hover {
               color: white;
             }
@@ -51,12 +69,28 @@
         color: #F8FAFC;
         transition: background-color 0.2s;
 
+        @media (max-width: 768px) {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: center;
+          padding: 16px;
+          position: relative;
+
+          gap: 12px;
+        }
+
         &:hover {
-          background-color: rgba(30, 41, 59, 0.5); /* Adicionei um pequeno hover para ficar melhor! */
+          background-color: rgba(30, 41, 59, 0.5);
         }
 
         td {
           padding: 20px;
+
+          @media (max-width: 768px) {
+            padding: 0;
+            border: none;
+          }
+
 
           &.desc-col {
             font-weight: 600;
@@ -64,6 +98,13 @@
             align-items: center;
             gap: 16px;
             font-size: 18px;
+
+            @media (max-width: 768px) {
+              width: 100%;
+              padding-right: 90px;
+              font-size: 16px;
+              margin-bottom: 16px;
+            }
 
             .icon-wrapper {
               width: 48px;
@@ -75,6 +116,11 @@
               justify-content: center;
               color: #06B6D4;
               flex-shrink: 0;
+
+              @media (max-width: 768px) {
+                width: 40px;
+                height: 40px;
+              }
             }
           }
 
@@ -86,12 +132,22 @@
               border-radius: 20px;
               font-size: 15px;
               font-weight: 600;
+
+              @media (max-width: 768px) {
+                padding: 6px 12px;
+                font-size: 13px;
+              }
             }
           }
 
           &.date-col {
             color: #94A3B8;
             font-size: 17px;
+
+            @media (max-width: 768px) {
+              font-size: 14px;
+              margin: 0;
+            }
 
             &.capitalize {
               text-transform: capitalize;
@@ -103,12 +159,32 @@
             font-weight: bold;
             font-size: 20px;
 
-            &.expense { color: #EF4444; }
-            &.income { color: #10B981; }
+            @media (max-width: 768px) {
+              position: absolute;
+              top: 24px;
+              right: 16px;
+              font-size: 18px;
+            }
+
+            &.expense {
+              color: #EF4444;
+            }
+
+            &.income {
+              color: #10B981;
+            }
           }
 
           &.actions-col {
             text-align: center;
+
+            @media (max-width: 768px) {
+              width: 100%;
+              text-align: right;
+              border-top: 1px solid #2A3441;
+              padding-top: 12px !important;
+              margin-top: 16px;
+            }
 
             .action-btn {
               background: none;
@@ -117,6 +193,10 @@
               cursor: pointer;
               padding: 5px;
               transition: color 0.2s;
+
+              @media (max-width: 768px) {
+                padding: 5px 10px;
+              }
 
               &:hover {
                 color: white;
@@ -137,6 +217,12 @@
     background-color: #0F172A;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      gap: 16px;
+      padding: 20px 20px 24px 20px;
+    }
 
     .pagination-info {
       color: #94A3B8;
@@ -160,7 +246,13 @@
       cursor: pointer;
       transition: background-color 0.2s;
 
-      &:hover:not(:disabled) { background-color: #475569; }
+      @media (max-width: 768px) {
+        padding: 10px 16px;
+      }
+
+      &:hover:not(:disabled) {
+        background-color: #475569;
+      }
 
       &:disabled {
         background-color: #1E293B;

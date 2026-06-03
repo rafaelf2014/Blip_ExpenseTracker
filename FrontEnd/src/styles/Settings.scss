@@ -3,7 +3,7 @@
 .settings-layout {
     display: flex;
     min-height: 100vh;
-    width: 100vw;
+    width: 100%;
     background-color: #0B1221;
 }
 
@@ -13,16 +13,29 @@
     padding: 32px 40px;
     color: white;
     overflow-y: auto;
+
+    @media (max-width: 768px) {
+        padding: 24px 16px;
+        padding-bottom: 100px;
+    }
 }
 
 .settings-header {
     margin-bottom: 32px;
+
+    @media (max-width: 768px) {
+        margin-bottom: 24px;
+    }
 
     h1 {
         font-size: 26px;
         font-weight: 700;
         letter-spacing: -0.3px;
         margin: 0 0 4px 0;
+
+        @media (max-width: 768px) {
+            font-size: 22px;
+        }
     }
 
     p {
@@ -62,6 +75,12 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+
+    @media (max-width: 768px) {
+        padding: 20px 16px;
+        border-radius: 12px;
+        gap: 16px;
+    }
 }
 
 .card-header {
@@ -74,6 +93,10 @@
         font-weight: 600;
         margin: 0;
         color: white;
+
+        @media (max-width: 768px) {
+            font-size: 16px;
+        }
     }
 }
 
@@ -94,6 +117,12 @@
     display: flex;
     gap: 24px;
     align-items: flex-start;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
 }
 
 .profile-fields {
@@ -101,6 +130,10 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+
+    @media (max-width: 768px) {
+        width: 100%;
+    }
 }
 
 .avatar-section {
@@ -173,6 +206,10 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
     box-sizing: border-box;
 
+    @media (max-width: 768px) {
+        font-size: 16px;
+    }
+
     &:focus {
         outline: none;
         border-color: #06B6D4;
@@ -204,6 +241,11 @@ select.form-control {
     border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
+
+    @media (max-width: 768px) {
+        padding: 14px 16px;
+        font-size: 16px;
+    }
 
     &:hover:not(:disabled) {
         background-color: #0891B2;
@@ -249,6 +291,10 @@ select.form-control {
 
 .balance-input {
     max-width: 280px;
+
+    @media (max-width: 768px) {
+        max-width: 100%;
+    }
 }
 
 // ── Add regular transaction form ──────────────────────────────────────────────
@@ -263,23 +309,21 @@ select.form-control {
         margin: 0;
     }
 
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 14px;
+
+        .add-btn {
+            grid-column: span 1;
+            padding: 14px 16px;
+        }
+    }
+
     .income-expense-toggle {
         display: flex;
         border-radius: 10px;
         overflow: hidden;
         border: 1px solid #334155;
-    }
-
-    .add-btn {
-        grid-column: span 2;
-    }
-
-    @media (max-width: 700px) {
-        grid-template-columns: 1fr;
-
-        .add-btn {
-            grid-column: span 1;
-        }
     }
 }
 
@@ -301,6 +345,10 @@ select.form-control {
     font-family: inherit;
     cursor: pointer;
     transition: background-color 0.15s ease, color 0.15s ease;
+
+    @media (max-width: 768px) {
+        padding: 14px 12px;
+    }
 
     &.active-income {
         background-color: rgba(16, 185, 129, 0.15);
@@ -352,10 +400,23 @@ select.form-control {
     border: 1px solid #1E293B;
     border-radius: 10px;
 
-    &.is-income .rt-badge { background-color: rgba(16, 185, 129, 0.15); color: #10B981; }
-    &.is-expense .rt-badge { background-color: rgba(239, 68, 68, 0.15); color: #EF4444; }
-    &.is-income .rt-amount { color: #10B981; }
-    &.is-expense .rt-amount { color: #EF4444; }
+    &.is-income .rt-badge {
+        background-color: rgba(16, 185, 129, 0.15);
+        color: #10B981;
+    }
+
+    &.is-expense .rt-badge {
+        background-color: rgba(239, 68, 68, 0.15);
+        color: #EF4444;
+    }
+
+    &.is-income .rt-amount {
+        color: #10B981;
+    }
+
+    &.is-expense .rt-amount {
+        color: #EF4444;
+    }
 }
 
 .rt-badge {
@@ -406,10 +467,14 @@ select.form-control {
     gap: 10px;
     align-items: end;
 
-    @media (max-width: 700px) {
-        grid-template-columns: 1fr 1fr;
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 14px;
 
-        .add-btn { grid-column: span 2; }
+        .add-btn {
+            grid-column: span 1;
+            padding: 14px 16px;
+        }
     }
 }
 
@@ -428,6 +493,10 @@ select.form-control {
     background-color: #0F172A;
     border: 1px solid #1E293B;
     border-radius: 10px;
+
+    @media (max-width: 480px) {
+        flex-wrap: wrap;
+    }
 }
 
 .budget-category-pill {
@@ -467,6 +536,10 @@ select.form-control {
     flex-shrink: 0;
     transition: color 0.2s ease, background-color 0.2s ease;
 
+    @media (max-width: 768px) {
+        padding: 10px;
+    }
+
     &:hover {
         color: #EF4444;
         background-color: rgba(239, 68, 68, 0.1);
@@ -480,7 +553,7 @@ select.form-control {
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 
-    @media (max-width: 700px) {
+    @media (max-width: 768px) {
         grid-template-columns: 1fr;
     }
 }

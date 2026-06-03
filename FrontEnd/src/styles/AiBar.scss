@@ -2,8 +2,11 @@
 .spin-anim {
   animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Barra da IA */
@@ -16,11 +19,20 @@
   display: flex;
   flex-direction: column;
   gap: 15px;
+  margin-top: 20px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
 
   .ai-input-group {
     display: flex;
     gap: 10px;
     align-items: center;
+
+    @media (max-width: 768px) {
+      gap: 8px;
+    }
   }
 
   .mic-btn {
@@ -35,12 +47,22 @@
     justify-content: center;
     cursor: pointer;
     transition: all 0.3s;
+    flex-shrink: 0;
 
     &.listening {
       background-color: #EF4444;
       color: white;
     }
-    &:disabled { cursor: not-allowed; opacity: 0.6; }
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    @media (max-width: 768px) {
+      width: 44px;
+      height: 44px;
+    }
   }
 
   .ai-input {
@@ -51,7 +73,15 @@
     color: white;
     border: 1px solid #334155;
     font-size: 16px;
-    &:disabled { opacity: 0.7; }
+    min-width: 0;
+
+    &:disabled {
+      opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+      padding: 12px;
+    }
   }
 
   .send-btn {
@@ -67,14 +97,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 
-    &:disabled { background-color: #334155; color: #94A3B8; cursor: not-allowed; }
+    &:disabled {
+      background-color: #334155;
+      color: #94A3B8;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+      padding: 0 16px;
+      height: 44px;
+    }
   }
 
   .ai-controls {
     display: flex;
     justify-content: flex-end;
-    
+
     .quick-insert-label {
       display: flex;
       align-items: center;
@@ -83,44 +123,102 @@
       font-size: 14px;
       cursor: pointer;
 
-      input { accent-color: #06B6D4; cursor: pointer; width: 16px; height: 16px; }
+      input {
+        accent-color: #06B6D4;
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+      }
     }
   }
 }
 
 /* Modal de Confirmação */
 .ai-modal-overlay {
-  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
   background-color: rgba(11, 18, 33, 0.8);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 1000; backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .ai-modal-content {
-  background-color: #151E2D; padding: 30px; border-radius: 16px;
-  border: 1px solid #06B6D4; width: 400px; position: relative;
+  background-color: #151E2D;
+  padding: 30px;
+  border-radius: 16px;
+  border: 1px solid #06B6D4;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
   box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
+  box-sizing: border-box;
 
-  .close-btn {
-    position: absolute; top: 20px; right: 20px;
-    background: none; border: none; color: #94A3B8; cursor: pointer;
+  @media (max-width: 768px) {
+    padding: 24px 20px;
   }
 
-  .modal-title { margin: 0 0 8px 0; color: white; font-size: 20px; }
-  .modal-subtitle { color: #94A3B8; font-size: 14px; margin-bottom: 20px; }
-  
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: #94A3B8;
+    cursor: pointer;
+  }
+
+  .modal-title {
+    margin: 0 0 8px 0;
+    color: white;
+    font-size: 20px;
+  }
+
+  .modal-subtitle {
+    color: #94A3B8;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
   .input-stack {
-    display: flex; flex-direction: column; gap: 15px;
-    input, select {
-      padding: 12px; border-radius: 8px; background-color: #0F172A;
-      color: white; border: 1px solid #334155;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    input,
+    select {
+      padding: 12px;
+      border-radius: 8px;
+      background-color: #0F172A;
+      color: white;
+      border: 1px solid #334155;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: 16px;
     }
   }
 
   .save-btn {
-    width: 100%; padding: 12px; background-color: #06B6D4; color: white;
-    border: none; border-radius: 8px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    font-weight: bold; margin-top: 25px;
+    width: 100%;
+    padding: 12px;
+    background-color: #06B6D4;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: bold;
+    margin-top: 25px;
+    box-sizing: border-box;
   }
 }

@@ -9,9 +9,19 @@
   gap: 20px;
   flex-wrap: wrap;
 
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+
   .search-wrapper {
     flex: 2;
     min-width: 250px;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      min-width: 100%;
+    }
 
     input {
       width: 100%;
@@ -22,6 +32,10 @@
       color: white;
       box-sizing: border-box;
       transition: all 0.2s ease;
+
+      @media (max-width: 768px) {
+        font-size: 16px;
+      }
 
       &:focus {
         outline: none;
@@ -37,6 +51,11 @@
     flex: 1;
     min-width: 250px;
 
+    @media (max-width: 768px) {
+      width: 100%;
+      min-width: 100%;
+    }
+
     .toggle-filters-btn {
       flex: 1;
       padding: 12px 20px;
@@ -48,7 +67,13 @@
       font-weight: 500;
       transition: all 0.2s ease;
 
-      &.active, &:hover {
+      @media (max-width: 480px) {
+        padding: 12px 10px;
+        font-size: 14px;
+      }
+
+      &.active,
+      &:hover {
         background-color: #334155;
       }
     }
@@ -63,6 +88,11 @@
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s ease;
+
+      @media (max-width: 480px) {
+        padding: 12px 10px;
+        font-size: 14px;
+      }
 
       &:hover {
         background-color: #0891B2;
@@ -82,6 +112,12 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+    gap: 20px;
+    border-radius: 12px;
+  }
 
   .filter-section {
     display: flex;
@@ -124,6 +160,13 @@
     transition: all 0.2s ease;
     min-width: 100px;
 
+    @media (max-width: 768px) {
+      flex: 1;
+      min-width: calc(50% - 6px);
+      padding: 10px 16px;
+      font-size: 13px;
+    }
+
     &:hover {
       background-color: #2A3441;
     }
@@ -133,8 +176,10 @@
       color: #0F172A;
       font-weight: 600;
       box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-      
-      svg { color: #0F172A; }
+
+      svg {
+        color: #0F172A;
+      }
     }
   }
 
@@ -154,6 +199,17 @@
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
+
+    @media (max-width: 768px) {
+      width: calc(33.333% - 8px);
+      height: 90px;
+      border-radius: 12px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 480px) {
+      width: calc(50% - 6px);
+    }
 
     .check-icon {
       position: absolute;
@@ -193,18 +249,43 @@
     padding-top: 16px;
     border-top: 1px solid #1E293B;
 
+    @media (max-width: 768px) {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 20px;
+    }
+
     .amounts-group {
       display: flex;
       gap: 16px;
+
+      @media (max-width: 768px) {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 16px !important;
+      }
 
       .input-group {
         display: flex;
         flex-direction: column;
         gap: 6px;
 
+        @media (max-width: 768px) {
+          flex: 1;
+          width: 100%;
+          min-width: 0;
+        }
+
         label {
           color: #94A3B8;
           font-size: 13px;
+
+          @media (max-width: 768px) {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
         }
 
         input {
@@ -214,6 +295,11 @@
           padding: 10px 16px;
           border-radius: 8px;
           width: 120px;
+
+          @media (max-width: 768px) {
+            width: 100% !important;
+            font-size: 16px;
+          }
 
           &:focus {
             outline: none;
@@ -227,6 +313,11 @@
       display: flex;
       gap: 12px;
 
+      @media (max-width: 768px) {
+        width: 100%;
+        flex-direction: column-reverse;
+      }
+
       .clear-btn {
         padding: 10px 20px;
         background-color: transparent;
@@ -235,6 +326,11 @@
         border-radius: 8px;
         cursor: pointer;
         transition: 0.2s;
+
+        @media (max-width: 768px) {
+          width: 100%;
+          padding: 14px 20px;
+        }
 
         &:hover {
           background-color: #1E293B;
@@ -251,6 +347,12 @@
         font-weight: 600;
         cursor: pointer;
         transition: 0.2s;
+
+        @media (max-width: 768px) {
+          width: 100%;
+          padding: 14px 20px;
+          font-size: 16px;
+        }
 
         &:hover {
           background-color: #0891B2;

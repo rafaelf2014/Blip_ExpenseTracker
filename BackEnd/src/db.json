@@ -32,6 +32,10 @@
         {
           "month": "2026-05",
           "balance": 10000
+        },
+        {
+          "month": "2026-06",
+          "balance": 10000
         }
       ],
       "budgetUtilHistory": [
@@ -42,6 +46,10 @@
         {
           "month": "2026-05",
           "utilization": 0
+        },
+        {
+          "month": "2026-06",
+          "utilization": 0
         }
       ],
       "savingsRateHistory": [
@@ -51,6 +59,10 @@
         },
         {
           "month": "2026-05",
+          "rate": 0
+        },
+        {
+          "month": "2026-06",
           "rate": 0
         }
       ]

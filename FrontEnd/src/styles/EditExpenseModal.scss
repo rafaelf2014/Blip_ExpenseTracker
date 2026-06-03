@@ -10,6 +10,8 @@
   justify-content: center;
   z-index: 1000;
   backdrop-filter: blur(4px);
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .edit-modal-card {
@@ -17,9 +19,15 @@
   padding: 30px;
   border-radius: 16px;
   border: 1px solid #2A3441;
-  width: 400px;
+  width: 100%;
+  max-width: 400px;
   position: relative;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    padding: 24px 20px;
+  }
 
   .close-btn {
     position: absolute;
@@ -61,6 +69,10 @@
       width: 100%;
       transition: border-color 0.2s ease;
 
+      @media (max-width: 768px) {
+        font-size: 16px;
+      }
+
       &:focus {
         outline: none;
         border-color: #06B6D4;
@@ -82,6 +94,11 @@
     gap: 15px;
     margin-top: 25px;
 
+    @media (max-width: 768px) {
+      flex-direction: column-reverse;
+      gap: 12px;
+    }
+
     .delete-btn {
       flex: 1;
       padding: 12px;
@@ -96,6 +113,8 @@
       gap: 8px;
       font-weight: bold;
       transition: all 0.2s ease;
+      width: 100%;
+      box-sizing: border-box;
 
       &:hover {
         background-color: rgba(239, 68, 68, 0.1);
@@ -116,6 +135,12 @@
       gap: 8px;
       font-weight: bold;
       transition: all 0.2s ease;
+      width: 100%;
+      box-sizing: border-box;
+
+      @media (max-width: 768px) {
+        flex: 1;
+      }
 
       &:hover {
         background-color: #0891B2;

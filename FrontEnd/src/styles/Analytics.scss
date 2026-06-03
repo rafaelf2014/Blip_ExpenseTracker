@@ -18,7 +18,9 @@ $border-color: #334155;
     font-weight: 500;
     transition: background-color 0.2s;
 
-    &:hover { background-color: #334155; }
+    &:hover {
+        background-color: #334155;
+    }
 }
 
 // ── Chart cards ───────────────────────────────────────────────────────────────
@@ -28,7 +30,9 @@ $border-color: #334155;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
 
-    @media (max-width: 900px) { grid-template-columns: 1fr; }
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
 }
 
 .chart-card {
@@ -106,13 +110,23 @@ $border-color: #334155;
         margin-bottom: 8px;
     }
 
-    .income  { color: #10B981; font-size: 13px; }
-    .expense { color: #EF4444; font-size: 13px; margin-top: 4px; }
+    .income {
+        color: #10B981;
+        font-size: 13px;
+    }
+
+    .expense {
+        color: #EF4444;
+        font-size: 13px;
+        margin-top: 4px;
+    }
 
     &.pie-tooltip {
         min-width: 130px;
 
-        .label { margin-bottom: 4px; }
+        .label {
+            margin-bottom: 4px;
+        }
     }
 
     .pie-value {
@@ -131,6 +145,8 @@ $border-color: #334155;
 // ── Top categories card ───────────────────────────────────────────────────────
 
 .top-categories-card {
+    margin-bottom: 80px;
+
     .categories-list {
         display: flex;
         flex-direction: column;
