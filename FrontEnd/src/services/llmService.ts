@@ -295,10 +295,11 @@ export function detectChatIntent(userInput: string): 'QUERY' | 'UNKNOWN' {
         'quanto', 'qual', 'quais', 'lista', 'mostra', 'analisa', 'resumo', 'total',
         'media', 'maior', 'menor', 'orcamento', 'recebi', 'rendimento', 'quantas', 'quantos',
         'historico', 'maximo', 'duplicad', 'repetid', 'redondo', 'frequen', 'gastei', 'gasto',
+        'transac', 'abaixo', 'acima', 'despesa', 'despesas',
         // English
         'how much', 'how many', 'show', 'list', 'what', 'which', 'largest', 'biggest',
         'average', 'budget', 'income', 'salary', 'percentage', 'percent', 'duplicate',
-        'most used', 'frequent', 'distinct', 'spent', 'spend',
+        'most used', 'frequent', 'distinct', 'spent', 'spend', 'transactions', 'expenses',
     ];
     if (queryKeywords.some(kw => norm.includes(kw))) return 'QUERY';
     return 'UNKNOWN';
@@ -644,8 +645,37 @@ export async function askFinancialQuestion(
     }
 
     if (queryType === 'AVERAGE') {
+        const isDaily   = /\b(?:daily|per day|por dia|diario|diaria|media diaria)\b/.test(norm);
+        const isWeekly  = /\b(?:weekly|per week|por semana|semanal|media semanal)\b/.test(norm);
+        const isMonthly = /\b(?:monthly|per month|por mes|mensal|media mensal)\b/.test(norm);
+        const isYearly  = /\b(?:yearly|annual|per year|por ano|anual|media anual)\b/.test(norm);
+
+        if (isDaily || isWeekly || isMonthly || isYearly) {
+            let divisor = 1;
+            let unit = '';
+
+            const periodDays = (() => {
+                if (minDate && maxDate)
+                    return Math.round((new Date(maxDate).getTime() - new Date(minDate).getTime()) / 86_400_000) + 1;
+                if (tMonth && tYear) return new Date(tYear, tMonth, 0).getDate();
+                if (tYear) return 365;
+                // all-time: use actual date range from expenses
+                if (filteredExpenses.length === 0) return 1;
+                const dates = filteredExpenses.map(e => new Date(e.date.split('T')[0]).getTime());
+                return Math.round((Math.max(...dates) - Math.min(...dates)) / 86_400_000) + 1;
+            })();
+
+            if (isDaily)   { divisor = Math.max(1, periodDays);        unit = 'dia'; }
+            if (isWeekly)  { divisor = Math.max(1, periodDays / 7);    unit = 'semana'; }
+            if (isMonthly) { divisor = Math.max(1, periodDays / 30.44); unit = 'mês'; }
+            if (isYearly)  { divisor = Math.max(1, periodDays / 365);  unit = 'ano'; }
+
+            const avg = totalSpent / divisor;
+            return `Gasto médio por ${unit} em ${catStr} ${dateResultStr}: ${avg.toFixed(2)}€.`;
+        }
+
         const avg = totalSpent / filteredExpenses.length;
-        return `Gasto médio em ${catStr} ${dateResultStr}: ${avg.toFixed(2)}€ (${filteredExpenses.length} transação/ões).`;
+        return `Gasto médio por transação em ${catStr} ${dateResultStr}: ${avg.toFixed(2)}€ (${filteredExpenses.length} transação/ões).`;
     }
 
     if (queryType === 'LIST') {

@@ -60,7 +60,7 @@ export function AiChatBot() {
             .catch(console.error);
 
         fetchExpenses();
-    }, [userId, fetchExpenses]);
+    }, [userId, location.pathname, fetchExpenses]);
 
     useEffect(() => {
         window.addEventListener('blip:expense-added', fetchExpenses);
