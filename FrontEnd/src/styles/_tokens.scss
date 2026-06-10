@@ -1,0 +1,53 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Design tokens — single source of truth for the BLIP palette, radii and spacing.
+// Import in any SCSS file with:  @use '../styles/tokens' as *;  (or `as t`).
+// ─────────────────────────────────────────────────────────────────────────────
+
+// ── Backgrounds ──────────────────────────────────────────────────────────────
+$bg-app:      #0B1221;            // page / body background (deep navy)
+$bg-surface:  #1E293B;            // solid cards, panels, table headers (slate-800)
+$bg-card:     rgba(#1E293B, 0.5); // translucent card surface (slate-800 / 50%)
+$bg-surface-2:#2A3441;            // raised surface (hover rows, nested fields)
+$bg-input:    #0F172A;            // form control background
+
+// ── Borders ──────────────────────────────────────────────────────────────────
+$border:      #334155;             // default border (slate-700)
+$border-soft: rgba(#334155, 0.5);  // subtle dividers
+
+// ── Text ─────────────────────────────────────────────────────────────────────
+$text:        #F8FAFC;   // primary text (slate-50)
+$text-muted:  #94A3B8;   // secondary text (slate-400)
+$text-faint:  #64748B;   // placeholders / hints (slate-500)
+$text-dim:    #475569;   // disabled / faint placeholders (slate-600)
+
+// ── Accent (brand cyan) ────────────────────────────────────────────────────────
+$accent:        #06B6D4; // primary action / focus / active
+$accent-hover:  #0891B2; // hover state for accent
+$accent-soft:   rgba(#06B6D4, 0.5);
+
+// ── Semantic ───────────────────────────────────────────────────────────────────
+$green:       #10B981;
+$green-light: #34D399;
+$green-dark:  #059669;
+$red:         #EF4444;
+$red-light:   #F87171;
+$red-dark:    #DC2626;
+$yellow:      #F59E0B;
+
+// ── Radius ─────────────────────────────────────────────────────────────────────
+$radius-sm:   8px;    // buttons, pills
+$radius-md:   10px;   // inputs / form controls
+$radius-lg:   16px;   // cards, panels, modals
+$radius-full: 999px;  // round badges
+
+// ── Typography ─────────────────────────────────────────────────────────────────
+$font: 'Space Grotesk', sans-serif;
+
+// ── Shared card surface ──────────────────────────────────────────────────────────
+// Solid slate card used across every page (Dashboard, Settings, Analytics, …).
+%card {
+  background: $bg-surface;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  padding: 24px;
+}

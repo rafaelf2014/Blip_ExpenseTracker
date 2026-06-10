@@ -1,7 +1,9 @@
+@use 'tokens' as *;
+
 .sidebar {
     width: 120px;
-    background-color: #0F172A;
-    border-right: 1px solid #1E293B;
+    background-color: $bg-app;
+    border-right: 1px solid $bg-surface;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -15,7 +17,7 @@
     .sidebar-logo {
         width: 68px;
         height: 68px;
-        background: linear-gradient(135deg, #06B6D4, #0891B2);
+        background: linear-gradient(135deg, $accent, $accent-hover);
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -39,13 +41,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #94A3B8;
+            color: $text-muted;
             transition: all 0.3s ease;
             position: relative;
             text-decoration: none;
 
             &:hover {
-                background-color: #1E293B;
+                background-color: $bg-surface;
                 color: white;
 
                 .tooltip {
@@ -55,7 +57,7 @@
             }
 
             &.active {
-                background-color: #06B6D4;
+                background-color: $accent;
                 color: white;
                 box-shadow: 0 4px 12px rgba(6, 182, 212, 0.4);
             }
@@ -66,7 +68,7 @@
 .tooltip {
     position: absolute;
     left: 85px;
-    background-color: #1E293B;
+    background-color: $bg-surface;
     color: white;
     padding: 8px 12px;
     border-radius: 8px;

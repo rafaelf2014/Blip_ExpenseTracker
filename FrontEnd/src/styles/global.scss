@@ -1,9 +1,11 @@
+@use 'tokens' as *;
+
 body {
   margin: 0;
   padding: 0;
-  background-color: #0F172A;
-  color: #F8FAFC;
-  font-family: 'Space Grotesk', sans-serif;
+  background-color: $bg-app;
+  color: $text;
+  font-family: $font;
   min-height: 100vh;
   overflow-x: hidden;
 }

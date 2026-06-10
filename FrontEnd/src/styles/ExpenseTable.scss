@@ -1,13 +1,15 @@
+@use 'tokens' as *;
+
 .expense-table-container {
   margin-top: 20px;
-  background-color: rgba(30, 41, 59, 0.4);
-  border-radius: 16px;
-  border: 1px solid #334155;
+  background-color: $bg-card;
+  border-radius: $radius-lg;
+  border: 1px solid $border;
   overflow: hidden;
   backdrop-filter: blur(10px);
 
   .empty-state {
-    color: #64748B;
+    color: $text-faint;
     text-align: center;
     padding: 60px;
     font-size: 20px;
@@ -20,10 +22,10 @@
 
     thead {
       background-color: rgba(15, 23, 42, 0.5);
-      border-bottom: 1px solid #334155;
+      border-bottom: 1px solid $border;
       tr {
-        border-bottom: 1px solid #2A3441;
-        color: #94A3B8;
+        border-bottom: 1px solid $bg-surface-2;
+        color: $text-muted;
         font-size: 16px;
 
         th {
@@ -47,12 +49,12 @@
 
     tbody {
       tr {
-        border-bottom: 1px solid #2A3441;
-        color: #F8FAFC;
+        border-bottom: 1px solid $bg-surface-2;
+        color: $text;
         transition: background-color 0.2s;
 
         &:hover {
-          background-color: rgba(30, 41, 59, 0.5); /* Adicionei um pequeno hover para ficar melhor! */
+          background-color: $bg-card; /* Adicionei um pequeno hover para ficar melhor! */
         }
 
         td {
@@ -69,19 +71,19 @@
               width: 48px;
               height: 48px;
               border-radius: 50%;
-              background-color: #1E293B;
+              background-color: $bg-surface;
               display: flex;
               align-items: center;
               justify-content: center;
-              color: #06B6D4;
+              color: $accent;
               flex-shrink: 0;
             }
           }
 
           &.category-col {
             .category-pill {
-              background-color: #1E293B;
-              color: #94A3B8;
+              background-color: $bg-surface;
+              color: $text-muted;
               padding: 10px 16px;
               border-radius: 20px;
               font-size: 15px;
@@ -90,7 +92,7 @@
           }
 
           &.date-col {
-            color: #94A3B8;
+            color: $text-muted;
             font-size: 17px;
 
             &.capitalize {
@@ -103,8 +105,8 @@
             font-weight: bold;
             font-size: 20px;
 
-            &.expense { color: #EF4444; }
-            &.income { color: #10B981; }
+            &.expense { color: $red; }
+            &.income { color: $green; }
           }
 
           &.actions-col {
@@ -113,7 +115,7 @@
             .action-btn {
               background: none;
               border: none;
-              color: #94A3B8;
+              color: $text-muted;
               cursor: pointer;
               padding: 5px;
               transition: color 0.2s;
@@ -133,13 +135,13 @@
     align-items: center;
     justify-content: space-between;
     padding: 15px 20px;
-    border-top: 1px solid #334155;
-    background-color: #0F172A;
+    border-top: 1px solid $border;
+    background-color: $bg-app;
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 
     .pagination-info {
-      color: #94A3B8;
+      color: $text-muted;
       font-size: 14px;
     }
 
@@ -153,18 +155,18 @@
       align-items: center;
       gap: 5px;
       padding: 8px 12px;
-      background-color: #334155;
+      background-color: $border;
       color: white;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.2s;
 
-      &:hover:not(:disabled) { background-color: #475569; }
+      &:hover:not(:disabled) { background-color: $text-dim; }
 
       &:disabled {
-        background-color: #1E293B;
-        color: #475569;
+        background-color: $bg-surface;
+        color: $text-dim;
         cursor: not-allowed;
       }
     }

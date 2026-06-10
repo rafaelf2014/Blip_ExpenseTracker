@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 /* Spinner de Loading */
 .spin-anim {
   animation: spin 1s linear infinite;
@@ -8,10 +10,10 @@
 
 /* Barra da IA */
 .ai-bar-container {
-  background-color: #151E2D;
+  background-color: $bg-surface;
   padding: 20px;
   border-radius: 12px;
-  border: 1px solid #06B6D4;
+  border: 1px solid $accent;
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
@@ -27,9 +29,9 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    border: 1px solid #334155;
-    background-color: #1E293B;
-    color: #06B6D4;
+    border: 1px solid $border;
+    background-color: $bg-surface;
+    color: $accent;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -37,7 +39,7 @@
     transition: all 0.3s;
 
     &.listening {
-      background-color: #EF4444;
+      background-color: $red;
       color: white;
     }
     &:disabled { cursor: not-allowed; opacity: 0.6; }
@@ -47,15 +49,15 @@
     flex: 1;
     padding: 15px;
     border-radius: 8px;
-    background-color: #0F172A;
+    background-color: $bg-app;
     color: white;
-    border: 1px solid #334155;
+    border: 1px solid $border;
     font-size: 16px;
     &:disabled { opacity: 0.7; }
   }
 
   .send-btn {
-    background-color: #06B6D4;
+    background-color: $accent;
     color: white;
     padding: 0 25px;
     height: 50px;
@@ -68,7 +70,7 @@
     align-items: center;
     justify-content: center;
 
-    &:disabled { background-color: #334155; color: #94A3B8; cursor: not-allowed; }
+    &:disabled { background-color: $border; color: $text-muted; cursor: not-allowed; }
   }
 
   .ai-controls {
@@ -79,11 +81,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #94A3B8;
+      color: $text-muted;
       font-size: 14px;
       cursor: pointer;
 
-      input { accent-color: #06B6D4; cursor: pointer; width: 16px; height: 16px; }
+      input { accent-color: $accent; cursor: pointer; width: 16px; height: 16px; }
     }
   }
 }
@@ -97,28 +99,28 @@
 }
 
 .ai-modal-content {
-  background-color: #151E2D; padding: 30px; border-radius: 16px;
-  border: 1px solid #06B6D4; width: 400px; position: relative;
+  background-color: $bg-surface; padding: 30px; border-radius: 16px;
+  border: 1px solid $accent; width: 400px; position: relative;
   box-shadow: 0 10px 25px rgba(6, 182, 212, 0.2);
 
   .close-btn {
     position: absolute; top: 20px; right: 20px;
-    background: none; border: none; color: #94A3B8; cursor: pointer;
+    background: none; border: none; color: $text-muted; cursor: pointer;
   }
 
   .modal-title { margin: 0 0 8px 0; color: white; font-size: 20px; }
-  .modal-subtitle { color: #94A3B8; font-size: 14px; margin-bottom: 20px; }
+  .modal-subtitle { color: $text-muted; font-size: 14px; margin-bottom: 20px; }
   
   .input-stack {
     display: flex; flex-direction: column; gap: 15px;
     input, select {
-      padding: 12px; border-radius: 8px; background-color: #0F172A;
-      color: white; border: 1px solid #334155;
+      padding: 12px; border-radius: 8px; background-color: $bg-app;
+      color: white; border: 1px solid $border;
     }
   }
 
   .save-btn {
-    width: 100%; padding: 12px; background-color: #06B6D4; color: white;
+    width: 100%; padding: 12px; background-color: $accent; color: white;
     border: none; border-radius: 8px; cursor: pointer;
     display: flex; align-items: center; justify-content: center; gap: 8px;
     font-weight: bold; margin-top: 25px;

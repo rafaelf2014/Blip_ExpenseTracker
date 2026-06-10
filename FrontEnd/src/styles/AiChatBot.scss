@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 .ai-fab-container {
     position: fixed;
     bottom: 30px;
@@ -11,7 +13,7 @@
         width: 60px;
         height: 60px;
         border-radius: 50%;
-        background-color: #00C9DB;
+        background-color: $accent;
         color: white;
         border: none;
         box-shadow: 0 10px 25px rgba(0, 201, 219, 0.4);
@@ -39,7 +41,7 @@
         right: 0;
         width: 360px;
         height: 550px;
-        background-color: #0F172A;
+        background-color: $bg-app;
         border-radius: 12px;
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         display: flex;
@@ -59,7 +61,7 @@
         }
 
         .chat-header {
-            background-color: #00C9DB;
+            background-color: $accent;
             padding: 16px 20px;
             display: flex;
             justify-content: space-between;
@@ -122,14 +124,14 @@
             display: flex;
             flex-direction: column;
             gap: 16px;
-            background-color: #0B1121;
+            background-color: $bg-app;
 
             &::-webkit-scrollbar {
                 width: 6px;
             }
 
             &::-webkit-scrollbar-thumb {
-                background: #1E293B;
+                background: $bg-surface;
                 border-radius: 4px;
             }
 
@@ -142,7 +144,7 @@
                     justify-content: flex-start;
 
                     .msg-avatar {
-                        background-color: #00C9DB;
+                        background-color: $accent;
                         color: white;
                         width: 28px;
                         height: 28px;
@@ -155,8 +157,8 @@
                     }
 
                     .message-bubble {
-                        background-color: #1E293B;
-                        color: #F8FAFC;
+                        background-color: $bg-surface;
+                        color: $text;
                         border-radius: 4px 16px 16px 16px;
                     }
                 }
@@ -165,7 +167,7 @@
                     justify-content: flex-end;
 
                     .message-bubble {
-                        background-color: #00C9DB;
+                        background-color: $accent;
                         color: white;
                         border-radius: 16px 4px 16px 16px;
                     }
@@ -182,7 +184,7 @@
                         display: flex;
                         align-items: center;
                         gap: 8px;
-                        color: #94A3B8;
+                        color: $text-muted;
                         font-style: italic;
 
                         .spin {
@@ -194,16 +196,16 @@
         }
 
         .chat-footer {
-            background-color: #0B1121;
+            background-color: $bg-app;
             padding: 16px;
             display: flex;
             gap: 8px;
-            border-top: 1px solid #1E293B;
+            border-top: 1px solid $bg-surface;
 
             input {
                 flex: 1;
-                background-color: #151E32;
-                border: 1px solid #1E293B;
+                background-color: $bg-surface;
+                border: 1px solid $bg-surface;
                 color: white;
                 padding: 12px 16px;
                 border-radius: 20px;
@@ -211,11 +213,11 @@
                 outline: none;
 
                 &::placeholder {
-                    color: #64748B;
+                    color: $text-faint;
                 }
 
                 &:focus {
-                    border-color: #00C9DB;
+                    border-color: $accent;
                 }
             }
 
@@ -231,32 +233,32 @@
                 transition: 0.2s;
 
                 &.mic {
-                    background-color: #151E32;
-                    color: #94A3B8;
+                    background-color: $bg-surface;
+                    color: $text-muted;
 
                     &:hover {
                         color: white;
-                        background-color: #1E293B;
+                        background-color: $bg-surface;
                     }
 
                     &.listening {
-                        color: #EF4444;
+                        color: $red;
                         animation: pulse-mic 1.5s infinite;
                     }
                 }
 
                 &.send {
-                    background-color: #00C9DB;
+                    background-color: $accent;
                     color: white;
 
                     &:hover {
-                        background-color: #00B1C1;
+                        background-color: $accent-hover;
                         transform: scale(1.05);
                     }
 
                     &:disabled {
-                        background-color: #1E293B;
-                        color: #64748B;
+                        background-color: $bg-surface;
+                        color: $text-faint;
                         cursor: not-allowed;
                         transform: none;
                     }

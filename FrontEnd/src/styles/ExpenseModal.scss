@@ -1,3 +1,5 @@
+@use 'tokens' as *;
+
 // ExpenseModal.scss
 
 .modal-overlay {
@@ -19,7 +21,7 @@
     width: 100%;
     max-width: 420px;
     background-color: rgba(17, 24, 39, 0.95);
-    border: 1px solid #334155;
+    border: 1px solid $border;
     border-radius: 24px;
     padding: 32px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -43,20 +45,20 @@
         margin-top: 16px;
 
         .btn-cancel {
-            background-color: #EF4444;
+            background-color: $red;
             color: white;
 
             &:hover {
-                background-color: #DC2626;
+                background-color: $red-dark;
             }
         }
 
         .btn-save {
-            background-color: #10B981;
+            background-color: $green;
             color: white;
 
             &:hover {
-                background-color: #059669;
+                background-color: $green-dark;
             }
         }
     }
