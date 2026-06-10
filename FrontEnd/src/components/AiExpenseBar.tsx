@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Mic, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { initLLM, extractExpenseFromText } from '../services/llmService';
@@ -15,6 +16,7 @@ type AiExpenseBarProps = {
 };
 
 export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded }: AiExpenseBarProps) {
+  const { t } = useTranslation();
   const [aiInput, setAiInput] = useState('');
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -34,7 +36,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
       setPendingAiExpense(null);
       onExpenseAdded();
     } else {
-      toast.error('Erro ao guardar a despesa.');
+      toast.error(t('aiBar.error_save'));
     }
   };
 
@@ -53,28 +55,28 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
       }
     } catch (error) {
       console.error("Erro no processamento da IA:", error);
-      toast.error('Não foi possível processar a despesa. Tenta novamente.');
+      toast.error(t('aiBar.error_process'));
     } finally {
       setIsAiLoading(false);
     }
   };
 
   const handleVoiceInput = () => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) { toast.error("O teu browser não suporta reconhecimento de voz."); return; }
+    const SpeechRecognitionImpl = window.SpeechRecognition ?? window.webkitSpeechRecognition;
+    if (!SpeechRecognitionImpl) { toast.error(t('aiBar.error_no_voice')); return; }
 
-    const recognition = new SpeechRecognition();
+    const recognition = new SpeechRecognitionImpl();
     recognition.lang = 'pt-PT';
     recognition.interimResults = false;
 
     recognition.onstart = () => {
       setIsListening(true);
-      setAiInput(''); 
+      setAiInput('');
     };
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
-      setAiInput(transcript); 
+      setAiInput(transcript);
       handleAIAssistant(transcript); // O Auto-envio por voz acontece aqui!
     };
 
@@ -91,7 +93,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
           onClick={handleVoiceInput}
           disabled={isAiLoading || isListening}
           className={`mic-btn ${isListening ? 'listening' : ''}`}
-          title="Falar despesa"
+          title={t('aiBar.speak_title')}
         >
           <Mic size={24} />
         </button>
@@ -100,7 +102,7 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
           type="text" 
           value={aiInput}
           onChange={(e) => setAiInput(e.target.value)}
-          placeholder={isListening ? "A ouvir..." : "Ex: Paguei 40€ de eletricidade ontem..."}
+          placeholder={isListening ? t('aiBar.listening') : t('aiBar.placeholder')}
           disabled={isAiLoading}
           className="ai-input"
         />
@@ -110,14 +112,14 @@ export function AiExpenseBar({ userId, categories, expenseTypes, onExpenseAdded 
           disabled={isAiLoading || !aiInput.trim()}
           className="send-btn"
         >
-          {isAiLoading ? <Loader2 className="spin-anim" size={24} /> : 'Enviar'}
+          {isAiLoading ? <Loader2 className="spin-anim" size={24} /> : t('aiBar.send')}
         </button>
       </div>
       
       <div className="ai-controls">
         <label className="quick-insert-label">
           <input type="checkbox" checked={quickInsert} onChange={(e) => setQuickInsert(e.target.checked)} />
-          Quick Insert (Ignorar janela de confirmação)
+          {t('aiBar.quick_insert')}
         </label>
       </div>
 

@@ -1,4 +1,4 @@
-import type { Expense, RegularTransaction } from '../types';
+import type { Expense, RegularTransaction, Budget } from '../types';
 
 // usa componentes locais para evitar desvios de fuso horário à meia-noite
 export function toLocalDateStr(d: Date): string {
@@ -40,7 +40,7 @@ export function countOccurrences(rt: RegularTransaction, start: Date, end: Date)
 
   if (rt.frequency === 'monthly') {
     const day = startDate.getDate();
-    let cursor = new Date(start.getFullYear(), start.getMonth(), day);
+    const cursor = new Date(start.getFullYear(), start.getMonth(), day);
     if (cursor < start) cursor.setMonth(cursor.getMonth() + 1);
     let count = 0;
     while (cursor <= end) {
@@ -69,8 +69,7 @@ export function calcIncome(regularTransactions: RegularTransaction[], start: Dat
     .reduce((sum, rt) => sum + countOccurrences(rt, start, end) * rt.amount, 0);
 }
 
-// Returns a predicate for filtering expenses by a named time period.
-// Date bounds are computed once per call, not once per expense.
+
 export function makeTimeFilter(filterTime: string): (e: Expense) => boolean {
   if (filterTime === '') return () => true;
   const today        = new Date();
@@ -89,4 +88,38 @@ export function makeTimeFilter(filterTime: string): (e: Expense) => boolean {
 
 export function filterByTime(expenses: Expense[], filterTime: string): Expense[] {
   return expenses.filter(makeTimeFilter(filterTime));
+}
+
+export type MonthlyMetrics = {
+  monthSpent: number;
+  monthIncome: number;
+  /** % dos orçamentos mensais já gastos; null se não há orçamentos. */
+  budgetUtilization: number | null;
+  /** % do rendimento poupado; null se não há rendimento. */
+  savingsRate: number | null;
+};
+
+/**
+ * Métricas-chave de um mês: total gasto, rendimento, utilização de orçamento e
+ * taxa de poupança. Centraliza a matemática partilhada pelo histórico e pelos quick stats.
+ */
+export function computeMonthlyMetrics(
+  monthExpenses: Expense[],
+  budgets: Budget[],
+  regularTransactions: RegularTransaction[],
+  start: Date,
+  end: Date,
+): MonthlyMetrics {
+  const monthSpent  = monthExpenses.reduce((s, e) => s + Number(e.amount), 0);
+  const monthIncome = calcIncome(regularTransactions, start, end);
+
+  const monthlyBudgets   = budgets.filter(b => b.period === 'monthly');
+  const totalBudgetLimit = monthlyBudgets.reduce((s, b) => s + b.limit, 0);
+  const budgetSpent      = monthlyBudgets.reduce((s, b) =>
+    s + monthExpenses.filter(e => e.category === b.category).reduce((c, e) => c + Number(e.amount), 0), 0);
+
+  const budgetUtilization = totalBudgetLimit > 0 ? Math.round(budgetSpent / totalBudgetLimit * 100) : null;
+  const savingsRate       = monthIncome > 0 ? Math.round((monthIncome - monthSpent) / monthIncome * 100) : null;
+
+  return { monthSpent, monthIncome, budgetUtilization, savingsRate };
 }

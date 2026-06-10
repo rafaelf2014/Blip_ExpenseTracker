@@ -88,5 +88,56 @@
     },
     "analytics": {
         "topSpendingCategories": "Top Spending Categories"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "welcome": "Welcome back, {{username}}! Here's your financial overview.",
+        "add_expense": "+ Add Expense",
+        "total_balance": "Total Balance",
+        "monthly_income": "Monthly Income",
+        "monthly_expenses": "Monthly Expenses",
+        "weekly_expenses": "Weekly Expenses",
+        "monthly_expenses_chart": "Monthly Expenses",
+        "yearly_expenses": "Yearly Expenses",
+        "range_week": "Last 7 days",
+        "range_month": "This month",
+        "range_year": "This year",
+        "toggle_week": "Week",
+        "toggle_month": "Month",
+        "toggle_year": "Year",
+        "tooltip_spent": "Spent",
+        "quick_stats": "Quick Stats",
+        "avg_daily_spend": "Avg. Daily Spend",
+        "largest_expense": "Largest Expense",
+        "budget_utilization": "Budget Utilization",
+        "savings_rate": "Savings Rate",
+        "stats_hint": "Set budgets and regular income in Settings to unlock more stats.",
+        "recent_transactions": "Recent Transactions",
+        "empty_transactions": "No transactions yet. Add your first expense!"
+    },
+    "aiBar": {
+        "placeholder": "Ex: Paid 40€ for electricity yesterday...",
+        "listening": "Listening...",
+        "send": "Send",
+        "speak_title": "Speak expense",
+        "quick_insert": "Quick Insert (skip confirmation window)",
+        "error_save": "Could not save the expense.",
+        "error_process": "Could not process the expense. Try again.",
+        "error_no_voice": "Your browser does not support voice recognition."
+    },
+    "chatbot": {
+        "title": "Financial Assistant",
+        "subtitle": "Ask about your expenses",
+        "greeting": "Hi! I'm your financial assistant. You can ask me about your spending — for example: 'How much did I spend on food this month?'",
+        "not_understood": "I didn't understand your question. You can ask about your spending — for example: \"How much did I spend this month?\"",
+        "error": "Sorry, something went wrong. Can you try again?",
+        "thinking": "Thinking...",
+        "listening": "Listening...",
+        "placeholder": "Ask about your expenses...",
+        "voice_unsupported": "Your browser does not support voice. Use Google Chrome!",
+        "voice_listening": "Listening... You can speak!",
+        "voice_blocked": "Microphone access blocked by the browser!",
+        "voice_error": "Voice error: {{error}}",
+        "voice_in_progress": "A recording is already in progress."
     }
 }

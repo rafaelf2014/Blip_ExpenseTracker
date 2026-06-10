@@ -2,6 +2,7 @@ import { Sidebar } from '../components/Sidebar';
 import { ExpenseModal } from '../components/ExpenseModal';
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
+import { useTranslation } from 'react-i18next';
 import '../styles/Dashboard.scss';
 import { SummaryCard } from '../components/SummaryBoxes';
 import { useCurrency } from '../Context/CurrencyContext';
@@ -9,34 +10,29 @@ import { useDashboard } from '../hooks/useDashboard';
 import { formatDate } from '../utils/finance';
 import { getCategoryIcon } from '../utils/iconMapping';
 
+function StatPill({ change, higherIsBad = false }: { change: string; higherIsBad?: boolean }) {
+  const val = Number(change);
+  const positive = higherIsBad ? val <= 0 : val >= 0;
+  return (
+    <span className={`stat-pill ${positive ? 'positive' : 'negative'}`}>
+      {val > 0 ? '+' : ''}{change}%
+    </span>
+  );
+}
+
 export default function Dashboard() {
+  const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
   const {
     showForm, setShowForm, username, userId,
     categories, expenseTypes, currentBalance,
     chartPeriod, setChartPeriod,
     fetchExpenses,
-    monthSpent, monthIncome,
-    balanceChange, balancePositive,
-    incomeChange, incomePositive,
-    spentChange, spentPositive,
     chartData, highlightIndex,
-    avgDailySpend, avgDailyChange,
-    largestExpense, largestChange,
-    budgetUtilization, budgetUtilChange,
-    savingsRate, savingsRateChange,
     recentTransactions,
+    summary,
+    quickStats,
   } = useDashboard();
-
-const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad?: boolean }) => {
-    const val = Number(change);
-    const positive = higherIsBad ? val <= 0 : val >= 0;
-    return (
-      <span className={`stat-pill ${positive ? 'positive' : 'negative'}`}>
-        {val > 0 ? '+' : ''}{change}%
-      </span>
-    );
-  };
 
   return (
     <div className="dashboard-layout">
@@ -46,11 +42,11 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
 
           <header className="dashboard-header">
             <div className="header-title">
-              <h2>Dashboard</h2>
-              <p>Welcome back, <strong>{username}</strong>! Here's your financial overview.</p>
+              <h2>{t('dashboard.title')}</h2>
+              <p>{t('dashboard.welcome', { username })}</p>
             </div>
             <div className="header-actions">
-              <button className="add-expense-btn" onClick={() => setShowForm(true)}>+ Add Expense</button>
+              <button className="add-expense-btn" onClick={() => setShowForm(true)}>{t('dashboard.add_expense')}</button>
             </div>
           </header>
 
@@ -58,26 +54,26 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
 
             <div className="summary-boxes-container">
               <SummaryCard
-                title="Total Balance"
+                title={t('dashboard.total_balance')}
                 value={formatCurrency(currentBalance)}
-                change={`${Math.abs(Number(balanceChange))}%`}
-                isPositive={balancePositive}
+                change={`${Math.abs(Number(summary.balanceChange))}%`}
+                isPositive={summary.balancePositive}
                 icon={Wallet}
                 type="balance"
               />
               <SummaryCard
-                title="Monthly Income"
-                value={formatCurrency(monthIncome)}
-                change={`${Math.abs(Number(incomeChange))}%`}
-                isPositive={incomePositive}
+                title={t('dashboard.monthly_income')}
+                value={formatCurrency(summary.monthIncome)}
+                change={`${Math.abs(Number(summary.incomeChange))}%`}
+                isPositive={summary.incomePositive}
                 icon={TrendingUp}
                 type="income"
               />
               <SummaryCard
-                title="Monthly Expenses"
-                value={formatCurrency(monthSpent)}
-                change={`${Math.abs(Number(spentChange))}%`}
-                isPositive={spentPositive}
+                title={t('dashboard.monthly_expenses')}
+                value={formatCurrency(summary.monthSpent)}
+                change={`${Math.abs(Number(summary.spentChange))}%`}
+                isPositive={summary.spentPositive}
                 icon={TrendingDown}
                 type="expense"
               />
@@ -87,13 +83,13 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
               <div className="chart-box">
                 <div className="box-header">
                   <div>
-                    <h3>{chartPeriod === 'week' ? 'Weekly' : chartPeriod === 'month' ? 'Monthly' : 'Yearly'} Expenses</h3>
-                    <small>{chartPeriod === 'week' ? 'Last 7 days' : chartPeriod === 'month' ? 'This month' : 'This year'}</small>
+                    <h3>{chartPeriod === 'week' ? t('dashboard.weekly_expenses') : chartPeriod === 'month' ? t('dashboard.monthly_expenses_chart') : t('dashboard.yearly_expenses')}</h3>
+                    <small>{chartPeriod === 'week' ? t('dashboard.range_week') : chartPeriod === 'month' ? t('dashboard.range_month') : t('dashboard.range_year')}</small>
                   </div>
                   <div className="toggle-group">
-                    <button className={chartPeriod === 'week' ? 'active' : ''} onClick={() => setChartPeriod('week')}>Week</button>
-                    <button className={chartPeriod === 'month' ? 'active' : ''} onClick={() => setChartPeriod('month')}>Month</button>
-                    <button className={chartPeriod === 'year' ? 'active' : ''} onClick={() => setChartPeriod('year')}>Year</button>
+                    <button className={chartPeriod === 'week' ? 'active' : ''} onClick={() => setChartPeriod('week')}>{t('dashboard.toggle_week')}</button>
+                    <button className={chartPeriod === 'month' ? 'active' : ''} onClick={() => setChartPeriod('month')}>{t('dashboard.toggle_month')}</button>
+                    <button className={chartPeriod === 'year' ? 'active' : ''} onClick={() => setChartPeriod('year')}>{t('dashboard.toggle_year')}</button>
                   </div>
                 </div>
                 <div className="chart-wrapper">
@@ -107,11 +103,11 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
                         contentStyle={{ backgroundColor: '#1E293B', border: '1px solid #334155', borderRadius: '8px' }}
                         labelStyle={{ color: '#94A3B8', fontSize: '12px', marginBottom: '4px' }}
                         itemStyle={{ color: '#ffffff' }}
-                        formatter={(value) => [formatCurrency(Number(value ?? 0)), 'Spent']}
+                        formatter={(value) => [formatCurrency(Number(value ?? 0)), t('dashboard.tooltip_spent')]}
                       />
                       <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                        {chartData.map((_, i) => (
-                          <Cell key={i} fill={i === highlightIndex ? '#06B6D4' : '#334155'} />
+                        {chartData.map((entry, i) => (
+                          <Cell key={entry.name} fill={i === highlightIndex ? '#06B6D4' : '#334155'} />
                         ))}
                       </Bar>
                     </BarChart>
@@ -120,48 +116,48 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
               </div>
 
               <div className="quick-stats-box">
-                <h3>Quick Stats</h3>
+                <h3>{t('dashboard.quick_stats')}</h3>
                 <div className="stats-list">
                   <div className="stat-item">
                     <div className="stat-info">
-                      <span>Avg. Daily Spend</span>
-                      <strong>{formatCurrency(avgDailySpend)}</strong>
+                      <span>{t('dashboard.avg_daily_spend')}</span>
+                      <strong>{formatCurrency(quickStats.avgDailySpend)}</strong>
                     </div>
-                    <StatPill change={avgDailyChange} higherIsBad />
+                    <StatPill change={quickStats.avgDailyChange} higherIsBad />
                   </div>
 
                   <div className="stat-item">
                     <div className="stat-info">
-                      <span>Largest Expense</span>
-                      <strong>{formatCurrency(largestExpense)}</strong>
+                      <span>{t('dashboard.largest_expense')}</span>
+                      <strong>{formatCurrency(quickStats.largestExpense)}</strong>
                     </div>
-                    <StatPill change={largestChange} higherIsBad />
+                    <StatPill change={quickStats.largestChange} higherIsBad />
                   </div>
 
-                  {budgetUtilization !== null && budgetUtilChange !== null && (
+                  {quickStats.budgetUtilization !== null && quickStats.budgetUtilChange !== null && (
                     <div className="stat-item">
                       <div className="stat-info">
-                        <span>Budget Utilization</span>
-                        <strong className={budgetUtilization >= 100 ? 'stat-over' : undefined}>
-                          {budgetUtilization}%
+                        <span>{t('dashboard.budget_utilization')}</span>
+                        <strong className={quickStats.budgetUtilization >= 100 ? 'stat-over' : undefined}>
+                          {quickStats.budgetUtilization}%
                         </strong>
                       </div>
-                      <StatPill change={budgetUtilChange} higherIsBad />
+                      <StatPill change={quickStats.budgetUtilChange} higherIsBad />
                     </div>
                   )}
 
-                  {savingsRate !== null && savingsRateChange !== null && (
+                  {quickStats.savingsRate !== null && quickStats.savingsRateChange !== null && (
                     <div className="stat-item">
                       <div className="stat-info">
-                        <span>Savings Rate</span>
-                        <strong>{savingsRate}%</strong>
+                        <span>{t('dashboard.savings_rate')}</span>
+                        <strong>{quickStats.savingsRate}%</strong>
                       </div>
-                      <StatPill change={savingsRateChange} higherIsBad={false} />
+                      <StatPill change={quickStats.savingsRateChange} higherIsBad={false} />
                     </div>
                   )}
 
-                  {budgetUtilization === null && savingsRate === null && (
-                    <p className="stats-hint">Set budgets and regular income in Settings to unlock more stats.</p>
+                  {quickStats.budgetUtilization === null && quickStats.savingsRate === null && (
+                    <p className="stats-hint">{t('dashboard.stats_hint')}</p>
                   )}
                 </div>
               </div>
@@ -169,11 +165,11 @@ const StatPill = ({ change, higherIsBad = false }: { change: string; higherIsBad
 
             <section className="recent-box">
               <div className="box-header">
-                <h3>Recent Transactions</h3>
+                <h3>{t('dashboard.recent_transactions')}</h3>
               </div>
               <div className="transactions-mini-list">
                 {recentTransactions.length === 0 ? (
-                  <p className="empty-state">No transactions yet. Add your first expense!</p>
+                  <p className="empty-state">{t('dashboard.empty_transactions')}</p>
                 ) : recentTransactions.map(exp => (
                   <div key={exp.id} className="mini-item">
                     <div className="item-main">

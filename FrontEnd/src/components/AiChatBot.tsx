@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { MessageSquare, X, Bot, Mic, Send, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { initLLM, detectChatIntent, askFinancialQuestion } from '../services/llmService';
@@ -13,6 +14,8 @@ const HIDDEN_ROUTES = ['/', '/settings'];
 
 export function AiChatBot() {
     const location = useLocation();
+    const { t, i18n } = useTranslation();
+    const lang: 'en' | 'pt' = i18n.language.startsWith('pt') ? 'pt' : 'en';
 
     const [userId, setUserId]       = useState('');
     const [isOpen, setIsOpen]       = useState(false);
@@ -23,12 +26,8 @@ export function AiChatBot() {
     const [regularTransactions, setRegularTransactions] = useState<RegularTransaction[]>([]);
     const [budgets, setBudgets]                         = useState<Budget[]>([]);
 
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: 1,
-            text: "Olá! Sou o teu assistente financeiro. Podes perguntar-me sobre os teus gastos — por exemplo: 'Quanto gastei em comida este mês?'",
-            sender: 'bot',
-        }
+    const [messages, setMessages] = useState<Message[]>(() => [
+        { id: 1, text: t('chatbot.greeting'), sender: 'bot' },
     ]);
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -88,42 +87,42 @@ export function AiChatBot() {
             const intent = detectChatIntent(textToProcess);
 
             if (intent === 'QUERY') {
-                const answer = await askFinancialQuestion(textToProcess, expenses, regularTransactions, budgets);
+                const answer = await askFinancialQuestion(textToProcess, expenses, regularTransactions, budgets, lang);
                 addMessage(answer, 'bot');
             } else {
-                addMessage('Não percebi a tua pergunta. Podes perguntar sobre os teus gastos — por exemplo: "Quanto gastei este mês?"', 'bot');
+                addMessage(t('chatbot.not_understood'), 'bot');
             }
         } catch (error) {
             console.error('Erro no processamento:', error);
-            addMessage('Desculpa, ocorreu um erro. Podes tentar de novo?', 'bot');
+            addMessage(t('chatbot.error'), 'bot');
         } finally {
             setIsAiLoading(false);
         }
     };
 
     const handleVoiceInput = () => {
-        const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+        const SpeechRecognitionImpl = window.SpeechRecognition ?? window.webkitSpeechRecognition;
 
-        if (!SpeechRecognition) {
-            toast.error('O teu browser não suporta voz. Usa o Google Chrome!');
+        if (!SpeechRecognitionImpl) {
+            toast.error(t('chatbot.voice_unsupported'));
             return;
         }
 
-        const recognition = new SpeechRecognition();
-        recognition.lang = 'pt-PT';
+        const recognition = new SpeechRecognitionImpl();
+        recognition.lang = lang === 'pt' ? 'pt-PT' : 'en-US';
         recognition.interimResults = false;
 
-        recognition.onstart  = () => { setIsListening(true); toast.success('A ouvir... Podes falar!'); };
-        recognition.onresult = (event: any) => handleSendMessage(event.results[0][0].transcript);
-        recognition.onerror  = (event: any) => {
+        recognition.onstart  = () => { setIsListening(true); toast.success(t('chatbot.voice_listening')); };
+        recognition.onresult = (event: SpeechRecognitionEvent) => handleSendMessage(event.results[0][0].transcript);
+        recognition.onerror  = (event: SpeechRecognitionErrorEvent) => {
             setIsListening(false);
-            if (event.error === 'not-allowed') toast.error('Acesso ao microfone bloqueado pelo browser!');
-            else toast.error(`Erro de voz: ${event.error}`);
+            if (event.error === 'not-allowed') toast.error(t('chatbot.voice_blocked'));
+            else toast.error(t('chatbot.voice_error', { error: event.error }));
         };
         recognition.onend = () => setIsListening(false);
 
         try { recognition.start(); }
-        catch { toast.error('Já existe uma gravação em curso.'); }
+        catch { toast.error(t('chatbot.voice_in_progress')); }
     };
 
     return (
@@ -133,8 +132,8 @@ export function AiChatBot() {
                     <div className="header-info">
                         <div className="bot-avatar"><Bot size={22} color="#00C9DB" /></div>
                         <div className="header-titles">
-                            <h3>Financial Assistant</h3>
-                            <p>Ask about your expenses</p>
+                            <h3>{t('chatbot.title')}</h3>
+                            <p>{t('chatbot.subtitle')}</p>
                         </div>
                     </div>
                     <button onClick={() => setIsOpen(false)} className="close-btn"><X size={20} /></button>
@@ -150,7 +149,7 @@ export function AiChatBot() {
                     {isAiLoading && (
                         <div className="message-row bot">
                             <div className="msg-avatar"><Bot size={16} /></div>
-                            <div className="message-bubble loading"><Loader2 className="spin" size={16} /> A pensar...</div>
+                            <div className="message-bubble loading"><Loader2 className="spin" size={16} /> {t('chatbot.thinking')}</div>
                         </div>
                     )}
                     <div ref={messagesEndRef} />
@@ -162,7 +161,7 @@ export function AiChatBot() {
                         value={inputValue}
                         onChange={e => setInputValue(e.target.value)}
                         onKeyDown={e => e.key === 'Enter' && handleSendMessage(inputValue)}
-                        placeholder={isListening ? 'A ouvir...' : 'Ask about your expenses...'}
+                        placeholder={isListening ? t('chatbot.listening') : t('chatbot.placeholder')}
                         disabled={isAiLoading}
                     />
                     <button onClick={handleVoiceInput} disabled={isAiLoading || isListening} className={`action-btn mic ${isListening ? 'listening' : ''}`}>

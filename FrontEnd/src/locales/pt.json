@@ -88,5 +88,56 @@
     },
     "analytics": {
         "topSpendingCategories": "Categorias com Mais Gastos"
+    },
+    "dashboard": {
+        "title": "Painel",
+        "welcome": "Bem-vindo de volta, {{username}}! Aqui está o teu resumo financeiro.",
+        "add_expense": "+ Adicionar Despesa",
+        "total_balance": "Saldo Total",
+        "monthly_income": "Rendimento Mensal",
+        "monthly_expenses": "Despesas Mensais",
+        "weekly_expenses": "Despesas Semanais",
+        "monthly_expenses_chart": "Despesas Mensais",
+        "yearly_expenses": "Despesas Anuais",
+        "range_week": "Últimos 7 dias",
+        "range_month": "Este mês",
+        "range_year": "Este ano",
+        "toggle_week": "Semana",
+        "toggle_month": "Mês",
+        "toggle_year": "Ano",
+        "tooltip_spent": "Gasto",
+        "quick_stats": "Estatísticas Rápidas",
+        "avg_daily_spend": "Gasto Diário Médio",
+        "largest_expense": "Maior Despesa",
+        "budget_utilization": "Utilização do Orçamento",
+        "savings_rate": "Taxa de Poupança",
+        "stats_hint": "Define orçamentos e rendimento regular nas Definições para desbloquear mais estatísticas.",
+        "recent_transactions": "Transações Recentes",
+        "empty_transactions": "Ainda não há transações. Adiciona a tua primeira despesa!"
+    },
+    "aiBar": {
+        "placeholder": "Ex: Paguei 40€ de eletricidade ontem...",
+        "listening": "A ouvir...",
+        "send": "Enviar",
+        "speak_title": "Falar despesa",
+        "quick_insert": "Inserção Rápida (ignorar janela de confirmação)",
+        "error_save": "Erro ao guardar a despesa.",
+        "error_process": "Não foi possível processar a despesa. Tenta novamente.",
+        "error_no_voice": "O teu browser não suporta reconhecimento de voz."
+    },
+    "chatbot": {
+        "title": "Assistente Financeiro",
+        "subtitle": "Pergunta sobre as tuas despesas",
+        "greeting": "Olá! Sou o teu assistente financeiro. Podes perguntar-me sobre os teus gastos — por exemplo: 'Quanto gastei em comida este mês?'",
+        "not_understood": "Não percebi a tua pergunta. Podes perguntar sobre os teus gastos — por exemplo: \"Quanto gastei este mês?\"",
+        "error": "Desculpa, ocorreu um erro. Podes tentar de novo?",
+        "thinking": "A pensar...",
+        "listening": "A ouvir...",
+        "placeholder": "Pergunta sobre as tuas despesas...",
+        "voice_unsupported": "O teu browser não suporta voz. Usa o Google Chrome!",
+        "voice_listening": "A ouvir... Podes falar!",
+        "voice_blocked": "Acesso ao microfone bloqueado pelo browser!",
+        "voice_error": "Erro de voz: {{error}}",
+        "voice_in_progress": "Já existe uma gravação em curso."
     }
 }

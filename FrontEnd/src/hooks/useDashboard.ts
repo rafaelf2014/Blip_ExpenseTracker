@@ -1,7 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { API_BASE } from '../constants/api';
 import type { Expense, RegularTransaction, Budget, BalanceEntry, BudgetUtilEntry, SavingsRateEntry } from '../types';
-import { getWeekStart, toLocalDateStr, monthKey, pctOrZero, calcIncome } from '../utils/finance';
+import { getWeekStart, toLocalDateStr, monthKey, pctOrZero, calcIncome, computeMonthlyMetrics } from '../utils/finance';
 
 export function useDashboard() {
     const [expenses, setExpenses]                       = useState<Expense[]>([]);
@@ -50,16 +50,10 @@ export function useDashboard() {
             const thisStart = new Date(now.getFullYear(), now.getMonth(), 1);
             const thisKey   = monthKey(now);
 
-            const thisMonthExps      = expenseData.filter(e => { const d = new Date(e.date); return d >= thisStart && d <= now; });
-            const monthSpentNow      = thisMonthExps.reduce((s, e) => s + Number(e.amount), 0);
-            const monthIncomeNow     = calcIncome(regularTxns, thisStart, now);
-            const monthlyBudgets     = budgetList.filter(b => b.period === 'monthly');
-            const totalBudgetLimit   = monthlyBudgets.reduce((s, b) => s + b.limit, 0);
-            const thisBudgetSpentNow = monthlyBudgets.reduce((s, b) =>
-                s + thisMonthExps.filter(e => e.category === b.category).reduce((c, e) => c + Number(e.amount), 0), 0);
-
-            const budgetUtil = totalBudgetLimit > 0 ? Math.round(thisBudgetSpentNow / totalBudgetLimit * 100) : 0;
-            const savRate    = monthIncomeNow > 0 ? Math.round((monthIncomeNow - monthSpentNow) / monthIncomeNow * 100) : 0;
+            const thisMonthExps = expenseData.filter(e => { const d = new Date(e.date); return d >= thisStart && d <= now; });
+            const { budgetUtilization, savingsRate } = computeMonthlyMetrics(thisMonthExps, budgetList, regularTxns, thisStart, now);
+            const budgetUtil = budgetUtilization ?? 0;
+            const savRate    = savingsRate ?? 0;
 
             const newBalHist     = [...balHist.filter(h => h.month !== thisKey),     { month: thisKey, balance }];
             const newBudUtilHist = [...budUtilHist.filter(h => h.month !== thisKey), { month: thisKey, utilization: budgetUtil }];
@@ -115,7 +109,7 @@ export function useDashboard() {
         const spentPositive   = monthSpent <= lastMonthSpent;
 
         return {
-            today, lastMonthKey, lastMonthDays,
+            today, thisMonthStart, lastMonthKey, lastMonthDays,
             thisMonthExpenses, lastMonthExpenses,
             monthSpent, monthIncome, lastMonthSpent,
             balanceChange, balancePositive,
@@ -160,7 +154,7 @@ export function useDashboard() {
 
     // --- Memo 3: quick stats and budget/savings metrics ---
     const quickStats = useMemo(() => {
-        const { today, lastMonthKey, lastMonthDays, thisMonthExpenses, lastMonthExpenses, monthSpent, lastMonthSpent, monthIncome } = monthData;
+        const { today, thisMonthStart, lastMonthKey, lastMonthDays, thisMonthExpenses, lastMonthExpenses, monthSpent, lastMonthSpent } = monthData;
 
         const daysElapsed       = Math.max(1, today.getDate());
         const avgDailySpend     = monthSpent / daysElapsed;
@@ -171,21 +165,17 @@ export function useDashboard() {
         const lastLargestExpense = lastMonthExpenses.length > 0 ? Math.max(...lastMonthExpenses.map(e => Number(e.amount))) : null;
         const largestChange      = pctOrZero(largestExpense, lastLargestExpense);
 
-        const monthlyBudgets   = budgets.filter(b => b.period === 'monthly');
-        const totalBudgetLimit = monthlyBudgets.reduce((s, b) => s + b.limit, 0);
-        const thisBudgetSpent  = monthlyBudgets.reduce((s, b) =>
-            s + thisMonthExpenses.filter(e => e.category === b.category).reduce((c, e) => c + Number(e.amount), 0), 0);
+        const { budgetUtilization, savingsRate } = computeMonthlyMetrics(
+            thisMonthExpenses, budgets, regularTransactions, thisMonthStart, today);
 
-        const budgetUtilization = totalBudgetLimit > 0 ? Math.round(thisBudgetSpent / totalBudgetLimit * 100) : null;
         const lastBudUtilEntry  = budgetUtilHistory.find(h => h.month === lastMonthKey);
         const budgetUtilChange  = budgetUtilization !== null ? pctOrZero(budgetUtilization, lastBudUtilEntry?.utilization ?? null) : null;
 
-        const savingsRate       = monthIncome > 0 ? Math.round((monthIncome - monthSpent) / monthIncome * 100) : null;
         const lastSavEntry      = savingsRateHistory.find(h => h.month === lastMonthKey);
         const savingsRateChange = savingsRate !== null ? pctOrZero(savingsRate, lastSavEntry?.rate ?? null) : null;
 
         return { avgDailySpend, avgDailyChange, largestExpense, largestChange, budgetUtilization, budgetUtilChange, savingsRate, savingsRateChange };
-    }, [monthData, budgets, budgetUtilHistory, savingsRateHistory]);
+    }, [monthData, budgets, regularTransactions, budgetUtilHistory, savingsRateHistory]);
 
     // --- Memo 4: recent transactions ---
     const recentTransactions = useMemo(() =>
@@ -198,23 +188,20 @@ export function useDashboard() {
         categories, expenseTypes, currentBalance,
         chartPeriod, setChartPeriod,
         fetchExpenses,
-        monthSpent:      monthData.monthSpent,
-        monthIncome:     monthData.monthIncome,
-        balanceChange:   monthData.balanceChange,
-        balancePositive: monthData.balancePositive,
-        incomeChange:    monthData.incomeChange,
-        incomePositive:  monthData.incomePositive,
-        spentChange:     monthData.spentChange,
-        spentPositive:   monthData.spentPositive,
         chartData, highlightIndex,
-        avgDailySpend:     quickStats.avgDailySpend,
-        avgDailyChange:    quickStats.avgDailyChange,
-        largestExpense:    quickStats.largestExpense,
-        largestChange:     quickStats.largestChange,
-        budgetUtilization: quickStats.budgetUtilization,
-        budgetUtilChange:  quickStats.budgetUtilChange,
-        savingsRate:       quickStats.savingsRate,
-        savingsRateChange: quickStats.savingsRateChange,
         recentTransactions,
+        // Totais e variações mensais (cartões de resumo)
+        summary: {
+            monthSpent:      monthData.monthSpent,
+            monthIncome:     monthData.monthIncome,
+            balanceChange:   monthData.balanceChange,
+            balancePositive: monthData.balancePositive,
+            incomeChange:    monthData.incomeChange,
+            incomePositive:  monthData.incomePositive,
+            spentChange:     monthData.spentChange,
+            spentPositive:   monthData.spentPositive,
+        },
+        // Caixa "Quick Stats"
+        quickStats,
     };
 }
