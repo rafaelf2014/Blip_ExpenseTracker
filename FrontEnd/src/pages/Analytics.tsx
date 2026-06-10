@@ -1,7 +1,7 @@
 import { Sidebar } from '../components/Sidebar';
 import { FilterControls } from '../components/FilterControl';
 import { SummaryCard } from '../components/SummaryBoxes';
-import { Filter, TrendingUp, TrendingDown, DollarSign, ShoppingCart } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, ShoppingCart } from 'lucide-react';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import '../styles/Transactions.scss';
 import '../styles/Analytics.scss';
@@ -68,29 +68,24 @@ export default function Analytics() {
                             <h2>{t('analytics.title')}</h2>
                             <p>{t('analytics.subtitle')}</p>
                         </div>
-                        <button className="analytics-filters-btn" onClick={() => setShowFilters(!showFilters)}>
-                            <Filter size={18} />
-                            {showFilters ? t('filters.hide_filters') : t('filters.filter')}
-                        </button>
                     </header>
 
                     <div className="dashboard-main">
 
-                        {showFilters && (
-                            <FilterControls
-                                searchTerm={searchTerm} setSearchTerm={setSearchTerm}
-                                showFilters={showFilters} setShowFilters={setShowFilters}
-                                filterCategory={filterCategory} setFilterCategory={setFilterCategory}
-                                filterType={filterType} setFilterType={setFilterType}
-                                filterTime={filterTime} setFilterTime={setFilterTime}
-                                filterMin={filterMin} setFilterMin={setFilterMin}
-                                filterMax={filterMax} setFilterMax={setFilterMax}
-                                categories={categories} expenseTypes={expenseTypes}
-                                onAddNew={() => { }}
-                                hideAddButton={true}
-                                hideSearch={true}
-                            />
-                        )}
+
+                        <FilterControls
+                            searchTerm={searchTerm} setSearchTerm={setSearchTerm}
+                            showFilters={showFilters} setShowFilters={setShowFilters}
+                            filterCategory={filterCategory} setFilterCategory={setFilterCategory}
+                            filterType={filterType} setFilterType={setFilterType}
+                            filterTime={filterTime} setFilterTime={setFilterTime}
+                            filterMin={filterMin} setFilterMin={setFilterMin}
+                            filterMax={filterMax} setFilterMax={setFilterMax}
+                            categories={categories} expenseTypes={expenseTypes}
+                            onAddNew={() => { }}
+                            hideAddButton={true}
+                            hideSearch={false}
+                        />
 
                         <div className="summary-boxes-container">
                             <SummaryCard title={t('analytics.summary_income')} value={formatCurrency(stats.avgMonthlyIncome)} icon={TrendingUp} type="income" />
