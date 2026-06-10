@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next';
 import '../styles/Dashboard.scss';
 import { SummaryCard } from '../components/SummaryBoxes';
 import { useCurrency } from '../Context/CurrencyContext';
+import { useDate } from '../Context/DateContext';
 import { useDashboard } from '../hooks/useDashboard';
-import { formatDate } from '../utils/finance';
 import { getCategoryIcon } from '../utils/iconMapping';
 
 function StatPill({ change, higherIsBad = false }: { change: string; higherIsBad?: boolean }) {
@@ -23,6 +23,7 @@ function StatPill({ change, higherIsBad = false }: { change: string; higherIsBad
 export default function Dashboard() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
+  const { formatDate } = useDate();
   const {
     showForm, setShowForm, username, userId,
     categories, expenseTypes, currentBalance,

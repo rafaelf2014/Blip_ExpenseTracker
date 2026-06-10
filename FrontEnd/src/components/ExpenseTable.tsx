@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
 import { useCurrency } from '../Context/CurrencyContext';
+import { useDate } from '../Context/DateContext';
 import type { Expense } from '../types';
 import { getCategoryIcon } from '../utils/iconMapping';
 
@@ -22,6 +23,7 @@ export function ExpenseTable({ expenses, totalCount, onEditClick }: ExpenseTable
 
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
+  const { formatDate } = useDate();
   const itemsPerPage = 10;
 
   const handleSort = (column: SortColumn) => {
@@ -62,15 +64,6 @@ export function ExpenseTable({ expenses, totalCount, onEditClick }: ExpenseTable
   const getSortIcon = (column: SortColumn) => {
     if (sortColumn !== column) return ' ↕';
     return sortDirection === 'asc' ? ' ↑' : ' ↓';
-  };
-
-  const formatDate = (dateString: string) => {
-    try {
-      const d = new Date(dateString);
-      return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
-    } catch {
-      return dateString.split(' ')[0];
-    }
   };
 
   return (

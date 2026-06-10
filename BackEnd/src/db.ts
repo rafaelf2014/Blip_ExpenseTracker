@@ -65,7 +65,7 @@ export type DatabaseSchema = {
 const defaultData: DatabaseSchema = {
   users: [],
   expenses: [],
-  categories: ['Food', 'Health', 'Clothes', 'Housing', 'Transportation', 'Entertainment', 'Other'],
+  categories: ['Food', 'Health', 'Clothes', 'Housing', 'Transportation', 'Entertainment', 'Utilities', 'Other'],
   expenseTypes: ['One-time', 'Monthly', 'Yearly', 'Subscription']
 };
 

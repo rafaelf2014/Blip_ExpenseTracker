@@ -9,7 +9,8 @@
         "totalTransactions": "Total Transactions",
         "totalIncome": "Total Income",
         "totalExpenses": "Total Expenses",
-        "netBalance": "Net Flow"
+        "netBalance": "Net Flow",
+        "vsLastMonth": "vs. last month"
     },
     "expenseTable": {
         "transaction": "Transaction",
@@ -86,8 +87,53 @@
         "select_category": "Select Category",
         "select_type": "Select Type"
     },
+    "transactions": {
+        "title": "Transactions",
+        "subtitle": "View and manage all your transactions",
+        "welcome": "Welcome, ",
+        "logout": "Logout",
+        "count": "Transactions",
+        "spent": "Spent",
+        "income": "Income",
+        "net_flow": "Net Flow",
+        "total_spent": "Total Spent",
+        "total_income": "Total Income",
+        "total_net_flow": "Total Net Flow"
+    },
+    "modals": {
+        "add_title": "Add New Expense",
+        "description": "Description",
+        "amount": "Amount",
+        "date": "Date",
+        "category": "Category",
+        "type": "Type",
+        "cancel": "Cancel",
+        "save_expense": "Save Expense",
+        "added_success": "Expense added successfully!",
+        "add_failed": "Failed to add expense. Please try again.",
+        "ai_confirm_title": "🤖 AI Confirmation",
+        "ai_confirm_subtitle": "Check the extracted data before saving."
+    },
+    "auth": {
+        "welcome_back": "Welcome Back",
+        "create_account": "Create an Account",
+        "login_subtitle": "Enter your details to access your dashboard.",
+        "register_subtitle": "Sign up to start tracking your expenses.",
+        "username": "Username",
+        "password": "Password",
+        "login": "Login",
+        "register": "Register",
+        "no_account": "Don't have an account? ",
+        "have_account": "Already have an account? ",
+        "register_here": "Register here",
+        "login_here": "Login here"
+    },
     "analytics": {
-        "topSpendingCategories": "Top Spending Categories"
+        "topSpendingCategories": "Top Spending Categories",
+        "title": "Analytics",
+        "subtitle": "Deep insights into your financial data",
+        "show_filters": "Show Filters",
+        "hide_filters": "Hide Filters"
     },
     "dashboard": {
         "title": "Dashboard",

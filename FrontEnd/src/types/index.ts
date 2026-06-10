@@ -30,3 +30,6 @@ export type Budget = {
 export type BalanceEntry     = { month: string; balance: number };
 export type BudgetUtilEntry  = { month: string; utilization: number };
 export type SavingsRateEntry = { month: string; rate: number };
+
+export type CategoryDatum = { name: string; value: number; color: string };
+export type TrendDatum    = { month: string; income: number; expenses: number };

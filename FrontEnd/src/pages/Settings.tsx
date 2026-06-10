@@ -1,4 +1,5 @@
 import { Sidebar } from '../components/Sidebar';
+import { useTranslation } from 'react-i18next';
 import '../styles/Settings.scss';
 import { useSettings } from '../hooks/useSettings';
 import { ProfileSection } from '../components/settings/ProfileSection';
@@ -9,6 +10,7 @@ import { PreferencesSection } from '../components/settings/PreferencesSection';
 import { DevToolsSection } from '../components/settings/DevToolsSection';
 
 export default function Settings() {
+    const { t } = useTranslation();
     const {
         username, setUsername,
         profilePicture, setProfilePicture,
@@ -24,8 +26,8 @@ export default function Settings() {
             <Sidebar />
             <main className="settings-page">
                 <div className="settings-header">
-                    <h1>Settings</h1>
-                    <p>Manage your account and preferences</p>
+                    <h1>{t('settings.title')}</h1>
+                    <p>{t('settings.subtitle')}</p>
                 </div>
                 <div className="settings-grid">
                     <div className="settings-row-two">

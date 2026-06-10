@@ -8,6 +8,13 @@ import '../styles/Analytics.scss';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../Context/CurrencyContext';
 import { useAnalytics } from '../hooks/useAnalytics';
+import type { CategoryDatum } from '../types';
+
+type ChartTooltipProps = {
+    active?: boolean;
+    label?: string | number;
+    payload?: { value: number; payload: CategoryDatum }[];
+};
 
 export default function Analytics() {
     const { t } = useTranslation();
@@ -24,7 +31,7 @@ export default function Analytics() {
         filterMax, setFilterMax,
     } = useAnalytics();
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
+    const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
         if (active && payload && payload.length) {
             return (
                 <div className="custom-tooltip">
@@ -37,9 +44,9 @@ export default function Analytics() {
         return null;
     };
 
-    const PieCustomTooltip = ({ active, payload }: any) => {
+    const PieCustomTooltip = ({ active, payload }: ChartTooltipProps) => {
         if (active && payload && payload.length) {
-            const data  = payload[0].payload;
+            const data  = payload[0].payload as CategoryDatum;
             const total = categoryData.reduce((sum, item) => sum + item.value, 0);
             const percent = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0.0';
             return (
@@ -65,12 +72,12 @@ export default function Analytics() {
                 <div className="dashboard-container">
                 <header className="dashboard-header">
                     <div className="header-title">
-                        <h2>Analytics</h2>
-                        <p>Deep insights into your financial data</p>
+                        <h2>{t('analytics.title')}</h2>
+                        <p>{t('analytics.subtitle')}</p>
                     </div>
                     <button className="analytics-filters-btn" onClick={() => setShowFilters(!showFilters)}>
                         <Filter size={18} />
-                        {showFilters ? 'Hide Filters' : 'Show Filters'}
+                        {showFilters ? t('analytics.hide_filters') : t('analytics.show_filters')}
                     </button>
                 </header>
 

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { API_BASE } from '../constants/api';
 import type { Expense, RegularTransaction } from '../types';
-import { getWeekStart, calcIncome, makeTimeFilter } from '../utils/finance';
+import { getWeekStart, calcIncome, makeTimeFilter, makeExpenseFilter } from '../utils/finance';
 
 function incomeForPeriod(regularTransactions: RegularTransaction[], filterTime: string): number {
     const today = new Date();
@@ -36,6 +36,15 @@ export function useTransactions() {
 
     const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
+    const fetchExpenses = async (id: string) => {
+        try {
+            const res = await fetch(`${API_BASE}/expenses/${id}`);
+            if (res.ok) setExpenses(await res.json());
+        } catch (err) {
+            console.error('Erro ao carregar despesas:', err);
+        }
+    };
+
     useEffect(() => {
         const storedUsername = localStorage.getItem('username');
         const storedUserId   = localStorage.getItem('userId');
@@ -59,15 +68,6 @@ export function useTransactions() {
         localStorage.removeItem('username');
         localStorage.removeItem('userId');
         navigate('/');
-    };
-
-    const fetchExpenses = async (id: string) => {
-        try {
-            const res = await fetch(`${API_BASE}/expenses/${id}`);
-            if (res.ok) setExpenses(await res.json());
-        } catch (err) {
-            console.error('Erro ao carregar despesas:', err);
-        }
     };
 
     useEffect(() => {
@@ -104,20 +104,12 @@ export function useTransactions() {
     };
 
 
-    const timeFilter = makeTimeFilter(filterTime);
-
-    const filteredExpenses = expenses.filter(e => {
-        const matchesSearch   = e.description.toLowerCase().includes(searchTerm.toLowerCase());
-        const matchesCategory = filterCategory === '' || e.category === filterCategory;
-        const matchesType     = filterType === '' || e.type === filterType;
-        const amount          = Number(e.amount);
-        const matchesMin      = filterMin === '' || amount >= Number(filterMin);
-        const matchesMax      = filterMax === '' || amount <= Number(filterMax);
-        return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && timeFilter(e);
-    });
+    const filteredExpenses = expenses.filter(
+        makeExpenseFilter({ searchTerm, filterCategory, filterType, filterTime, filterMin, filterMax })
+    );
 
     // cartões de resumo usam só o filtro de tempo (não pesquisa/categoria/valor)
-    const timeFilteredExpenses = expenses.filter(timeFilter);
+    const timeFilteredExpenses = expenses.filter(makeTimeFilter(filterTime));
 
     const periodLabel     = filterTime === 'week' ? 'Weekly' : filterTime === 'month' ? 'Monthly' : filterTime === 'year' ? 'Yearly' : '';
     const displayedSpent  = timeFilteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);

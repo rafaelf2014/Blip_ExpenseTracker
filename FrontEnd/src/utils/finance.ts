@@ -15,10 +15,6 @@ export function monthKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
-export function formatDate(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
-}
-
 // retorna "0" quando não há dado anterior para comparar
 export function pctOrZero(curr: number, prev: number | null | undefined): string {
   if (prev == null || prev === 0) return '0';
@@ -88,6 +84,32 @@ export function makeTimeFilter(filterTime: string): (e: Expense) => boolean {
 
 export function filterByTime(expenses: Expense[], filterTime: string): Expense[] {
   return expenses.filter(makeTimeFilter(filterTime));
+}
+
+export type ExpenseFilters = {
+  searchTerm: string;
+  filterCategory: string;
+  filterType: string;
+  filterTime: string;
+  filterMin: string;
+  filterMax: string;
+};
+
+/** Predicado combinado de pesquisa + categoria + tipo + intervalo de valor + tempo. */
+export function makeExpenseFilter(f: ExpenseFilters): (e: Expense) => boolean {
+  const timeFilter = makeTimeFilter(f.filterTime);
+  const search     = f.searchTerm.toLowerCase();
+  return (e: Expense) => {
+    const amount = Number(e.amount);
+    return (
+      e.description.toLowerCase().includes(search) &&
+      (f.filterCategory === '' || e.category === f.filterCategory) &&
+      (f.filterType === ''     || e.type === f.filterType) &&
+      (f.filterMin === ''      || amount >= Number(f.filterMin)) &&
+      (f.filterMax === ''      || amount <= Number(f.filterMax)) &&
+      timeFilter(e)
+    );
+  };
 }
 
 export type MonthlyMetrics = {

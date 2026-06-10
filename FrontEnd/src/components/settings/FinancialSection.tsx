@@ -3,6 +3,7 @@ import { DollarSign, Save, Plus, Trash2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import type { RegularTransaction } from '../../types';
 import { CATEGORIES } from '../../constants/categories';
+import { toLocalDateStr } from '../../utils/finance';
 
 interface FinancialSectionProps {
     currentBalance: number;
@@ -18,7 +19,7 @@ export function FinancialSection({ currentBalance, setCurrentBalance, regularTra
     const [rtIsIncome, setRtIsIncome]   = useState(true);
     const [rtCategory, setRtCategory]   = useState(CATEGORIES[0]);
     const [rtFrequency, setRtFrequency] = useState<RegularTransaction['frequency']>('monthly');
-    const [rtDate, setRtDate]           = useState(new Date().toISOString().split('T')[0]);
+    const [rtDate, setRtDate]           = useState(toLocalDateStr(new Date()));
 
     const addRegularTransaction = () => {
         if (!rtDesc.trim() || !rtAmount) return toast.error('Fill in description and amount');

@@ -1,8 +1,6 @@
-
 import { createContext, useState, useContext } from 'react';
 import type { ReactNode } from 'react';
 
-// Define the type for our context
 type CurrencyContextType = {
     currency: string;
     currencySymbol: string;
@@ -10,50 +8,30 @@ type CurrencyContextType = {
     setCurrency: (currency: string) => void;
 };
 
-// Create the context with an undefined default value
+// Símbolo + formatação por moeda. Adicionar uma moeda nova = uma linha aqui.
+const CURRENCY_CONFIG: Record<string, { symbol: string; format: (n: string) => string }> = {
+    EUR: { symbol: '€',  format: n => `${n} €` },
+    USD: { symbol: '$',  format: n => `$${n}` },
+    GBP: { symbol: '£',  format: n => `£${n}` },
+    BRL: { symbol: 'R$', format: n => `R$ ${n}` },
+};
+const DEFAULT_CURRENCY = 'EUR';
+
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
-// component that will wrap our app and provide the currency context
 export function CurrencyProvider({ children }: { children: ReactNode }) {
-    // Read the initial currency from localStorage or default to 'EUR'
-    const [currency, setCurrencyState] = useState(() => {
-        return localStorage.getItem('currency') || 'EUR';
-    });
+    const [currency, setCurrencyState] = useState(() => localStorage.getItem('currency') || DEFAULT_CURRENCY);
 
-    // Function to update the currency and save it to localStorage
     const setCurrency = (newCurrency: string) => {
         setCurrencyState(newCurrency);
         localStorage.setItem('currency', newCurrency);
     };
 
-    const getSymbol = () => {
-        switch (currency) {
-            case 'USD': return '$';
-            case 'GBP': return '£';
-            case 'BRL': return 'R$';
-            case 'EUR':
-            default: return '€';
-        }
-    };
-
-    const formatCurrency = (amount: number | string) => {
-        const num = Number(amount).toFixed(2);
-
-        if (currency === 'EUR') {
-            return `${num} €`;       // Símbolo à direita
-        } else if (currency === 'USD') {
-            return `$${num}`;        // Símbolo à esquerda
-        } else if (currency === 'GBP') {
-            return `£${num}`;        // Símbolo à esquerda
-        } else if (currency === 'BRL') {
-            return `R$ ${num}`;      // Símbolo à esquerda com espaço
-        }
-
-        return `${num} €`; // Segurança (fallback)
-    };
+    const config = CURRENCY_CONFIG[currency] ?? CURRENCY_CONFIG[DEFAULT_CURRENCY];
+    const formatCurrency = (amount: number | string) => config.format(Number(amount).toFixed(2));
 
     return (
-        <CurrencyContext.Provider value={{ currency, currencySymbol: getSymbol(), formatCurrency, setCurrency }}>
+        <CurrencyContext.Provider value={{ currency, currencySymbol: config.symbol, formatCurrency, setCurrency }}>
             {children}
         </CurrencyContext.Provider>
     );

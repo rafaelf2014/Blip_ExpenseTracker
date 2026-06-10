@@ -9,7 +9,8 @@
         "totalTransactions": "Total de Transações",
         "totalIncome": "Total de Rendimentos",
         "totalExpenses": "Total de Despesas",
-        "netBalance": "Fluxo Líquido"
+        "netBalance": "Fluxo Líquido",
+        "vsLastMonth": "vs. mês passado"
     },
     "expenseTable": {
         "transaction": "Transação",
@@ -86,8 +87,53 @@
         "select_category": "Selecionar Categoria",
         "select_type": "Selecionar Tipo"
     },
+    "transactions": {
+        "title": "Transações",
+        "subtitle": "Vê e gere todas as tuas transações",
+        "welcome": "Bem-vindo, ",
+        "logout": "Sair",
+        "count": "Transações",
+        "spent": "Gasto",
+        "income": "Rendimento",
+        "net_flow": "Fluxo Líquido",
+        "total_spent": "Total Gasto",
+        "total_income": "Rendimento Total",
+        "total_net_flow": "Fluxo Líquido Total"
+    },
+    "modals": {
+        "add_title": "Adicionar Nova Despesa",
+        "description": "Descrição",
+        "amount": "Montante",
+        "date": "Data",
+        "category": "Categoria",
+        "type": "Tipo",
+        "cancel": "Cancelar",
+        "save_expense": "Guardar Despesa",
+        "added_success": "Despesa adicionada com sucesso!",
+        "add_failed": "Falha ao adicionar a despesa. Tenta novamente.",
+        "ai_confirm_title": "🤖 Confirmação da IA",
+        "ai_confirm_subtitle": "Verifica os dados extraídos antes de guardar."
+    },
+    "auth": {
+        "welcome_back": "Bem-vindo de Volta",
+        "create_account": "Criar uma Conta",
+        "login_subtitle": "Introduz os teus dados para aceder ao painel.",
+        "register_subtitle": "Regista-te para começar a registar as tuas despesas.",
+        "username": "Nome de Utilizador",
+        "password": "Palavra-passe",
+        "login": "Entrar",
+        "register": "Registar",
+        "no_account": "Não tens conta? ",
+        "have_account": "Já tens conta? ",
+        "register_here": "Regista-te aqui",
+        "login_here": "Entra aqui"
+    },
     "analytics": {
-        "topSpendingCategories": "Categorias com Mais Gastos"
+        "topSpendingCategories": "Categorias com Mais Gastos",
+        "title": "Análises",
+        "subtitle": "Informações detalhadas sobre os teus dados financeiros",
+        "show_filters": "Mostrar Filtros",
+        "hide_filters": "Esconder Filtros"
     },
     "dashboard": {
         "title": "Painel",

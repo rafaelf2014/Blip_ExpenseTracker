@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { User, Save, Camera } from 'lucide-react';
 
 interface ProfileSectionProps {
@@ -11,6 +12,7 @@ interface ProfileSectionProps {
 }
 
 export function ProfileSection({ username, setUsername, profilePicture, setProfilePicture, loading, saveProfile }: ProfileSectionProps) {
+    const { t } = useTranslation();
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,19 +32,19 @@ export function ProfileSection({ username, setUsername, profilePicture, setProfi
         <div className="settings-card">
             <div className="card-header">
                 <div className="card-icon"><User size={20} color="white" /></div>
-                <h2>Profile</h2>
+                <h2>{t('settings.profile')}</h2>
             </div>
             <form onSubmit={handleSubmit}>
                 <div className="profile-form-inner">
                     <div className="profile-fields">
                         <div className="form-group">
-                            <label>Username</label>
+                            <label>{t('settings.username')}</label>
                             <input className="form-control" type="text" value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter your username" required />
+                                placeholder={t('settings.username')} required />
                         </div>
                         <button type="submit" className="save-button" disabled={loading}>
-                            <Save size={16} />{loading ? 'Saving...' : 'Save Changes'}
+                            <Save size={16} />{t('settings.save')}
                         </button>
                     </div>
                     <div className="avatar-section">

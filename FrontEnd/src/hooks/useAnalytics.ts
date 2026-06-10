@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { API_BASE } from '../constants/api';
-import type { Expense, RegularTransaction } from '../types';
-import { getWeekStart, calcIncome, makeTimeFilter } from '../utils/finance';
+import type { Expense, RegularTransaction, CategoryDatum, TrendDatum } from '../types';
+import { getWeekStart, calcIncome, makeExpenseFilter } from '../utils/finance';
 
 const COLORS = ['#06b6d4', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#6366f1', '#64748b'];
 
 export function useAnalytics() {
-    const [categoryData, setCategoryData] = useState<any[]>([]);
-    const [trendData, setTrendData]       = useState<any[]>([]);
+    const [categoryData, setCategoryData] = useState<CategoryDatum[]>([]);
+    const [trendData, setTrendData]       = useState<TrendDatum[]>([]);
     const [stats, setStats] = useState({
         avgMonthlyIncome:  0,
         avgMonthlyExpense: 0,
@@ -46,18 +46,10 @@ export function useAnalytics() {
     }, []);
 
     useEffect(() => {
-        const today      = new Date();
-        const timeFilter = makeTimeFilter(filterTime);
-
-        const filtered = rawExpenses.filter(e => {
-            const matchesSearch   = e.description.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesCategory = filterCategory === '' || e.category === filterCategory;
-            const matchesType     = filterType === '' || e.type === filterType;
-            const amount          = Number(e.amount);
-            const matchesMin      = filterMin === '' || amount >= Number(filterMin);
-            const matchesMax      = filterMax === '' || amount <= Number(filterMax);
-            return matchesSearch && matchesCategory && matchesType && matchesMin && matchesMax && timeFilter(e);
-        });
+        const today    = new Date();
+        const filtered = rawExpenses.filter(
+            makeExpenseFilter({ searchTerm, filterCategory, filterType, filterTime, filterMin, filterMax })
+        );
 
         let periodStart: Date;
         if (filterTime === 'week')       periodStart = getWeekStart(today);

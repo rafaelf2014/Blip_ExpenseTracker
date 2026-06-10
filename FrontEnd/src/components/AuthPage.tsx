@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import type { SubmitEventHandler } from 'react';
 import { Receipt } from 'lucide-react';
 import '../styles/AuthPage.scss';
@@ -7,9 +8,10 @@ import toast from 'react-hot-toast';
 import { API_BASE } from '../constants/api';
 
 export default function AuthPage() {
+  const { t } = useTranslation();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIslogin] = useState(false);
+  const [isLogin, setIslogin] = useState(true);
   const navigate = useNavigate();
 
   const handleSubmit: SubmitEventHandler<HTMLFormElement> = async (e) => {
@@ -50,16 +52,16 @@ export default function AuthPage() {
         </div>
 
         <h2 className="auth-title">
-          {isLogin ? "Welcome Back" : "Create an Account"}
+          {isLogin ? t('auth.welcome_back') : t('auth.create_account')}
         </h2>
         <p className="auth-subtitle">
-          {isLogin ? "Enter your details to access your dashboard." : "Sign up to start tracking your expenses."}
+          {isLogin ? t('auth.login_subtitle') : t('auth.register_subtitle')}
         </p>
 
         <form onSubmit={handleSubmit} className='auth-form'>
           <input
             type="text"
-            placeholder="Username"
+            placeholder={t('auth.username')}
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -67,7 +69,7 @@ export default function AuthPage() {
           />
           <input
             type="password"
-            placeholder="Password"
+            placeholder={t('auth.password')}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -75,18 +77,18 @@ export default function AuthPage() {
           />
 
           <button type="submit" className="auth-submit-btn">
-            {isLogin ? "Login" : "Register"}
+            {isLogin ? t('auth.login') : t('auth.register')}
           </button>
         </form>
 
         <p className="auth-toggle-text">
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          {isLogin ? t('auth.no_account') : t('auth.have_account')}
           <button
             type="button"
             onClick={() => setIslogin(!isLogin)}
             className="auth-toggle-btn"
           >
-            {isLogin ? "Register here" : "Login here"}
+            {isLogin ? t('auth.register_here') : t('auth.login_here')}
           </button>
         </p>
 
