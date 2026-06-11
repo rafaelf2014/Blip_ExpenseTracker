@@ -13,21 +13,6 @@ $cyan: $accent;
   align-items: center;
 }
 
-.add-expense-btn {
-  background-color: $cyan;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  font-family: inherit;
-  transition: background-color 0.2s ease;
-
-  &:hover { background-color: $accent-hover; }
-}
-
 // ── Shared card mixin ─────────────────────────────────────────────────────────
 
 %card {
@@ -63,7 +48,7 @@ $cyan: $accent;
     margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 600;
-    color: white;
+    color: $text;
   }
 
   small {
@@ -93,11 +78,11 @@ $cyan: $accent;
     font-family: inherit;
     transition: all 0.2s ease;
 
-    &:hover { color: white; }
+    &:hover { color: $text; }
 
     &.active {
       background: $cyan;
-      color: white;
+      color: $on-accent;
     }
   }
 }
@@ -109,7 +94,7 @@ $cyan: $accent;
     margin: 0 0 4px 0;
     font-size: 16px;
     font-weight: 600;
-    color: white;
+    color: $text;
   }
 }
 
@@ -142,7 +127,7 @@ $cyan: $accent;
     strong {
       font-size: 18px;
       font-weight: 600;
-      color: white;
+      color: $text;
 
       &.stat-warn { color: $yellow; }
       &.stat-over { color: $red-light; }
@@ -215,7 +200,7 @@ $cyan: $accent;
         strong {
           font-size: 14px;
           font-weight: 500;
-          color: white;
+          color: $text;
         }
 
         span {

@@ -1,5 +1,49 @@
 @use 'tokens' as *;
 
+// ── Dark theme (default) ───────────────────────────────────────────────────────
+:root {
+  --bg-app:       #0B1221;             // deep navy page background
+  --bg-surface:   #1E293B;             // cards / panels (slate-800)
+  --bg-card:      rgba(30, 41, 59, 0.5);
+  --bg-surface-2: #2A3441;             // raised surface
+  --bg-thead:     #18243A;             // table header strip
+  --bg-input:     #0F172A;             // form controls
+
+  --border:       #334155;             // slate-700
+  --border-soft:  rgba(51, 65, 85, 0.5);
+
+  --text:         #F8FAFC;             // slate-50
+  --text-muted:   #94A3B8;             // slate-400
+  --text-faint:   #64748B;             // slate-500
+  --text-dim:     #475569;             // slate-600
+
+  --accent:       #06B6D4;             // brand cyan
+  --accent-hover: #0891B2;
+  --on-accent:    #FFFFFF;             // text/icon color on top of the accent
+}
+
+// ── Light theme ─────────────────────────────────────────────────────────────────
+[data-theme='light'] {
+  --bg-app:       #F5F1E8;             // warm cream page background
+  --bg-surface:   #FEFCF7;             // soft off-white cards / panels
+  --bg-card:      rgba(254, 252, 247, 0.85);
+  --bg-surface-2: #EBE5D8;             // warm sand raised surface
+  --bg-thead:     #EFE9DC;             // table header strip
+  --bg-input:     #FFFFFF;             // white form controls
+
+  --border:       #C9BFA8;             // warm darker border (stands out on cream)
+  --border-soft:  rgba(160, 148, 122, 0.45);
+
+  --text:         #2B2517;             // warm near-black primary text
+  --text-muted:   #6B6250;             // warm grey-brown secondary
+  --text-faint:   #A0957A;             // muted placeholders
+  --text-dim:     #C9BFA8;             // disabled
+
+  --accent:       #E2603B;             // warm coral/red — pairs with cream
+  --accent-hover: #C84E2C;
+  --on-accent:    #FFFFFF;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -8,4 +52,5 @@ body {
   font-family: $font;
   min-height: 100vh;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }

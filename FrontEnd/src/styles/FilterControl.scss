@@ -7,28 +7,71 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
   gap: 20px;
   flex-wrap: wrap;
 
   .search-wrapper {
+    position: relative;
     flex: 2;
     min-width: 250px;
+    display: flex;
+    align-items: center;
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      color: $text-faint;
+      pointer-events: none;
+      transition: color 0.2s ease;
+    }
 
     input {
       width: 100%;
-      padding: 12px 16px;
-      border-radius: 12px;
+      height: 46px;
+      padding: 0 44px;            // room for the leading icon + trailing clear button
+      border-radius: $radius-md;
       border: 1px solid $border;
-      background-color: $bg-app;
-      color: white;
+      background-color: $bg-surface;   // lighter than the page so the bar stands out
+      color: $text;
+      font-size: 14px;
+      font-family: inherit;
       box-sizing: border-box;
-      transition: all 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+      &::placeholder { color: $text-faint; }
+
+      &:hover { border-color: $text-dim; }
 
       &:focus {
         outline: none;
         border-color: $accent;
-        box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
+        background-color: $bg-surface-2;
+        box-shadow: 0 0 0 3px rgba($accent, 0.18);
+      }
+    }
+
+    // Highlight the leading icon while the field is focused.
+    &:focus-within .search-icon { color: $accent; }
+
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border: none;
+      border-radius: $radius-sm;
+      background-color: transparent;
+      color: $text-muted;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease;
+
+      &:hover {
+        background-color: $bg-surface-2;
+        color: $text;
       }
     }
   }
@@ -41,13 +84,15 @@
 
     .toggle-filters-btn {
       flex: 1;
-      padding: 12px 20px;
+      height: 46px;
+      padding: 0 20px;
       background-color: $bg-surface;
-      color: white;
+      color: $text;
       border: 1px solid $border;
-      border-radius: 12px;
+      border-radius: $radius-md;
       cursor: pointer;
       font-weight: 500;
+      font-family: inherit;
       transition: all 0.2s ease;
 
       &.active, &:hover {
@@ -55,133 +100,145 @@
       }
     }
 
-    .add-expense-btn {
+    // Split button styling lives in AddExpenseButton.scss; stretch it to share the row.
+    .add-expense-split {
       flex: 1;
-      padding: 12px 24px;
-      background-color: $accent;
-      color: $bg-app;
-      border: none;
-      border-radius: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        background-color: $accent-hover;
-        color: white;
-      }
     }
   }
 }
 
 /* Expanded Filter Panel */
 .filter-panel {
-  background-color: $bg-app;
-  padding: 24px;
-  border-radius: 16px;
+  background-color: $bg-surface;
+  padding: 4px 24px;
+  border-radius: $radius-lg;
   border: 1px solid $border;
-  margin-bottom: 30px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
 
+  // Each section is separated by a divider for clear visual grouping.
   .filter-section {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
+    padding: 22px 0;
+    border-bottom: 1px solid $border;
 
     .section-title {
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: white;
-      font-size: 16px;
+      gap: 10px;
+      margin: 0;
+      color: $text;
+      font-size: 14px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
 
-      svg {
-        color: $accent;
-      }
+      svg { color: $accent; }
     }
 
     .options-grid {
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
   }
 
   /* Date Range & Type Pills */
   .filter-pill {
-    display: flex;
-    flex-direction: column;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
-    background-color: $bg-surface;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    padding: 12px 24px;
+    background-color: $bg-app;
+    border: 1px solid $border;
+    border-radius: $radius-full;
+    padding: 9px 18px;
     color: $text-muted;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
-    min-width: 100px;
 
     &:hover {
-      background-color: $bg-surface-2;
+      border-color: $text-dim;
+      color: $text;
     }
 
     &.active {
       background-color: $accent;
-      color: $bg-app;
+      border-color: $accent;
+      color: $on-accent;
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3);
-      
-      svg { color: $bg-app; }
     }
   }
 
-  /* Category Square Cards */
+  /* Category grid */
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+    gap: 10px;
+  }
+
   .category-card {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    background-color: $bg-surface;
-    border: 1px solid transparent;
-    border-radius: 16px;
-    width: 110px;
-    height: 110px;
+    gap: 10px;
+    background-color: $bg-app;
+    border: 1px solid $border;
+    border-radius: $radius-md;
+    padding: 16px 8px;
     color: $text-muted;
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
 
+    .category-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background-color: $bg-surface;
+      color: $text-muted;
+      transition: all 0.2s ease;
+    }
+
+    .category-label {
+      font-size: 12.5px;
+      font-weight: 500;
+      text-align: center;
+    }
+
     .check-icon {
       position: absolute;
       top: 8px;
       right: 8px;
-      background-color: $text-muted;
+      background-color: $accent;
       border-radius: 50%;
       padding: 2px;
-      color: $bg-surface;
+      color: $on-accent;
       display: none;
     }
 
     &:hover {
-      background-color: $bg-surface-2;
+      border-color: $text-dim;
+      color: $text;
+      .category-icon { color: $text; }
     }
 
     &.active {
-      background-color: $bg-surface;
       border-color: $accent;
-      color: white;
+      color: $text;
 
-      .check-icon {
-        display: block;
+      .category-icon {
         background-color: $accent;
-        color: $bg-app;
+        color: $on-accent;
       }
+      .check-icon { display: block; }
     }
   }
 
@@ -192,8 +249,7 @@
     align-items: flex-end;
     flex-wrap: wrap;
     gap: 20px;
-    padding-top: 16px;
-    border-top: 1px solid $bg-surface;
+    padding: 22px 0;
 
     .amounts-group {
       display: flex;
@@ -210,16 +266,21 @@
         }
 
         input {
-          background-color: $bg-surface;
+          background-color: $bg-app;
           border: 1px solid $border;
-          color: white;
+          color: $text;
           padding: 10px 16px;
-          border-radius: 8px;
+          border-radius: $radius-md;
           width: 120px;
+          font-family: inherit;
+          transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+          &::placeholder { color: $text-faint; }
 
           &:focus {
             outline: none;
             border-color: $accent;
+            box-shadow: 0 0 0 3px rgba($accent, 0.18);
           }
         }
       }
@@ -230,35 +291,43 @@
       gap: 12px;
 
       .clear-btn {
-        padding: 10px 20px;
+        height: 42px;
+        padding: 0 20px;
         background-color: transparent;
         color: $text-muted;
         border: 1px solid $border;
-        border-radius: 8px;
+        border-radius: $radius-md;
+        font-family: inherit;
         cursor: pointer;
-        transition: 0.2s;
+        transition: all 0.2s ease;
 
         &:hover {
-          background-color: $bg-surface;
-          color: white;
+          background-color: $bg-surface-2;
+          color: $text;
         }
       }
 
       .apply-btn {
-        padding: 10px 20px;
+        height: 42px;
+        padding: 0 22px;
         background-color: $accent;
-        color: $bg-app;
+        color: $on-accent;
         border: none;
-        border-radius: 8px;
+        border-radius: $radius-md;
         font-weight: 600;
+        font-family: inherit;
         cursor: pointer;
-        transition: 0.2s;
+        transition: background-color 0.2s ease, color 0.2s ease;
 
         &:hover {
           background-color: $accent-hover;
-          color: white;
+          color: $on-accent;
         }
       }
     }
   }
+
+  // First section needs no top padding; last row drops its divider.
+  .filter-section:first-child { padding-top: 22px; }
+  .filter-footer { border-top: none; }
 }

@@ -59,6 +59,10 @@
         "min_amount": "Min Amount",
         "max_amount": "Max Amount"
     },
+    "planning": {
+        "title": "Planning",
+        "subtitle": "Set up your balance, recurring transactions and category budgets"
+    },
     "settings": {
         "title": "Settings",
         "subtitle": "Manage your account and preferences",
@@ -170,6 +174,11 @@
         "error_save": "Could not save the expense.",
         "error_process": "Could not process the expense. Try again.",
         "error_no_voice": "Your browser does not support voice recognition."
+    },
+    "aiMenu": {
+        "button_title": "Quick add with AI",
+        "title": "Quick Add",
+        "subtitle": "Describe your expense in plain language and AI will fill in the details."
     },
     "chatbot": {
         "title": "Financial Assistant",

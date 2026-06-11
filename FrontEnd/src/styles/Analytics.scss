@@ -10,7 +10,7 @@ $border-color: $border;
     gap: 8px;
     background-color: $bg-surface;
     border: 1px solid $border-color;
-    color: white;
+    color: $text;
     padding: 10px 16px;
     border-radius: 8px;
     cursor: pointer;
@@ -42,7 +42,7 @@ $border-color: $border;
     h2 {
         font-size: 16px;
         font-weight: 600;
-        color: white;
+        color: $text;
         margin: 0 0 24px 0;
     }
 

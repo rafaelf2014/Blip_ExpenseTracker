@@ -1,0 +1,39 @@
+@use 'tokens' as *;
+
+// Split button: manual add (left) + AI quick-add (right, lightning).
+.add-expense-split {
+  display: flex;
+  height: 46px;
+  border-radius: $radius-md;
+  overflow: hidden;
+
+  .add-manual-btn,
+  .add-ai-btn {
+    border: none;
+    background-color: $accent;
+    color: $on-accent;
+    font-weight: 600;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &:hover { background-color: $accent-hover; color: $on-accent; }
+  }
+
+  .add-manual-btn {
+    flex: 1;
+    padding: 0 20px;
+    white-space: nowrap;
+  }
+
+  // Lightning side — visually divided from the manual side.
+  .add-ai-btn {
+    width: 48px;
+    flex-shrink: 0;
+    border-left: 1px solid rgba(0, 0, 0, 0.18);
+  }
+}

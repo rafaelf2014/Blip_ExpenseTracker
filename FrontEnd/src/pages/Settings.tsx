@@ -1,11 +1,10 @@
 import { Sidebar } from '../components/Sidebar';
+import { LogoutButton } from '../components/LogoutButton';
 import { useTranslation } from 'react-i18next';
 import '../styles/Settings.scss';
 import { useSettings } from '../hooks/useSettings';
 import { ProfileSection } from '../components/settings/ProfileSection';
 import { SecuritySection } from '../components/settings/SecuritySection';
-import { FinancialSection } from '../components/settings/FinancialSection';
-import { BudgetsSection } from '../components/settings/BudgetsSection';
 import { PreferencesSection } from '../components/settings/PreferencesSection';
 import { DevToolsSection } from '../components/settings/DevToolsSection';
 
@@ -15,10 +14,7 @@ export default function Settings() {
         username, setUsername,
         profilePicture, setProfilePicture,
         loading,
-        currentBalance, setCurrentBalance,
-        regularTransactions, setRegularTransactions,
-        budgets, setBudgets,
-        saveProfile, savePassword, saveFinancial, saveBudgets,
+        saveProfile, savePassword,
     } = useSettings();
 
     return (
@@ -26,8 +22,11 @@ export default function Settings() {
             <Sidebar />
             <main className="settings-page">
                 <div className="settings-header">
-                    <h1>{t('settings.title')}</h1>
-                    <p>{t('settings.subtitle')}</p>
+                    <div>
+                        <h1>{t('settings.title')}</h1>
+                        <p>{t('settings.subtitle')}</p>
+                    </div>
+                    <LogoutButton />
                 </div>
                 <div className="settings-grid">
                     <div className="settings-row-two">
@@ -38,14 +37,10 @@ export default function Settings() {
                         />
                         <SecuritySection loading={loading} savePassword={savePassword} />
                     </div>
-                    <FinancialSection
-                        currentBalance={currentBalance} setCurrentBalance={setCurrentBalance}
-                        regularTransactions={regularTransactions} setRegularTransactions={setRegularTransactions}
-                        saveFinancial={saveFinancial}
-                    />
-                    <BudgetsSection budgets={budgets} setBudgets={setBudgets} saveBudgets={saveBudgets} />
-                    <PreferencesSection />
-                    <DevToolsSection />
+                    <div className="settings-row-two">
+                        <PreferencesSection />
+                        <DevToolsSection />
+                    </div>
                 </div>
             </main>
         </div>

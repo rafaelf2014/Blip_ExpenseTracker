@@ -64,7 +64,7 @@ export function handleBudget(ctx: QueryContext): string {
         const status = pct >= 100 ? m.budgetStatusOver : pct >= 80 ? m.budgetStatusNear : m.budgetStatusOk;
         return `• ${b.category}: ${spent.toFixed(2)}€ / ${b.limit.toFixed(2)}€ (${pct}%) ${status}`;
     });
-    return `${m.budgetStatusHeader}\n${lines.join('\n')}`;
+    return `${m.budgetStatusHeader}\n\n${lines.join('\n')}`;
 }
 
 export function handleMostFrequent(ctx: QueryContext): string {
@@ -78,7 +78,7 @@ export function handleMostFrequent(ctx: QueryContext): string {
         .slice(0, 5)
         .map(([cat, n]) => m.mostUsedLine(cat, n))
         .join('\n');
-    return `${m.mostUsedHeader(dateResultStr)}\n${lines}`;
+    return `${m.mostUsedHeader(dateResultStr)}\n\n${lines}`;
 }
 
 export function handleDistinctCategories(ctx: QueryContext): string {
@@ -110,14 +110,14 @@ export function handleDuplicates(ctx: QueryContext): string {
         const [date, cat, amount] = key.split('_');
         return m.duplicateLine(amount, cat, date, n);
     }).join('\n');
-    return `${m.duplicatesHeader(dupes.length, dateResultStr)}\n${lines}`;
+    return `${m.duplicatesHeader(dupes.length, dateResultStr)}\n\n${lines}`;
 }
 
 export function handleRoundAmounts(ctx: QueryContext): string {
     const { m, filteredExpenses, dateResultStr, fmtD } = ctx;
     const rows = filteredExpenses.slice(0, 10).map(e => m.expenseLine(e.description, Number(e.amount).toFixed(2), fmtD(e.date))).join('\n');
     const more = filteredExpenses.length > 10 ? m.listMore(filteredExpenses.length - 10) : '';
-    return `${m.roundHeader(filteredExpenses.length, dateResultStr)}\n${rows}${more}`;
+    return `${m.roundHeader(filteredExpenses.length, dateResultStr)}\n\n${rows}${more}`;
 }
 
 export function handleCount(ctx: QueryContext): string {
@@ -172,7 +172,7 @@ export function handleList(ctx: QueryContext): string {
     const sorted = [...filteredExpenses].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     const rows = sorted.slice(0, 5).map(e => m.expenseLine(e.description, Number(e.amount).toFixed(2), fmtD(e.date))).join('\n');
     const more = filteredExpenses.length > 5 ? m.listMoreExpenses(filteredExpenses.length - 5) : '';
-    return `${m.listHeader(filteredExpenses.length, catStr, dateResultStr)}\n${rows}${more}`;
+    return `${m.listHeader(filteredExpenses.length, catStr, dateResultStr)}\n\n${rows}${more}`;
 }
 
 export function handleTotal(ctx: QueryContext): string {

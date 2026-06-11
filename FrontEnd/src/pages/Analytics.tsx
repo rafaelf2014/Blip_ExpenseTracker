@@ -8,6 +8,7 @@ import '../styles/Analytics.scss';
 import { useTranslation } from 'react-i18next';
 import { useCurrency } from '../Context/CurrencyContext';
 import { useAnalytics } from '../hooks/useAnalytics';
+import { LogoutButton } from '../components/LogoutButton';
 import type { CategoryDatum } from '../types';
 
 type ChartTooltipProps = {
@@ -75,10 +76,13 @@ export default function Analytics() {
                         <h2>{t('analytics.title')}</h2>
                         <p>{t('analytics.subtitle')}</p>
                     </div>
-                    <button className="analytics-filters-btn" onClick={() => setShowFilters(!showFilters)}>
-                        <Filter size={18} />
-                        {showFilters ? t('analytics.hide_filters') : t('analytics.show_filters')}
-                    </button>
+                    <div className="header-actions">
+                        <button className="analytics-filters-btn" onClick={() => setShowFilters(!showFilters)}>
+                            <Filter size={18} />
+                            {showFilters ? t('analytics.hide_filters') : t('analytics.show_filters')}
+                        </button>
+                        <LogoutButton />
+                    </div>
                 </header>
 
                 <div className="dashboard-main">

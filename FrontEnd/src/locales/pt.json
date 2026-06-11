@@ -59,6 +59,10 @@
         "min_amount": "Valor Mínimo",
         "max_amount": "Valor Máximo"
     },
+    "planning": {
+        "title": "Planeamento",
+        "subtitle": "Configura o teu saldo, transações recorrentes e orçamentos por categoria"
+    },
     "settings": {
         "title": "Definições",
         "subtitle": "Gere a tua conta e preferências",
@@ -170,6 +174,11 @@
         "error_save": "Erro ao guardar a despesa.",
         "error_process": "Não foi possível processar a despesa. Tenta novamente.",
         "error_no_voice": "O teu browser não suporta reconhecimento de voz."
+    },
+    "aiMenu": {
+        "button_title": "Adição rápida com IA",
+        "title": "Adição Rápida",
+        "subtitle": "Descreve a tua despesa em linguagem natural e a IA preenche os detalhes."
     },
     "chatbot": {
         "title": "Assistente Financeiro",

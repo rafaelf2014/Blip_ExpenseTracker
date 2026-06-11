@@ -1,31 +1,39 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Design tokens — single source of truth for the BLIP palette, radii and spacing.
-// Import in any SCSS file with:  @use '../styles/tokens' as *;  (or `as t`).
+// Design tokens.
+//
+// NEUTRALS (backgrounds, borders, text) map to CSS custom properties so they can
+// flip at runtime between dark and light themes. The actual color values live in
+// global.scss under :root and [data-theme="light"].
+//
+// BRAND + SEMANTIC colors (accent/green/red/yellow) are the same in both themes,
+// so they stay as plain SCSS hex — that keeps rgba($accent, …) glows working.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ── Backgrounds ──────────────────────────────────────────────────────────────
-$bg-app:      #0B1221;            // page / body background (deep navy)
-$bg-surface:  #1E293B;            // solid cards, panels, table headers (slate-800)
-$bg-card:     rgba(#1E293B, 0.5); // translucent card surface (slate-800 / 50%)
-$bg-surface-2:#2A3441;            // raised surface (hover rows, nested fields)
-$bg-input:    #0F172A;            // form control background
+// ── Theme-aware neutrals ───────────────────────────────────────────────────────
+$bg-app:      var(--bg-app);       // page / body background
+$bg-surface:  var(--bg-surface);   // solid cards, panels, table headers
+$bg-card:     var(--bg-card);      // translucent card surface
+$bg-surface-2:var(--bg-surface-2); // raised surface (hover rows, nested fields)
+$bg-thead:    var(--bg-thead);     // table header strip
+$bg-input:    var(--bg-input);     // form control background
 
-// ── Borders ──────────────────────────────────────────────────────────────────
-$border:      #334155;             // default border (slate-700)
-$border-soft: rgba(#334155, 0.5);  // subtle dividers
+$border:      var(--border);       // default border
+$border-soft: var(--border-soft);  // subtle dividers
 
-// ── Text ─────────────────────────────────────────────────────────────────────
-$text:        #F8FAFC;   // primary text (slate-50)
-$text-muted:  #94A3B8;   // secondary text (slate-400)
-$text-faint:  #64748B;   // placeholders / hints (slate-500)
-$text-dim:    #475569;   // disabled / faint placeholders (slate-600)
+$text:        var(--text);         // primary text
+$text-muted:  var(--text-muted);   // secondary text
+$text-faint:  var(--text-faint);   // placeholders / hints
+$text-dim:    var(--text-dim);     // disabled / faint placeholders
 
-// ── Accent (brand cyan) ────────────────────────────────────────────────────────
-$accent:        #06B6D4; // primary action / focus / active
-$accent-hover:  #0891B2; // hover state for accent
-$accent-soft:   rgba(#06B6D4, 0.5);
+// ── Accent — theme-aware (cyan in dark, warm coral in light) ───────────────────
+$accent:        var(--accent);        // primary action / focus / active
+$accent-hover:  var(--accent-hover);  // hover state for accent
+$on-accent:     var(--on-accent);     // text/icon color on top of the accent
+// Translucent accent glow. Uses color-mix so it follows the themed --accent.
+$accent-glow:   color-mix(in srgb, var(--accent) 30%, transparent);
+$accent-focus:  color-mix(in srgb, var(--accent) 22%, transparent);
 
-// ── Semantic ───────────────────────────────────────────────────────────────────
+// ── Semantic — identical in both themes ────────────────────────────────────────
 $green:       #10B981;
 $green-light: #34D399;
 $green-dark:  #059669;
@@ -44,7 +52,6 @@ $radius-full: 999px;  // round badges
 $font: 'Space Grotesk', sans-serif;
 
 // ── Shared card surface ──────────────────────────────────────────────────────────
-// Solid slate card used across every page (Dashboard, Settings, Analytics, …).
 %card {
   background: $bg-surface;
   border: 1px solid $border;

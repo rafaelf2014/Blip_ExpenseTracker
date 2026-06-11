@@ -1,5 +1,9 @@
+import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
 import { ExpenseModal } from '../components/ExpenseModal';
+import { AiExpenseModal } from '../components/AiExpenseModal';
+import { AddExpenseButton } from '../components/AddExpenseButton';
+import { LogoutButton } from '../components/LogoutButton';
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Cell } from 'recharts';
 import { useTranslation } from 'react-i18next';
@@ -24,6 +28,7 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
   const { formatDate } = useDate();
+  const [showAiMenu, setShowAiMenu] = useState(false);
   const {
     showForm, setShowForm, username, userId,
     categories, expenseTypes, currentBalance,
@@ -47,7 +52,8 @@ export default function Dashboard() {
               <p>{t('dashboard.welcome', { username })}</p>
             </div>
             <div className="header-actions">
-              <button className="add-expense-btn" onClick={() => setShowForm(true)}>{t('dashboard.add_expense')}</button>
+              <AddExpenseButton onAddManual={() => setShowForm(true)} onAddAi={() => setShowAiMenu(true)} />
+              <LogoutButton />
             </div>
           </header>
 
@@ -199,6 +205,15 @@ export default function Dashboard() {
           categories={categories}
           expenseTypes={expenseTypes}
           onClose={() => setShowForm(false)}
+          onExpenseAdded={() => fetchExpenses(userId)}
+        />
+      )}
+      {showAiMenu && (
+        <AiExpenseModal
+          userId={userId}
+          categories={categories}
+          expenseTypes={expenseTypes}
+          onClose={() => setShowAiMenu(false)}
           onExpenseAdded={() => fetchExpenses(userId)}
         />
       )}

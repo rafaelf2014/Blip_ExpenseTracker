@@ -1,7 +1,9 @@
-import { Check, Filter, Folder, Layers, Calendar } from "lucide-react";
+import { Check, Filter, Layers, Calendar, Tag, Search, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import "../styles/FilterControl.scss";
 import { useCurrency } from '../Context/CurrencyContext';
+import { AddExpenseButton } from './AddExpenseButton';
+import { getCategoryIcon } from '../utils/iconMapping';
 
 type FilterControlsProps = {
   searchTerm: string; setSearchTerm: (val: string) => void;
@@ -14,6 +16,7 @@ type FilterControlsProps = {
   categories: string[];
   expenseTypes: string[];
   onAddNew: () => void;
+  onAddAi?: () => void;
   hideAddButton?: boolean;
   hideSearch?: boolean;
 };
@@ -22,7 +25,7 @@ export function FilterControls({
   searchTerm, setSearchTerm, showFilters, setShowFilters,
   filterCategory, setFilterCategory, filterType, setFilterType,
   filterTime, setFilterTime, filterMin, setFilterMin,
-  filterMax, setFilterMax, categories, expenseTypes, onAddNew,
+  filterMax, setFilterMax, categories, expenseTypes, onAddNew, onAddAi,
   hideAddButton = false, hideSearch = false
 }: FilterControlsProps) {
 
@@ -41,12 +44,23 @@ export function FilterControls({
       <div className="filter-top-bar">
         {!hideSearch && (
           <div className="search-wrapper">
+            <Search size={18} className="search-icon" />
             <input
               type="text"
               placeholder={t('filters.search_placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+            {searchTerm && (
+              <button
+                type="button"
+                className="search-clear"
+                onClick={() => setSearchTerm('')}
+                aria-label="Clear search"
+              >
+                <X size={16} />
+              </button>
+            )}
           </div>
         )}
 
@@ -59,10 +73,8 @@ export function FilterControls({
             {showFilters ? t('filters.hide_filters') : t('filters.filter')}
           </button>
 
-          {!hideAddButton && (
-            <button className="add-expense-btn" onClick={onAddNew}>
-              {t('filters.add_expense')}
-            </button>
+          {!hideAddButton && onAddAi && (
+            <AddExpenseButton onAddManual={onAddNew} onAddAi={onAddAi} />
           )}
         </div>
       </div>
@@ -92,19 +104,19 @@ export function FilterControls({
           {/* Section: Categories */}
           <div className="filter-section">
             <h3 className="section-title"><Layers size={18} /> {t('filters.category')}</h3>
-            <div className="options-grid">
+            <div className="category-grid">
 
               <div className={`category-card ${filterCategory === '' ? 'active' : ''}`} onClick={() => setFilterCategory('')}>
                 <Check size={14} className="check-icon" />
-                <Folder size={28} />
-                <span style={{ fontSize: '12px', fontWeight: 500 }}>{t('filters.all_categories')}</span>
+                <span className="category-icon"><Layers size={22} /></span>
+                <span className="category-label">{t('filters.all_categories')}</span>
               </div>
 
               {categories.map((cat) => (
                 <div key={cat} className={`category-card ${filterCategory === cat ? 'active' : ''}`} onClick={() => setFilterCategory(cat)}>
                   <Check size={14} className="check-icon" />
-                  <Folder size={28} />
-                  <span style={{ fontSize: '12px', fontWeight: 500 }}>{cat}</span>
+                  <span className="category-icon">{getCategoryIcon(cat, 22)}</span>
+                  <span className="category-label">{cat}</span>
                 </div>
               ))}
             </div>
@@ -112,7 +124,7 @@ export function FilterControls({
 
           {/* Section: Types */}
           <div className="filter-section">
-            <h3 className="section-title"><Layers size={18} /> {t('filters.type')}</h3>
+            <h3 className="section-title"><Tag size={18} /> {t('filters.type')}</h3>
             <div className="options-grid">
               <div className={`filter-pill ${filterType === '' ? 'active' : ''}`} onClick={() => setFilterType('')}>
                 {t('filters.all_types')}

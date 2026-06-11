@@ -30,7 +30,57 @@ export function AiChatBot() {
         { id: 1, text: t('chatbot.greeting'), sender: 'bot' },
     ]);
 
+    // Drag-to-move: null = default anchored position (CSS); once moved, fixed coords.
+    const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+    const [size, setSize] = useState<{ w: number; h: number } | null>(null);
+    const windowRef = useRef<HTMLDivElement>(null);
+    const dragState = useRef<{ offsetX: number; offsetY: number } | null>(null);
+    const resizeState = useRef<{ startX: number; startY: number; startW: number; startH: number } | null>(null);
+
     const messagesEndRef = useRef<HTMLDivElement>(null);
+
+    const onDragStart = (e: React.MouseEvent) => {
+        if ((e.target as HTMLElement).closest('.close-btn')) return; // let the close button click through
+        const rect = windowRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        dragState.current = { offsetX: e.clientX - rect.left, offsetY: e.clientY - rect.top };
+        if (!pos) setPos({ x: rect.left, y: rect.top });
+        e.preventDefault();
+    };
+
+    const onResizeStart = (e: React.MouseEvent) => {
+        const rect = windowRef.current?.getBoundingClientRect();
+        if (!rect) return;
+        if (!pos) setPos({ x: rect.left, y: rect.top });
+        resizeState.current = { startX: e.clientX, startY: e.clientY, startW: rect.width, startH: rect.height };
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
+    useEffect(() => {
+        const onMove = (e: MouseEvent) => {
+            if (dragState.current) {
+                const w = windowRef.current?.offsetWidth ?? 360;
+                const h = windowRef.current?.offsetHeight ?? 550;
+                const margin = 8;
+                const x = Math.min(Math.max(margin, e.clientX - dragState.current.offsetX), window.innerWidth - w - margin);
+                const y = Math.min(Math.max(margin, e.clientY - dragState.current.offsetY), window.innerHeight - h - margin);
+                setPos({ x, y });
+            } else if (resizeState.current) {
+                const { startX, startY, startW, startH } = resizeState.current;
+                const w = Math.max(300, Math.min(startW + (e.clientX - startX), window.innerWidth * 0.9));
+                const h = Math.max(380, Math.min(startH + (e.clientY - startY), window.innerHeight * 0.85));
+                setSize({ w, h });
+            }
+        };
+        const onUp = () => { dragState.current = null; resizeState.current = null; };
+        window.addEventListener('mousemove', onMove);
+        window.addEventListener('mouseup', onUp);
+        return () => {
+            window.removeEventListener('mousemove', onMove);
+            window.removeEventListener('mouseup', onUp);
+        };
+    }, []);
 
     useEffect(() => {
         setUserId(localStorage.getItem('userId') ?? '');
@@ -127,8 +177,15 @@ export function AiChatBot() {
 
     return (
         <div className="ai-fab-container">
-            <div className={`ai-chat-window ${isOpen ? 'open' : ''}`}>
-                <div className="chat-header">
+            <div
+                ref={windowRef}
+                className={`ai-chat-window ${isOpen ? 'open' : ''} ${pos ? 'floating' : ''}`}
+                style={{
+                    ...(pos ? { left: pos.x, top: pos.y } : {}),
+                    ...(size ? { width: size.w, height: size.h } : {}),
+                }}
+            >
+                <div className="chat-header" onMouseDown={onDragStart}>
                     <div className="header-info">
                         <div className="bot-avatar"><Bot size={22} color="#00C9DB" /></div>
                         <div className="header-titles">
@@ -171,6 +228,8 @@ export function AiChatBot() {
                         <Send size={18} />
                     </button>
                 </div>
+
+                <div className="resize-handle" onMouseDown={onResizeStart} title="Resize" />
             </div>
 
             <button className={`fab-button ${isOpen ? 'hidden' : ''}`} onClick={() => setIsOpen(true)}>
