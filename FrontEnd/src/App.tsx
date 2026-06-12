@@ -7,11 +7,11 @@ import Analytics from './pages/Analytics';
 import Planning from './pages/Planning';
 import Settings from './pages/Settings';
 import { CustomToaster } from './components/CustomToaster';
-import { CurrencyProvider } from './Context/CurrencyContext';
-import { DateProvider } from './Context/DateContext';
-import { ThemeProvider } from './Context/ThemeContext';
+import { CurrencyProvider } from './context/CurrencyContext';
+import { DateProvider } from './context/DateContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { AiChatBot } from './components/AiChatBot';
-import './Context/i18n';
+import './context/i18n';
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (!localStorage.getItem('userId')) return <Navigate to="/" replace />;

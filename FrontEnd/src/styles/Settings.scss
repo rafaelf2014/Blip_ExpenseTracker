@@ -1,6 +1,6 @@
 @use 'tokens' as *;
 
-// ── Layout ──────────────────────────────────────────────────────────────────
+// Layout
 
 .settings-layout {
     display: flex;
@@ -42,7 +42,7 @@
     }
 }
 
-// ── Grid ─────────────────────────────────────────────────────────────────────
+// Grid
 
 .settings-grid {
     display: flex;
@@ -64,7 +64,7 @@
     }
 }
 
-// ── Card ─────────────────────────────────────────────────────────────────────
+// Card
 
 .settings-card {
     background-color: $bg-card;
@@ -107,7 +107,7 @@
     &.icon-slate  { background-color: $text-faint; }
 }
 
-// ── Profile form ──────────────────────────────────────────────────────────────
+// Profile form
 
 .profile-form-inner {
     display: flex;
@@ -159,7 +159,7 @@
     color: $text-dim;
 }
 
-// ── Form controls ─────────────────────────────────────────────────────────────
+// Form controls
 
 .settings-form {
     display: flex;
@@ -243,7 +243,7 @@ select.form-control {
     }
 }
 
-// ── Dev Tools ─────────────────────────────────────────────────────────────────
+// Dev Tools
 
 .devtools-hint {
     color: $text-muted;
@@ -258,7 +258,7 @@ select.form-control {
     gap: 0.75rem;
 }
 
-// ── Financial section ─────────────────────────────────────────────────────────
+// Financial section
 
 .financial-section {
     display: flex;
@@ -290,7 +290,7 @@ select.form-control {
     max-width: 280px;
 }
 
-// ── Add regular transaction form ──────────────────────────────────────────────
+// Add regular transaction form
 
 .add-rt-form {
     display: grid;
@@ -373,7 +373,7 @@ select.form-control {
     }
 }
 
-// ── Regular transaction list ──────────────────────────────────────────────────
+// Regular transaction list
 
 .rt-list {
     display: flex;
@@ -437,7 +437,7 @@ select.form-control {
     flex-shrink: 0;
 }
 
-// ── Budget list ───────────────────────────────────────────────────────────────
+// Budget list
 
 .add-budget-form {
     display: grid;
@@ -512,7 +512,7 @@ select.form-control {
     }
 }
 
-// ── Preferences grid ──────────────────────────────────────────────────────────
+// Preferences grid
 
 .prefs-grid {
     display: grid;

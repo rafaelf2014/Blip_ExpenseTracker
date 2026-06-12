@@ -1,40 +1,8 @@
 import { Router } from "express";
-import { db, type Expense, type RegularTransaction } from "../db.ts";
+import { db, type Expense } from "../db.ts";
+import { occurrenceDates } from "../recurring.ts";
 
 const router = Router();
-
-/**
- * Returns every occurrence date (YYYY-MM-DD) of a recurring template from its
- * start date up to and including `today`. Mirrors the frontend's countOccurrences.
- */
-function occurrenceDates(rt: RegularTransaction, today: Date): string[] {
-    const start = new Date(rt.date);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(today);
-    end.setHours(0, 0, 0, 0);
-    if (start > end) return [];
-
-    const fmt = (d: Date) =>
-        `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-
-    const dates: string[] = [];
-    const cursor = new Date(start);
-
-    if (rt.frequency === 'weekly') {
-        while (cursor <= end) { dates.push(fmt(cursor)); cursor.setDate(cursor.getDate() + 7); }
-    } else if (rt.frequency === 'monthly') {
-        const day = start.getDate();
-        while (cursor <= end) {
-            dates.push(fmt(cursor));
-            cursor.setMonth(cursor.getMonth() + 1);
-            // guard against month-length drift (e.g. Jan 31 -> Mar 3)
-            if (cursor.getDate() !== day) cursor.setDate(0);
-        }
-    } else if (rt.frequency === 'yearly') {
-        while (cursor <= end) { dates.push(fmt(cursor)); cursor.setFullYear(cursor.getFullYear() + 1); }
-    }
-    return dates;
-}
 
 /**
  * Idempotently materializes recurring templates into real transaction rows.

@@ -7,7 +7,7 @@ const SELECTED_MODEL = 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC';
 let engine: WebWorkerMLCEngine | null = null;
 let initPromise: Promise<void> | null = null;
 
-// ── Loading status (so the UI can show a spinner while the model downloads) ──
+// Loading status (so the UI can show a spinner while the model downloads)
 export type LLMStatus = 'idle' | 'loading' | 'ready' | 'error';
 let status: LLMStatus = 'idle';
 let progress = 0; // 0–1 download/init progress

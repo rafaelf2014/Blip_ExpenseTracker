@@ -28,7 +28,7 @@ $sidebar-width-collapsed: 80px;
         align-items: center;
     }
 
-    // ── Brand ────────────────────────────────────────────────────────────────
+    // Brand
     .sidebar-brand {
         display: flex;
         align-items: center;
@@ -61,7 +61,7 @@ $sidebar-width-collapsed: 80px;
         justify-content: center;
     }
 
-    // ── Navigation ───────────────────────────────────────────────────────────
+    // Navigation
     .sidebar-nav {
         display: flex;
         flex-direction: column;
@@ -119,7 +119,7 @@ $sidebar-width-collapsed: 80px;
         }
     }
 
-    // ── Footer (theme toggle + collapse toggle) ───────────────────────────────
+    // Footer (theme toggle + collapse toggle)
     .sidebar-footer {
         display: flex;
         align-items: center;
@@ -171,7 +171,7 @@ $sidebar-width-collapsed: 80px;
         }
     }
 
-    // ── Collapse toggle ──────────────────────────────────────────────────────
+    // Collapse toggle
     .sidebar-toggle {
         flex-shrink: 0;
         display: flex;
@@ -191,7 +191,7 @@ $sidebar-width-collapsed: 80px;
         .toggle-icon { transition: transform 0.25s ease; }
     }
 
-    // ── Collapsed footer: stack vertically, icon-only theme toggle ─────────────
+    // Collapsed footer: stack vertically, icon-only theme toggle
     &.collapsed .sidebar-footer {
         flex-direction: column-reverse;
         gap: 10px;
@@ -232,7 +232,7 @@ $sidebar-width-collapsed: 80px;
     z-index: 100;
 }
 
-// ── Mobile: sidebar becomes a fixed bottom tab bar ─────────────────────────────
+// Mobile: sidebar becomes a fixed bottom tab bar
 @media (max-width: $mobile) {
     .sidebar,
     .sidebar.collapsed {

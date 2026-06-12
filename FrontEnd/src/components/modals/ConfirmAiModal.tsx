@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Save } from 'lucide-react';
-import type { NewExpense } from '../types';
-import '../styles/AiBar.scss';
+import type { NewExpense } from '../../types';
+import '../../styles/AiModals.scss';
 import { ModalBase } from './ModalBase';
-import { toLocalDateStr } from '../utils/finance';
+import { toLocalDateStr } from '../../utils/finance';
 
 type ConfirmAiModalProps = {
   aiData: NewExpense;

@@ -3,10 +3,10 @@ import { LogoutButton } from '../components/LogoutButton';
 import { useTranslation } from 'react-i18next';
 import '../styles/Settings.scss';
 import { useSettings } from '../hooks/useSettings';
-import { ProfileSection } from '../components/settings/ProfileSection';
-import { SecuritySection } from '../components/settings/SecuritySection';
-import { PreferencesSection } from '../components/settings/PreferencesSection';
-import { DevToolsSection } from '../components/settings/DevToolsSection';
+import { ProfileSection } from '../components/sections/ProfileSection';
+import { SecuritySection } from '../components/sections/SecuritySection';
+import { PreferencesSection } from '../components/sections/PreferencesSection';
+import { DevToolsSection } from '../components/sections/DevToolsSection';
 
 export default function Settings() {
     const { t } = useTranslation();

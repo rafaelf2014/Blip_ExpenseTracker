@@ -1,6 +1,6 @@
 @use 'tokens' as *;
 
-// ── Dark theme (default) ───────────────────────────────────────────────────────
+// Dark theme (default)
 :root {
   --bg-app:       #0B1221;             // deep navy page background
   --bg-surface:   #1E293B;             // cards / panels (slate-800)
@@ -22,7 +22,7 @@
   --on-accent:    #FFFFFF;             // text/icon color on top of the accent
 }
 
-// ── Light theme ─────────────────────────────────────────────────────────────────
+// Light theme
 [data-theme='light'] {
   --bg-app:       #F5F1E8;             // warm cream page background
   --bg-surface:   #FEFCF7;             // soft off-white cards / panels

@@ -2,7 +2,7 @@
 
 $border-color: $border;
 
-// ── Filter toggle button ──────────────────────────────────────────────────────
+// Filter toggle button
 
 .analytics-filters-btn {
     display: flex;
@@ -22,7 +22,7 @@ $border-color: $border;
     &:hover { background-color: $border; }
 }
 
-// ── Chart cards ───────────────────────────────────────────────────────────────
+// Chart cards
 
 .charts-grid {
     display: grid;
@@ -92,7 +92,7 @@ $border-color: $border;
     }
 }
 
-// ── Tooltip ───────────────────────────────────────────────────────────────────
+// Tooltip
 
 .custom-tooltip {
     background-color: $bg-app;
@@ -129,7 +129,7 @@ $border-color: $border;
     }
 }
 
-// ── Top categories card ───────────────────────────────────────────────────────
+// Top categories card
 
 .top-categories-card {
     .categories-list {
@@ -198,7 +198,7 @@ $border-color: $border;
     }
 }
 
-// ── Mobile ──────────────────────────────────────────────────────────────────
+// Mobile
 @media (max-width: $mobile) {
   .charts-grid { gap: 14px; }
 

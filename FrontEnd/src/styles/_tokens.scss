@@ -1,15 +1,4 @@
-// ─────────────────────────────────────────────────────────────────────────────
-// Design tokens.
-//
-// NEUTRALS (backgrounds, borders, text) map to CSS custom properties so they can
-// flip at runtime between dark and light themes. The actual color values live in
-// global.scss under :root and [data-theme="light"].
-//
-// BRAND + SEMANTIC colors (accent/green/red/yellow) are the same in both themes,
-// so they stay as plain SCSS hex — that keeps rgba($accent, …) glows working.
-// ─────────────────────────────────────────────────────────────────────────────
-
-// ── Theme-aware neutrals ───────────────────────────────────────────────────────
+// Theme-aware neutrals
 $bg-app:      var(--bg-app);       // page / body background
 $bg-surface:  var(--bg-surface);   // solid cards, panels, table headers
 $bg-card:     var(--bg-card);      // translucent card surface
@@ -25,7 +14,7 @@ $text-muted:  var(--text-muted);   // secondary text
 $text-faint:  var(--text-faint);   // placeholders / hints
 $text-dim:    var(--text-dim);     // disabled / faint placeholders
 
-// ── Accent — theme-aware (cyan in dark, warm coral in light) ───────────────────
+// Accent — theme-aware (cyan in dark, warm coral in light)
 $accent:        var(--accent);        // primary action / focus / active
 $accent-hover:  var(--accent-hover);  // hover state for accent
 $on-accent:     var(--on-accent);     // text/icon color on top of the accent
@@ -33,7 +22,7 @@ $on-accent:     var(--on-accent);     // text/icon color on top of the accent
 $accent-glow:   color-mix(in srgb, var(--accent) 30%, transparent);
 $accent-focus:  color-mix(in srgb, var(--accent) 22%, transparent);
 
-// ── Semantic — identical in both themes ────────────────────────────────────────
+// Semantic — identical in both themes
 $green:       #10B981;
 $green-light: #34D399;
 $green-dark:  #059669;
@@ -42,21 +31,21 @@ $red-light:   #F87171;
 $red-dark:    #DC2626;
 $yellow:      #F59E0B;
 
-// ── Radius ─────────────────────────────────────────────────────────────────────
+// Radius
 $radius-sm:   8px;    // buttons, pills
 $radius-md:   10px;   // inputs / form controls
 $radius-lg:   16px;   // cards, panels, modals
 $radius-full: 999px;  // round badges
 
-// ── Breakpoints ──────────────────────────────────────────────────────────────
+// Breakpoints
 // Phone layout kicks in at/below $mobile (sidebar → bottom bar, cards stack, etc.)
 $mobile:       768px;
 $bottombar-h:  64px;   // height of the mobile bottom nav bar
 
-// ── Typography ─────────────────────────────────────────────────────────────────
+// Typography
 $font: 'Space Grotesk', sans-serif;
 
-// ── Shared card surface ──────────────────────────────────────────────────────────
+// Shared card surface
 %card {
   background: $bg-surface;
   border: 1px solid $border;

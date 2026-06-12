@@ -5,7 +5,7 @@ $bg-main: $bg-app;
 $border-color: $border;
 $cyan: $accent;
 
-// ── Header ────────────────────────────────────────────────────────────────────
+// Header
 
 .header-actions {
   display: flex;
@@ -13,7 +13,7 @@ $cyan: $accent;
   align-items: center;
 }
 
-// ── Shared card mixin ─────────────────────────────────────────────────────────
+// Shared card mixin
 
 %card {
   background: $bg-card;
@@ -22,7 +22,7 @@ $cyan: $accent;
   padding: 24px;
 }
 
-// ── Chart + Stats two-column layout ───────────────────────────────────────────
+// Chart + Stats two-column layout
 
 .main-stats-grid {
   display: grid;
@@ -36,7 +36,7 @@ $cyan: $accent;
 .quick-stats-box { @extend %card; }
 .recent-box    { @extend %card; }
 
-// ── Box header (title + toggle or title only) ─────────────────────────────────
+// Box header (title + toggle or title only)
 
 .box-header {
   display: flex;
@@ -57,7 +57,7 @@ $cyan: $accent;
   }
 }
 
-// ── Week / Month / Year toggle ────────────────────────────────────────────────
+// Week / Month / Year toggle
 
 .toggle-group {
   display: flex;
@@ -87,7 +87,7 @@ $cyan: $accent;
   }
 }
 
-// ── Quick Stats ───────────────────────────────────────────────────────────────
+// Quick Stats
 
 .quick-stats-box {
   h3 {
@@ -161,7 +161,7 @@ $cyan: $accent;
   line-height: 1.5;
 }
 
-// ── Recent Transactions list ──────────────────────────────────────────────────
+// Recent Transactions list
 
 .transactions-mini-list {
   .mini-item {
@@ -240,7 +240,7 @@ $cyan: $accent;
   margin: 0;
 }
 
-// ── Mobile ──────────────────────────────────────────────────────────────────
+// Mobile
 @media (max-width: $mobile) {
   .main-stats-grid { gap: 14px; }
 

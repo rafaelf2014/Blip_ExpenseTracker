@@ -1,6 +1,6 @@
 import type { Expense, RegularTransaction, Budget } from '../types';
 
-// ── Signed-amount helpers ───────────────────────────────────────────────────
+// Signed-amount helpers
 // Transaction rows are signed: positive = spending, negative = income.
 
 /** Total spent: sum of positive amounts only. */
@@ -58,13 +58,18 @@ export function countOccurrences(rt: RegularTransaction, start: Date, end: Date)
   }
 
   if (rt.frequency === 'monthly') {
+    // Step by absolute month index, clamping the day to each month's length, so a
+    // start on the 29th–31st can't drift (Feb) or loop. lastDay = new Date(y,m+1,0).
     const day = startDate.getDate();
-    const cursor = new Date(start.getFullYear(), start.getMonth(), day);
-    if (cursor < start) cursor.setMonth(cursor.getMonth() + 1);
+    let y = start.getFullYear();
+    let m = start.getMonth();
     let count = 0;
-    while (cursor <= end) {
-      if (cursor >= startDate) count++;
-      cursor.setMonth(cursor.getMonth() + 1);
+    let occ = new Date(y, m, Math.min(day, new Date(y, m + 1, 0).getDate()));
+    while (occ <= end) {
+      if (occ >= startDate && occ >= start) count++;
+      m += 1;
+      if (m > 11) { m = 0; y += 1; }
+      occ = new Date(y, m, Math.min(day, new Date(y, m + 1, 0).getDate()));
     }
     return count;
   }

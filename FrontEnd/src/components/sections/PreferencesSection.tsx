@@ -1,7 +1,7 @@
 import { Palette, Save } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useCurrency } from '../../Context/CurrencyContext';
-import { useDate } from '../../Context/DateContext';
+import { useCurrency } from '../../context/CurrencyContext';
+import { useDate } from '../../context/DateContext';
 import { useTranslation } from 'react-i18next';
 
 export function PreferencesSection() {

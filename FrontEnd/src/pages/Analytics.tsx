@@ -6,7 +6,7 @@ import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tool
 import '../styles/Transactions.scss';
 import '../styles/Analytics.scss';
 import { useTranslation } from 'react-i18next';
-import { useCurrency } from '../Context/CurrencyContext';
+import { useCurrency } from '../context/CurrencyContext';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { LogoutButton } from '../components/LogoutButton';
 import type { CategoryDatum } from '../types';

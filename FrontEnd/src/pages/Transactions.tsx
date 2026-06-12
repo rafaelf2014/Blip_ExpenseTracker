@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
-import { ExpenseModal } from '../components/ExpenseModal';
-import { EditExpenseModal } from '../components/EditExpenseModal';
+import { ExpenseModal } from '../components/modals/ExpenseModal';
+import { EditExpenseModal } from '../components/modals/EditExpenseModal';
 import { ExpenseTable } from '../components/ExpenseTable';
 import { FilterControls } from '../components/FilterControl';
 import { SummaryCard } from '../components/SummaryBoxes';
 import '../styles/Transactions.scss';
-import { AiExpenseModal } from '../components/AiExpenseModal';
+import { AiExpenseModal } from '../components/modals/AiExpenseModal';
 import { LogoutButton } from '../components/LogoutButton';
 import { Receipt, TrendingUp, Wallet, DollarSign } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
-import { useCurrency } from '../Context/CurrencyContext';
+import { useCurrency } from '../context/CurrencyContext';
 import { useTransactions } from '../hooks/useTransactions';
 
 export default function Transactions() {

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { X, Save, Trash2 } from 'lucide-react';
-import type { Expense } from '../types';
-import '../styles/EditExpenseModal.scss';
+import type { Expense } from '../../types';
+import '../../styles/EditExpenseModal.scss';
 import { ModalBase } from './ModalBase';
 
 type EditExpenseModalProps = {

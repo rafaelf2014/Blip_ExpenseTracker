@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Receipt, Settings, LayoutDashboard, PieChart, Wallet, ChevronLeft, Sun, Moon } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useTheme } from '../Context/ThemeContext';
+import { useTheme } from '../context/ThemeContext';
 import './../styles/Sidebar.scss';
 
 const STORAGE_KEY = 'blip_sidebar_collapsed';

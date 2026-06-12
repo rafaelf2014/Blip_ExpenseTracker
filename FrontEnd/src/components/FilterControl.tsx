@@ -1,7 +1,7 @@
 import { Check, Filter, Layers, Calendar, Tag, Search, X } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import "../styles/FilterControl.scss";
-import { useCurrency } from '../Context/CurrencyContext';
+import { useCurrency } from '../context/CurrencyContext';
 import { AddExpenseButton } from './AddExpenseButton';
 import { getCategoryIcon } from '../utils/iconMapping';
 

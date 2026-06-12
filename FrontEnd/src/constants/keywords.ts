@@ -30,12 +30,12 @@ export const CATEGORY_KEYWORDS: [string, string[]][] = [
         'netflix', 'hbo', 'disney', 'apple tv', 'prime video', 'paramount', 'peacock',
         'crunchyroll', 'mubi', 'discovery', 'dazn', 'sport tv',
         'spotify', 'apple music', 'deezer', 'tidal', 'youtube music', 'soundcloud',
-        'steam', 'playstation', 'xbox', 'nintendo', 'epic games', 'ea ', 'ubisoft',
+        'steam', 'playstation', 'xbox', 'nintendo', 'games', 'ubisoft',
         'twitch', 'game pass', 'psn', 'ps plus',
         'cinema', 'concerto', 'teatro', 'espetaculo', 'museu', 'parque', 'festival',
         'bilhete', 'ingresso', 'ticket', 'eventbrite', 'feira', 'expo',
         'futebol', 'basket', 'basquet', 'basquete', 'volei', 'rugby', 'golfe', 'golf',
-        'natacao', 'swim', 'corrida', 'run', 'ciclismo', 'fitness', 'crossfit', 'pilates', 'yoga',
+        'natacao', 'swim', 'corrida', 'run', 'ciclismo',
         'livro', 'book', 'kindle', 'audible', 'revista', 'magazine', 'jornal',
         'puzzle', 'board game', 'hobby', 'craft',
         'casino', 'aposta', 'bet', 'lotaria', 'raspadinha',
@@ -57,7 +57,7 @@ export const CATEGORY_KEYWORDS: [string, string[]][] = [
         'consulta', 'dentist', 'oculist', 'oftalmo', 'ortoped', 'cirurgi',
         'fisio', 'psicolog', 'nutri', 'analise', 'exame', 'radiologi', 'ecografi',
         'medic', 'vitamina', 'suplemento', 'protei', 'whey',
-        'ginasi', 'gym', 'spa', 'massagem', 'acupuntura', 'osteopat',
+        'ginasi', 'gym', 'fitness', 'crossfit', 'pilates', 'yoga', 'spa', 'massagem', 'acupuntura', 'osteopat',
         'oculos', 'lente de contato',
         'seguro saude', 'seguro de saude', 'health insurance',
         'health', 'saude', 'pharmacy', 'doctor', 'therapy', 'supplement', 'wellness',
@@ -101,7 +101,10 @@ export const QUERY_CATEGORY_KEYWORDS: [string, string[]][] = [
     ['Clothes',        ['roupa', 'vestuario', 'calcado', 'clothes', 'clothing', 'fashion', 'apparel', 'shopping']],
 ];
 
+// NOTE: keywords are matched as substrings, so bare 3-letter tokens like 'mes'
+// or 'ano' are unsafe (they hit "mesa", "itali-ano", …). Use unambiguous words
+// and the actual recurrence phrases people type.
 export const TYPE_KEYWORDS: [string, string[]][] = [
-    ['Monthly',      ['mensal', 'monthly', 'subscri', 'subscription', 'recorrent', 'recurring', 'mes']],
-    ['Yearly',       ['anual', 'annual', 'yearly', 'ano']],
+    ['Monthly',      ['mensal', 'monthly', 'subscri', 'subscription', 'recorrent', 'recurring', 'por mes', 'ao mes', '/mes']],
+    ['Yearly',       ['anual', 'annual', 'yearly', 'por ano', 'ao ano', '/ano']],
 ];

@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import '../styles/ExpenseModal.scss';
-import '../styles/global.scss';
+import '../../styles/ExpenseModal.scss';
+import '../../styles/global.scss';
 import toast from 'react-hot-toast';
-import { useCurrency } from '../Context/CurrencyContext';
+import { useCurrency } from '../../context/CurrencyContext';
 import { ModalBase } from './ModalBase';
-import { API_BASE } from '../constants/api';
-import { toLocalDateStr } from '../utils/finance';
+import { API_BASE } from '../../constants/api';
+import { toLocalDateStr } from '../../utils/finance';
 
 type ExpenseModalProps = {
   userId: string;

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Sidebar } from '../components/Sidebar';
-import { ExpenseModal } from '../components/ExpenseModal';
-import { AiExpenseModal } from '../components/AiExpenseModal';
+import { ExpenseModal } from '../components/modals/ExpenseModal';
+import { AiExpenseModal } from '../components/modals/AiExpenseModal';
 import { AddExpenseButton } from '../components/AddExpenseButton';
 import { LogoutButton } from '../components/LogoutButton';
 import { Wallet, TrendingUp, TrendingDown } from 'lucide-react';
@@ -9,8 +9,8 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContaine
 import { useTranslation } from 'react-i18next';
 import '../styles/Dashboard.scss';
 import { SummaryCard } from '../components/SummaryBoxes';
-import { useCurrency } from '../Context/CurrencyContext';
-import { useDate } from '../Context/DateContext';
+import { useCurrency } from '../context/CurrencyContext';
+import { useDate } from '../context/DateContext';
 import { useDashboard } from '../hooks/useDashboard';
 import { getCategoryIcon } from '../utils/iconMapping';
 

@@ -3,8 +3,8 @@ import { LogoutButton } from '../components/LogoutButton';
 import { useTranslation } from 'react-i18next';
 import '../styles/Settings.scss';
 import { useSettings } from '../hooks/useSettings';
-import { FinancialSection } from '../components/settings/FinancialSection';
-import { BudgetsSection } from '../components/settings/BudgetsSection';
+import { FinancialSection } from '../components/sections/FinancialSection';
+import { BudgetsSection } from '../components/sections/BudgetsSection';
 
 export default function Planning() {
     const { t } = useTranslation();

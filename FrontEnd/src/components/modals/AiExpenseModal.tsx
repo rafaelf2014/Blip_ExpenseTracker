@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mic, Loader2, Zap, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { initLLM, extractExpenseFromText } from '../services/llmService';
+import { initLLM, extractExpenseFromText } from '../../services/llmService';
 import { ConfirmAiModal } from './ConfirmAiModal';
 import { ModalBase } from './ModalBase';
-import type { NewExpense } from '../types';
-import { API_BASE } from '../constants/api';
-import '../styles/AiBar.scss';
+import type { NewExpense } from '../../types';
+import { API_BASE } from '../../constants/api';
+import '../../styles/AiModals.scss';
 
 type AiExpenseModalProps = {
   userId: string;

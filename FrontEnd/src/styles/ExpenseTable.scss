@@ -183,7 +183,7 @@
   }
 }
 
-// ── Mobile: drop the lower-priority columns and tighten the rest ───────────────
+// Mobile: drop the lower-priority columns and tighten the rest
 @media (max-width: $mobile) {
   .expense-table-container {
     .empty-state { padding: 40px 20px; font-size: 16px; }

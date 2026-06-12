@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
-import { useCurrency } from '../Context/CurrencyContext';
-import { useDate } from '../Context/DateContext';
+import { useCurrency } from '../context/CurrencyContext';
+import { useDate } from '../context/DateContext';
 import type { Expense } from '../types';
 import { getCategoryIcon } from '../utils/iconMapping';
 

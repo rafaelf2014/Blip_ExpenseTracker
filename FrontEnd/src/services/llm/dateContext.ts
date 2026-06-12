@@ -27,7 +27,7 @@ export function detectQueryType(norm: string): QueryType {
     if (/media|medio|average|avg|gasto medio/.test(norm))                                                   return 'AVERAGE';
     if (/lista|listar|mostrar|ver|quais|transacoes|ultimas despesas|show|list|display/.test(norm))          return 'LIST';
     if (/orcamento|budget|limite|posso gastar|quanto falta|remaining|room left/.test(norm))                 return 'BUDGET';
-    if (/recebi|rendimento|income|ganho|salario|ganhei|earned|salary/.test(norm))                           return 'INCOME';
+    if (/recebi|rendimento|income|ganho|salario|ganhei|earn|salary/.test(norm))                              return 'INCOME';
     if (/quantas|quantos|numero de|vezes|how many|count|number of/.test(norm))                              return 'COUNT';
     return 'TOTAL';
 }

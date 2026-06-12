@@ -5,7 +5,7 @@ import type { Expense, RegularTransaction, Budget } from '../types';
 // The service imports @mlc-ai/web-llm which uses browser Worker — stub it out
 vi.mock('@mlc-ai/web-llm', () => ({ CreateWebWorkerMLCEngine: vi.fn() }));
 
-// ── Fixtures ──────────────────────────────────────────────────────────────────
+// Fixtures
 
 function exp(id: string, description: string, amount: number, category: string, date: string): Expense {
     return { id, description, amount: amount as any, category, date, type: 'One-time', userId: 'u1' } as Expense;
@@ -49,7 +49,7 @@ async function askBudget(q: string) {
     return askFinancialQuestion(q, EXPENSES, NO_REGULAR, BUDGETS);
 }
 
-// ── detectChatIntent ──────────────────────────────────────────────────────────
+// detectChatIntent
 
 describe('detectChatIntent', () => {
     it('detects English queries', () => {
@@ -76,7 +76,7 @@ describe('detectChatIntent', () => {
     });
 });
 
-// ── TOTAL queries ─────────────────────────────────────────────────────────────
+// TOTAL queries
 
 describe('askFinancialQuestion — TOTAL', () => {
     it('returns total for a specific month/year', async () => {
@@ -103,7 +103,7 @@ describe('askFinancialQuestion — TOTAL', () => {
     });
 });
 
-// ── MAX queries ───────────────────────────────────────────────────────────────
+// MAX queries
 
 describe('askFinancialQuestion — MAX', () => {
     it('finds the largest expense across all categories and shows its category', async () => {
@@ -118,7 +118,7 @@ describe('askFinancialQuestion — MAX', () => {
     });
 });
 
-// ── AVERAGE queries ───────────────────────────────────────────────────────────
+// AVERAGE queries
 
 describe('askFinancialQuestion — AVERAGE', () => {
     it('calculates average for a category', async () => {
@@ -128,7 +128,7 @@ describe('askFinancialQuestion — AVERAGE', () => {
     });
 });
 
-// ── COUNT queries ─────────────────────────────────────────────────────────────
+// COUNT queries
 
 describe('askFinancialQuestion — COUNT', () => {
     it('counts all transactions', async () => {
@@ -142,7 +142,7 @@ describe('askFinancialQuestion — COUNT', () => {
     });
 });
 
-// ── LIST queries ──────────────────────────────────────────────────────────────
+// LIST queries
 
 describe('askFinancialQuestion — LIST', () => {
     it('lists transactions for a category', async () => {
@@ -157,7 +157,7 @@ describe('askFinancialQuestion — LIST', () => {
     });
 });
 
-// ── MOST_FREQUENT queries ─────────────────────────────────────────────────────
+// MOST_FREQUENT queries
 
 describe('askFinancialQuestion — MOST_FREQUENT', () => {
     it('identifies the most used category', async () => {
@@ -168,7 +168,7 @@ describe('askFinancialQuestion — MOST_FREQUENT', () => {
     });
 });
 
-// ── DISTINCT_CATEGORIES queries ───────────────────────────────────────────────
+// DISTINCT_CATEGORIES queries
 
 describe('askFinancialQuestion — DISTINCT_CATEGORIES', () => {
     it('counts distinct categories', async () => {
@@ -178,7 +178,7 @@ describe('askFinancialQuestion — DISTINCT_CATEGORIES', () => {
     });
 });
 
-// ── PERCENTAGE queries ────────────────────────────────────────────────────────
+// PERCENTAGE queries
 
 describe('askFinancialQuestion — PERCENTAGE', () => {
     it('calculates percentage for a category', async () => {
@@ -194,7 +194,7 @@ describe('askFinancialQuestion — PERCENTAGE', () => {
     });
 });
 
-// ── DUPLICATE queries ─────────────────────────────────────────────────────────
+// DUPLICATE queries
 
 describe('askFinancialQuestion — DUPLICATES', () => {
     it('finds duplicate transactions', async () => {
@@ -211,7 +211,7 @@ describe('askFinancialQuestion — DUPLICATES', () => {
     });
 });
 
-// ── ROUND_AMOUNTS queries ─────────────────────────────────────────────────────
+// ROUND_AMOUNTS queries
 
 describe('askFinancialQuestion — ROUND_AMOUNTS', () => {
     it('finds round-amount transactions', async () => {
@@ -221,7 +221,7 @@ describe('askFinancialQuestion — ROUND_AMOUNTS', () => {
     });
 });
 
-// ── BUDGET queries ────────────────────────────────────────────────────────────
+// BUDGET queries
 
 describe('askFinancialQuestion — BUDGET', () => {
     it('shows budget status sorted by most exceeded', async () => {
@@ -245,7 +245,7 @@ describe('askFinancialQuestion — BUDGET', () => {
     });
 });
 
-// ── Amount filter edge cases ──────────────────────────────────────────────────
+// Amount filter edge cases
 
 describe('askFinancialQuestion — amount filters', () => {
     it('filters by minimum amount', async () => {
@@ -268,7 +268,7 @@ describe('askFinancialQuestion — amount filters', () => {
     });
 });
 
-// ── Quarter parsing ───────────────────────────────────────────────────────────
+// Quarter parsing
 
 describe('askFinancialQuestion — quarter parsing', () => {
     it('parses Q1 correctly', async () => {

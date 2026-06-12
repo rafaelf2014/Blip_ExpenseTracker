@@ -14,7 +14,7 @@ beforeAll(() => {
 const CATEGORIES = ['Food', 'Transportation', 'Entertainment', 'Utilities', 'Health', 'Housing', 'Clothes', 'Other'];
 const TYPES      = ['One-time', 'Monthly', 'Yearly'];
 
-// ── Amount parsing ────────────────────────────────────────────────────────────
+// Amount parsing
 
 describe('extractExpenseFromText — amount', () => {
     it('parses € prefix', async () => {
@@ -43,7 +43,7 @@ describe('extractExpenseFromText — amount', () => {
     });
 });
 
-// ── Category classification ───────────────────────────────────────────────────
+// Category classification
 
 describe('extractExpenseFromText — category', () => {
     it('classifies food — English keyword', async () => {
@@ -117,7 +117,7 @@ describe('extractExpenseFromText — category', () => {
     });
 });
 
-// ── Date parsing ──────────────────────────────────────────────────────────────
+// Date parsing
 
 describe('extractExpenseFromText — date', () => {
     it('parses YYYY-MM-DD', async () => {
@@ -160,7 +160,7 @@ describe('extractExpenseFromText — date', () => {
     });
 });
 
-// ── Type classification ───────────────────────────────────────────────────────
+// Type classification
 
 describe('extractExpenseFromText — type', () => {
     it('classifies monthly subscription', async () => {
