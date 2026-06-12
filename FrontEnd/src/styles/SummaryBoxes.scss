@@ -8,6 +8,18 @@
   width: 100%;
 
   align-items: flex-start;
+
+  // Mobile: fixed 2-up grid (2×2 on the 4-card pages, 2+1 on the 3-card dashboard).
+  @media (max-width: $mobile) {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  // Very narrow phones: single column.
+  @media (max-width: 380px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .summary-card-new {
@@ -91,5 +103,24 @@
       color: $text-faint; // text-slate-500
       font-size: 14px;
     }
+  }
+
+  // Mobile: tighter cards so two fit per row without overflow.
+  @media (max-width: $mobile) {
+    padding: 16px;
+    &:hover { transform: none; }   // no hover-lift on touch
+
+    .card-top {
+      margin-bottom: 10px;
+      .card-label { font-size: 12px; }
+      .card-value { font-size: 21px; }
+    }
+    .icon-box-wrapper {
+      width: 38px; height: 38px;
+      .icon-element { width: 19px; height: 19px; }
+    }
+    .card-bottom .trend-tag,
+    .card-bottom .comparison-text { font-size: 12px; }
+    .card-bottom .comparison-text { display: none; }  // drop "vs. last month" to save width
   }
 }

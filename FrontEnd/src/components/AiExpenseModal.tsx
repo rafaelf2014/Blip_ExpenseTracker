@@ -18,7 +18,7 @@ type AiExpenseModalProps = {
 };
 
 export function AiExpenseModal({ userId, categories, expenseTypes, onClose, onExpenseAdded }: AiExpenseModalProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [aiInput, setAiInput] = useState('');
   const [isAiLoading, setIsAiLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -70,7 +70,7 @@ export function AiExpenseModal({ userId, categories, expenseTypes, onClose, onEx
     if (!SpeechRecognitionImpl) { toast.error(t('aiBar.error_no_voice')); return; }
 
     const recognition = new SpeechRecognitionImpl();
-    recognition.lang = 'pt-PT';
+    recognition.lang = i18n.language.startsWith('pt') ? 'pt-PT' : 'en-US';
     recognition.interimResults = false;
 
     recognition.onstart = () => { setIsListening(true); setAiInput(''); };

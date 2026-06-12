@@ -239,3 +239,26 @@ $cyan: $accent;
   padding: 24px 0;
   margin: 0;
 }
+
+// ── Mobile ──────────────────────────────────────────────────────────────────
+@media (max-width: $mobile) {
+  .main-stats-grid { gap: 14px; }
+
+  .chart-box,
+  .quick-stats-box,
+  .recent-box {
+    padding: 16px;   // tighter cards
+  }
+
+  .box-header {
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    h3    { font-size: 15px; }
+    small { font-size: 11px; }
+
+    // Week/Month/Year toggle: let it wrap under the title instead of cramming.
+    .toggle-group { font-size: 12px; }
+  }
+}

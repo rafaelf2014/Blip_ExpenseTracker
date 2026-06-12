@@ -15,6 +15,10 @@
     padding: 32px 40px;
     color: $text;
     overflow-y: auto;
+
+    @media (max-width: $mobile) {
+        padding: 20px 16px;
+    }
 }
 
 .settings-header {

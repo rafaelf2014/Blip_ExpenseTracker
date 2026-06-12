@@ -334,3 +334,36 @@
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
     }
 }
+
+// ── Mobile: full-screen chat sheet + repositioned launcher ─────────────────────
+@media (max-width: $mobile) {
+    .ai-fab-container {
+        // Launcher sits bottom-LEFT (the Add-Expense FAB owns bottom-right),
+        // lifted above the bottom nav bar.
+        right: auto;
+        left: 18px;
+        bottom: calc(#{$bottombar-h} + 18px);
+        align-items: flex-start;
+
+        .ai-chat-window {
+            // Fill the screen as a sheet, ignoring any drag/resize coords.
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100dvh;
+            max-width: none;
+            max-height: none;
+            min-width: 0;
+            min-height: 0;
+            border: none;
+            border-radius: 0;
+            transform-origin: center;
+            transform: scale(0.98);
+
+            &.open { transform: scale(1); }
+
+            .chat-header { cursor: default; }   // no drag affordance on the sheet
+            .resize-handle { display: none; }
+        }
+    }
+}

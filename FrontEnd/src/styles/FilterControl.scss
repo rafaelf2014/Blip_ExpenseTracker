@@ -105,6 +105,13 @@
       flex: 1;
     }
   }
+
+  // Mobile: stack search over the (now lone) Filters button, both full width.
+  @media (max-width: $mobile) {
+    gap: 12px;
+    .search-wrapper { flex: 1 1 100%; min-width: 0; }
+    .action-buttons { flex: 1 1 100%; min-width: 0; }
+  }
 }
 
 /* Expanded Filter Panel */
@@ -330,4 +337,20 @@
   // First section needs no top padding; last row drops its divider.
   .filter-section:first-child { padding-top: 22px; }
   .filter-footer { border-top: none; }
+
+  // Mobile: tighter panel, amount inputs and actions go full-width.
+  @media (max-width: $mobile) {
+    padding: 4px 16px;
+
+    .filter-section { padding: 18px 0; gap: 12px; }
+
+    .filter-footer {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 16px;
+
+      .amounts-group { gap: 12px; .input-group { flex: 1; input { width: 100%; } } }
+      .panel-actions { width: 100%; .clear-btn, .apply-btn { flex: 1; } }
+    }
+  }
 }

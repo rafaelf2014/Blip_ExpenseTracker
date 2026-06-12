@@ -38,46 +38,52 @@ export function FilterControls({
 
   const { currencySymbol } = useCurrency();
 
+  // The top bar holds search + the Filters toggle + Add button. When the parent
+  // owns the toggle (Analytics passes hideSearch + hideAddButton), this whole bar
+  // would just be a redundant duplicate toggle — so skip it.
+  const showTopBar = !hideSearch || !hideAddButton;
+
   return (
     <>
-      {/* TOP BAR (Search & Main Actions) */}
-      <div className="filter-top-bar">
-        {!hideSearch && (
-          <div className="search-wrapper">
-            <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder={t('filters.search_placeholder')}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                className="search-clear"
-                onClick={() => setSearchTerm('')}
-                aria-label="Clear search"
-              >
-                <X size={16} />
-              </button>
+      {showTopBar && (
+        <div className="filter-top-bar">
+          {!hideSearch && (
+            <div className="search-wrapper">
+              <Search size={18} className="search-icon" />
+              <input
+                type="text"
+                placeholder={t('filters.search_placeholder')}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="search-clear"
+                  onClick={() => setSearchTerm('')}
+                  aria-label="Clear search"
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+          )}
+
+          <div className="action-buttons">
+            <button
+              className={`toggle-filters-btn ${showFilters ? 'active' : ''}`}
+              onClick={() => setShowFilters(!showFilters)}
+            >
+              <Filter size={16} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />
+              {showFilters ? t('filters.hide_filters') : t('filters.filter')}
+            </button>
+
+            {!hideAddButton && onAddAi && (
+              <AddExpenseButton onAddManual={onAddNew} onAddAi={onAddAi} />
             )}
           </div>
-        )}
-
-        <div className="action-buttons">
-          <button
-            className={`toggle-filters-btn ${showFilters ? 'active' : ''}`}
-            onClick={() => setShowFilters(!showFilters)}
-          >
-            <Filter size={16} style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />
-            {showFilters ? t('filters.hide_filters') : t('filters.filter')}
-          </button>
-
-          {!hideAddButton && onAddAi && (
-            <AddExpenseButton onAddManual={onAddNew} onAddAi={onAddAi} />
-          )}
         </div>
-      </div>
+      )}
       {/* Expanded Filter Panel */}
       {showFilters && (
         <div className="filter-panel">

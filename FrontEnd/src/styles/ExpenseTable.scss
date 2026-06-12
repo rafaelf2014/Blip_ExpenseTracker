@@ -182,3 +182,39 @@
     }
   }
 }
+
+// ── Mobile: drop the lower-priority columns and tighten the rest ───────────────
+@media (max-width: $mobile) {
+  .expense-table-container {
+    .empty-state { padding: 40px 20px; font-size: 16px; }
+
+    .expense-table {
+      // Hide Category (2nd) and Type (4th) columns — header (th) and body (td).
+      thead th:nth-child(2),
+      thead th:nth-child(4),
+      tbody td.category-col,
+      tbody td.type-col { display: none; }
+
+      thead th { padding: 14px 10px; font-size: 13px; }
+
+      tbody td {
+        padding: 12px 10px;
+
+        &.desc-col {
+          font-size: 14px;
+          gap: 10px;
+          .icon-wrapper { width: 36px; height: 36px; }
+        }
+        &.date-col   { font-size: 13px; }
+        &.amount-col { font-size: 15px; }
+      }
+    }
+
+    .table-pagination {
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+      .pagination-controls { justify-content: space-between; }
+    }
+  }
+}

@@ -56,4 +56,23 @@
         flex-direction: column;
         gap: 20px;
     }
+
+    // ── Mobile ──────────────────────────────────────────────────────────────
+    @media (max-width: $mobile) {
+        .dashboard-container {
+            padding: 20px 16px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 20px;
+            // Title stays left, the lone action (logout — Add is now a FAB) stays right.
+            align-items: center;
+            gap: 12px;
+
+            .header-title {
+                h2 { font-size: 21px; }
+                p  { font-size: 13px; }
+            }
+        }
+    }
 }

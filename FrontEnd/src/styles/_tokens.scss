@@ -48,6 +48,11 @@ $radius-md:   10px;   // inputs / form controls
 $radius-lg:   16px;   // cards, panels, modals
 $radius-full: 999px;  // round badges
 
+// ── Breakpoints ──────────────────────────────────────────────────────────────
+// Phone layout kicks in at/below $mobile (sidebar → bottom bar, cards stack, etc.)
+$mobile:       768px;
+$bottombar-h:  64px;   // height of the mobile bottom nav bar
+
 // ── Typography ─────────────────────────────────────────────────────────────────
 $font: 'Space Grotesk', sans-serif;
 

@@ -231,3 +231,70 @@ $sidebar-width-collapsed: 80px;
     border: 1px solid $border;
     z-index: 100;
 }
+
+// ── Mobile: sidebar becomes a fixed bottom tab bar ─────────────────────────────
+@media (max-width: $mobile) {
+    .sidebar,
+    .sidebar.collapsed {
+        // Override the desktop rail entirely.
+        width: 100%;
+        height: $bottombar-h;
+        flex-direction: row;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        top: auto;
+        padding: 0;
+        gap: 0;
+        border-right: none;
+        border-top: 1px solid $border;
+        z-index: 900;
+
+        // No brand or footer (theme/collapse) on the bottom bar.
+        .sidebar-brand,
+        .sidebar-footer { display: none; }
+
+        .sidebar-nav {
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+            gap: 0;
+            height: 100%;
+
+            .nav-item {
+                flex: 1;
+                height: 100%;
+                width: auto;
+                border-radius: 0;
+                justify-content: center;
+                gap: 0;
+                padding: 0;
+
+                .nav-label { display: none; }
+                .tooltip   { display: none; }
+
+                // Active = top accent bar + accent icon (no filled pill on a bottom bar).
+                &.active {
+                    background-color: transparent;
+                    box-shadow: none;
+                    color: $accent;
+                    .nav-icon { color: $accent; }
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        top: 0; left: 20%; right: 20%;
+                        height: 3px;
+                        border-radius: 0 0 3px 3px;
+                        background-color: $accent;
+                    }
+                }
+            }
+        }
+    }
+
+    // Content must clear the fixed bottom bar.
+    .dashboard-content-wrapper,
+    .settings-page {
+        padding-bottom: calc(#{$bottombar-h} + 16px);
+    }
+}

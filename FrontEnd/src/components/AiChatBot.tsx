@@ -39,7 +39,17 @@ export function AiChatBot() {
 
     const messagesEndRef = useRef<HTMLDivElement>(null);
 
+    // On phones the window is a full-screen sheet (no drag/resize, no inline pos/size).
+    const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 768px)').matches);
+    useEffect(() => {
+        const mq = window.matchMedia('(max-width: 768px)');
+        const onChange = () => setIsMobile(mq.matches);
+        mq.addEventListener('change', onChange);
+        return () => mq.removeEventListener('change', onChange);
+    }, []);
+
     const onDragStart = (e: React.MouseEvent) => {
+        if (isMobile) return;                                        // sheet doesn't drag
         if ((e.target as HTMLElement).closest('.close-btn')) return; // let the close button click through
         const rect = windowRef.current?.getBoundingClientRect();
         if (!rect) return;
@@ -49,6 +59,7 @@ export function AiChatBot() {
     };
 
     const onResizeStart = (e: React.MouseEvent) => {
+        if (isMobile) return;                                        // sheet doesn't resize
         const rect = windowRef.current?.getBoundingClientRect();
         if (!rect) return;
         if (!pos) setPos({ x: rect.left, y: rect.top });
@@ -170,8 +181,9 @@ export function AiChatBot() {
         <div className="ai-fab-container">
             <div
                 ref={windowRef}
-                className={`ai-chat-window ${isOpen ? 'open' : ''} ${pos ? 'floating' : ''}`}
-                style={{
+                className={`ai-chat-window ${isOpen ? 'open' : ''} ${!isMobile && pos ? 'floating' : ''}`}
+                // On mobile, ignore any drag/resize state so the CSS full-screen sheet applies.
+                style={isMobile ? undefined : {
                     ...(pos ? { left: pos.x, top: pos.y } : {}),
                     ...(size ? { width: size.w, height: size.h } : {}),
                 }}

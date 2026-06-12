@@ -197,3 +197,19 @@ $border-color: $border;
         }
     }
 }
+
+// ── Mobile ──────────────────────────────────────────────────────────────────
+@media (max-width: $mobile) {
+  .charts-grid { gap: 14px; }
+
+  .chart-card {
+    padding: 16px;
+    h2 { font-size: 15px; margin-bottom: 16px; }
+
+    // Two-column legend gets cramped on a phone — stack it.
+    .custom-legend-grid { grid-template-columns: 1fr; gap: 10px; }
+  }
+
+  // "Show Filters" button: hide its label text, keep the icon, so the header fits.
+  .analytics-filters-btn { padding: 10px 12px; }
+}

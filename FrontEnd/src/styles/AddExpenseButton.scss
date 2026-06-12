@@ -43,3 +43,57 @@
 @keyframes add-ai-spin {
   100% { transform: rotate(360deg); }
 }
+
+// Mobile floating action cluster — hidden on desktop.
+.add-expense-fab {
+  display: none;
+}
+
+@media (max-width: $mobile) {
+  // The inline split button gives way to the FAB on phones.
+  .add-expense-split { display: none; }
+
+  .add-expense-fab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: fixed;
+    right: 18px;
+    bottom: calc(#{$bottombar-h} + 18px);  // sit above the bottom nav bar
+    z-index: 950;
+
+    button {
+      border: none;
+      cursor: pointer;
+      color: $on-accent;
+      background-color: $accent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      &:active { transform: scale(0.94); }
+    }
+
+    // Primary action on mobile = AI quick-add (the bolt).
+    .fab-main {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      box-shadow: 0 6px 18px $accent-glow;
+
+      .spin-anim { animation: add-ai-spin 1s linear infinite; }
+    }
+
+    // Secondary satellite = manual add.
+    .fab-manual {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background-color: $bg-surface;
+      color: $accent;
+      border: 1px solid $border;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+  }
+}
