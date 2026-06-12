@@ -79,6 +79,12 @@
               color: $text-muted;
               flex-shrink: 0;
             }
+
+            // Small marker on auto-generated recurring rows.
+            .recurring-marker {
+              color: $text-faint;
+              flex-shrink: 0;
+            }
           }
 
           &.category-col {

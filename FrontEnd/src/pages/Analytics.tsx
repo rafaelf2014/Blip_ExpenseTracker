@@ -17,6 +17,36 @@ type ChartTooltipProps = {
     payload?: { value: number; payload: CategoryDatum }[];
 };
 
+type TFn = ReturnType<typeof useTranslation>['t'];
+type FormatFn = (amount: number | string) => string;
+
+// Tooltips are module-scoped (not redefined each render) and receive the
+// translator / formatter / data they need as extra props.
+function TrendTooltip({ active, payload, label, t, formatCurrency }: ChartTooltipProps & { t: TFn; formatCurrency: FormatFn }) {
+    if (!active || !payload?.length) return null;
+    return (
+        <div className="custom-tooltip">
+            <p className="label">{label}</p>
+            <p className="income">{t('categories.income', 'Income')}: {formatCurrency(payload[0].value)}</p>
+            <p className="expense">{t('summaryBoxes.totalExpenses', 'Expenses')}: {formatCurrency(payload[1].value)}</p>
+        </div>
+    );
+}
+
+function PieTooltip({ active, payload, t, formatCurrency, categoryData }: ChartTooltipProps & { t: TFn; formatCurrency: FormatFn; categoryData: CategoryDatum[] }) {
+    if (!active || !payload?.length) return null;
+    const data    = payload[0].payload;
+    const total   = categoryData.reduce((sum, item) => sum + item.value, 0);
+    const percent = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0.0';
+    return (
+        <div className="custom-tooltip pie-tooltip">
+            <p className="label">{t(`categories.${String(data.name).toLowerCase()}`, { defaultValue: data.name })}</p>
+            <p className="pie-value" style={{ color: data.color }}>{formatCurrency(data.value)}</p>
+            <p className="pie-percent">{percent}%</p>
+        </div>
+    );
+}
+
 export default function Analytics() {
     const { t } = useTranslation();
     const { formatCurrency } = useCurrency();
@@ -31,39 +61,6 @@ export default function Analytics() {
         filterMin, setFilterMin,
         filterMax, setFilterMax,
     } = useAnalytics();
-
-    const CustomTooltip = ({ active, payload, label }: ChartTooltipProps) => {
-        if (active && payload && payload.length) {
-            return (
-                <div className="custom-tooltip">
-                    <p className="label">{label}</p>
-                    <p className="income">{t('categories.income', 'Income')}: {formatCurrency(payload[0].value)}</p>
-                    <p className="expense">{t('summaryBoxes.totalExpenses', 'Expenses')}: {formatCurrency(payload[1].value)}</p>
-                </div>
-            );
-        }
-        return null;
-    };
-
-    const PieCustomTooltip = ({ active, payload }: ChartTooltipProps) => {
-        if (active && payload && payload.length) {
-            const data  = payload[0].payload as CategoryDatum;
-            const total = categoryData.reduce((sum, item) => sum + item.value, 0);
-            const percent = total > 0 ? ((data.value / total) * 100).toFixed(1) : '0.0';
-            return (
-                <div className="custom-tooltip pie-tooltip">
-                    <p className="label">
-                        {t(`categories.${String(data.name).toLowerCase()}`, { defaultValue: data.name })}
-                    </p>
-                    <p className="pie-value" style={{ color: data.color }}>
-                        {formatCurrency(data.value)}
-                    </p>
-                    <p className="pie-percent">{percent}%</p>
-                </div>
-            );
-        }
-        return null;
-    };
 
     return (
         <div className="dashboard-layout">
@@ -134,7 +131,7 @@ export default function Analytics() {
                                             <Cell key={`cell-${index}`} fill={entry.color} filter="url(#pie-shadow)" />
                                         ))}
                                     </Pie>
-                                    <Tooltip content={<PieCustomTooltip />} />
+                                    <Tooltip content={<PieTooltip t={t} formatCurrency={formatCurrency} categoryData={categoryData} />} />
                                 </PieChart>
                             </ResponsiveContainer>
                         </div>
@@ -165,7 +162,7 @@ export default function Analytics() {
                                     <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" />
                                     <XAxis dataKey="month" stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} />
                                     <YAxis stroke="#64748b" tick={{ fill: '#64748b', fontSize: 12 }} axisLine={false} tickLine={false} />
-                                    <Tooltip content={<CustomTooltip />} />
+                                    <Tooltip content={<TrendTooltip t={t} formatCurrency={formatCurrency} />} />
                                     <Legend iconType="circle" wrapperStyle={{ paddingTop: '20px' }} />
                                     <Line type="monotone" dataKey="income" name={t('categories.income', 'Income')} stroke="#10b981" strokeWidth={3} dot={{ r: 4, fill: '#10b981', strokeWidth: 0 }} activeDot={{ r: 6 }} />
                                     <Line type="monotone" dataKey="expenses" name={t('summaryBoxes.totalExpenses', 'Expenses')} stroke="#ef4444" strokeWidth={3} dot={{ r: 4, fill: '#ef4444', strokeWidth: 0 }} activeDot={{ r: 6 }} />

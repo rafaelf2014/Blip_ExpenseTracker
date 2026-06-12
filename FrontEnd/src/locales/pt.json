@@ -177,6 +177,7 @@
     },
     "aiMenu": {
         "button_title": "Adição rápida com IA",
+        "loading": "A carregar o modelo de IA…",
         "title": "Adição Rápida",
         "subtitle": "Descreve a tua despesa em linguagem natural e a IA preenche os detalhes."
     },

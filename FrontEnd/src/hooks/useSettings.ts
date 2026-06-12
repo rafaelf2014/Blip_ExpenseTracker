@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { API_BASE } from '../constants/api';
 import type { RegularTransaction, Budget } from '../types';
+import { syncRecurring, fetchUserSettings } from '../services/api';
 
 export function useSettings() {
     const userId = localStorage.getItem('userId') ?? '';
@@ -18,13 +19,12 @@ export function useSettings() {
         if (storedName) setUsername(storedName);
 
         if (userId) {
-            fetch(`${API_BASE}/users/${userId}/settings`)
-                .then(r => r.json())
-                .then(data => {
-                    setProfilePicture(data.profilePicture ?? '');
-                    setCurrentBalance(data.currentBalance ?? 0);
-                    setRegularTransactions(data.regularTransactions ?? []);
-                    setBudgets(data.budgets ?? []);
+            fetchUserSettings(userId)
+                .then(s => {
+                    setProfilePicture(s.profilePicture ?? '');
+                    setCurrentBalance(s.currentBalance);
+                    setRegularTransactions(s.regularTransactions);
+                    setBudgets(s.budgets);
                 })
                 .catch(console.error);
         }
@@ -91,6 +91,9 @@ export function useSettings() {
     const saveFinancial = async () => {
         try {
             await saveSettings({ currentBalance, regularTransactions });
+            // Materialize/prune recurring rows for the new template set, then notify open pages.
+            await syncRecurring(userId);
+            window.dispatchEvent(new Event('blip:expense-added'));
             toast.success('Financial settings saved!');
         } catch {
             toast.error('Failed to save financial settings');

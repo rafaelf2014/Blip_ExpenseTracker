@@ -2,18 +2,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { API_BASE } from '../constants/api';
-import type { Expense, RegularTransaction } from '../types';
-import { getWeekStart, calcIncome, makeTimeFilter, makeExpenseFilter } from '../utils/finance';
-
-function incomeForPeriod(regularTransactions: RegularTransaction[], filterTime: string): number {
-    const today = new Date();
-    let start: Date;
-    if (filterTime === 'week')       start = getWeekStart(today);
-    else if (filterTime === 'month') start = new Date(today.getFullYear(), today.getMonth(), 1);
-    else if (filterTime === 'year')  start = new Date(today.getFullYear(), 0, 1);
-    else                             start = new Date(0);
-    return calcIncome(regularTransactions, start, today);
-}
+import type { Expense } from '../types';
+import { makeTimeFilter, makeExpenseFilter, sumSpent, sumIncome } from '../utils/finance';
+import { syncRecurring, fetchExpenses as apiFetchExpenses, fetchExpenseConfig } from '../services/api';
 
 export function useTransactions() {
     const navigate = useNavigate();
@@ -24,8 +15,6 @@ export function useTransactions() {
     const [categories, setCategories]                   = useState<string[]>([]);
     const [expenseTypes, setExpenseTypes]               = useState<string[]>([]);
     const [expenses, setExpenses]                       = useState<Expense[]>([]);
-    const [regularTransactions, setRegularTransactions] = useState<RegularTransaction[]>([]);
-
     const [searchTerm, setSearchTerm]         = useState('');
     const [showFilters, setShowFilters]       = useState(false);
     const [filterCategory, setFilterCategory] = useState('');
@@ -37,12 +26,7 @@ export function useTransactions() {
     const [editingExpense, setEditingExpense] = useState<Expense | null>(null);
 
     const fetchExpenses = async (id: string) => {
-        try {
-            const res = await fetch(`${API_BASE}/expenses/${id}`);
-            if (res.ok) setExpenses(await res.json());
-        } catch (err) {
-            console.error('Erro ao carregar despesas:', err);
-        }
+        setExpenses(await apiFetchExpenses(id));
     };
 
     useEffect(() => {
@@ -52,16 +36,11 @@ export function useTransactions() {
 
         setUsername(storedUsername);
         setUserId(storedUserId);
-        fetchExpenses(storedUserId);
 
-        fetch(`${API_BASE}/expense-config`)
-            .then(res => res.json())
-            .then(data => { setCategories(data.categories); setExpenseTypes(data.expenseTypes); });
+        // Materialize due recurring transactions, then load the (now complete) list.
+        syncRecurring(storedUserId).then(() => fetchExpenses(storedUserId));
 
-        fetch(`${API_BASE}/users/${storedUserId}/settings`)
-            .then(res => res.json())
-            .then(data => setRegularTransactions(data.regularTransactions ?? []))
-            .catch(console.error);
+        fetchExpenseConfig().then(cfg => { setCategories(cfg.categories); setExpenseTypes(cfg.expenseTypes); });
     }, []);
 
     const handleLogout = () => {
@@ -112,8 +91,8 @@ export function useTransactions() {
     const timeFilteredExpenses = expenses.filter(makeTimeFilter(filterTime));
 
     const periodLabel     = filterTime === 'week' ? 'Weekly' : filterTime === 'month' ? 'Monthly' : filterTime === 'year' ? 'Yearly' : '';
-    const displayedSpent  = timeFilteredExpenses.reduce((sum, e) => sum + Number(e.amount), 0);
-    const displayedIncome = incomeForPeriod(regularTransactions, filterTime);
+    const displayedSpent  = sumSpent(timeFilteredExpenses);
+    const displayedIncome = sumIncome(timeFilteredExpenses);
     const netBalance      = displayedIncome - displayedSpent;
 
     return {

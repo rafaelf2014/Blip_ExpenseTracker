@@ -17,7 +17,7 @@ export function PreferencesSection() {
     return (
         <div className="settings-card">
             <div className="card-header">
-                <div className="card-icon" style={{ backgroundColor: '#8B5CF6' }}>
+                <div className="card-icon icon-purple">
                     <Palette size={20} color="white" />
                 </div>
                 <h2>Preferences</h2>

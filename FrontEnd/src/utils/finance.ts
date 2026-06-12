@@ -1,5 +1,28 @@
 import type { Expense, RegularTransaction, Budget } from '../types';
 
+// ── Signed-amount helpers ───────────────────────────────────────────────────
+// Transaction rows are signed: positive = spending, negative = income.
+
+/** Total spent: sum of positive amounts only. */
+export function sumSpent(expenses: Expense[]): number {
+  return expenses.reduce((s, e) => s + Math.max(0, Number(e.amount)), 0);
+}
+
+/** Total income: the absolute value of the negative amounts. */
+export function sumIncome(expenses: Expense[]): number {
+  return expenses.reduce((s, e) => s + Math.max(0, -Number(e.amount)), 0);
+}
+
+/** Net flow over a set of rows: income − spending (= −sum of signed amounts). */
+export function sumNet(expenses: Expense[]): number {
+  return expenses.reduce((s, e) => s - Number(e.amount), 0);
+}
+
+/** Running balance: starting balance plus the net of every transaction. */
+export function computeBalance(startingBalance: number, expenses: Expense[]): number {
+  return startingBalance + sumNet(expenses);
+}
+
 // usa componentes locais para evitar desvios de fuso horário à meia-noite
 export function toLocalDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -128,17 +151,15 @@ export type MonthlyMetrics = {
 export function computeMonthlyMetrics(
   monthExpenses: Expense[],
   budgets: Budget[],
-  regularTransactions: RegularTransaction[],
-  start: Date,
-  end: Date,
 ): MonthlyMetrics {
-  const monthSpent  = monthExpenses.reduce((s, e) => s + Number(e.amount), 0);
-  const monthIncome = calcIncome(regularTransactions, start, end);
+  const monthSpent  = sumSpent(monthExpenses);
+  const monthIncome = sumIncome(monthExpenses);
 
+  // Budgets only track spending, so sum positive amounts per category.
   const monthlyBudgets   = budgets.filter(b => b.period === 'monthly');
   const totalBudgetLimit = monthlyBudgets.reduce((s, b) => s + b.limit, 0);
   const budgetSpent      = monthlyBudgets.reduce((s, b) =>
-    s + monthExpenses.filter(e => e.category === b.category).reduce((c, e) => c + Number(e.amount), 0), 0);
+    s + sumSpent(monthExpenses.filter(e => e.category === b.category)), 0);
 
   const budgetUtilization = totalBudgetLimit > 0 ? Math.round(budgetSpent / totalBudgetLimit * 100) : null;
   const savingsRate       = monthIncome > 0 ? Math.round((monthIncome - monthSpent) / monthIncome * 100) : null;

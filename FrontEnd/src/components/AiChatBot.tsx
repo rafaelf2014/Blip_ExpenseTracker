@@ -3,8 +3,8 @@ import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { MessageSquare, X, Bot, Mic, Send, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { initLLM, detectChatIntent, askFinancialQuestion } from '../services/llmService';
-import { API_BASE } from '../constants/api';
+import { detectChatIntent, askFinancialQuestion } from '../services/llmService';
+import { fetchExpenses as apiFetchExpenses, fetchUserSettings } from '../services/api';
 import type { Expense, RegularTransaction, Budget } from '../types';
 import '../styles/AiChatBot.scss';
 
@@ -89,23 +89,14 @@ export function AiChatBot() {
     const fetchExpenses = useCallback(() => {
         const uid = localStorage.getItem('userId');
         if (!uid) return;
-        fetch(`${API_BASE}/expenses/${uid}`)
-            .then(r => r.json())
-            .then((data: Expense[]) => setExpenses(data))
-            .catch(console.error);
+        apiFetchExpenses(uid).then(setExpenses).catch(console.error);
     }, []);
 
     useEffect(() => {
         if (!userId || HIDDEN_ROUTES.includes(location.pathname)) return;
 
-        initLLM().catch(console.error);
-
-        fetch(`${API_BASE}/users/${userId}/settings`)
-            .then(r => r.json())
-            .then(data => {
-                setRegularTransactions(data.regularTransactions ?? []);
-                setBudgets(data.budgets ?? []);
-            })
+        fetchUserSettings(userId)
+            .then(s => { setRegularTransactions(s.regularTransactions); setBudgets(s.budgets); })
             .catch(console.error);
 
         fetchExpenses();

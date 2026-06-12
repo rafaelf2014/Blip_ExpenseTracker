@@ -36,10 +36,19 @@ export function FinancialSection({ currentBalance, setCurrentBalance, regularTra
         setRtAmount('');
     };
 
+    const removeRegularTransaction = (rt: RegularTransaction) => {
+        const ok = window.confirm(
+            `Stop the recurring ${rt.isIncome ? 'income' : 'expense'} "${rt.description}"?\n\n` +
+            `Transactions it already created stay in your history — only future ones stop. ` +
+            `Click "Save Financial Settings" to apply.`
+        );
+        if (ok) setRegularTransactions(prev => prev.filter(r => r.id !== rt.id));
+    };
+
     return (
         <div className="settings-card">
             <div className="card-header">
-                <div className="card-icon" style={{ backgroundColor: '#10B981' }}>
+                <div className="card-icon icon-green">
                     <DollarSign size={20} color="white" />
                 </div>
                 <h2>Financial Setup</h2>
@@ -101,7 +110,7 @@ export function FinancialSection({ currentBalance, setCurrentBalance, regularTra
                                     <span className="rt-meta">{rt.category} · {rt.frequency} · from {rt.date}</span>
                                 </div>
                                 <span className="rt-amount">{rt.isIncome ? '+' : '−'}€{rt.amount.toFixed(2)}</span>
-                                <button className="remove-btn" onClick={() => setRegularTransactions(prev => prev.filter(r => r.id !== rt.id))}>
+                                <button className="remove-btn" onClick={() => removeRegularTransaction(rt)}>
                                     <Trash2 size={15} />
                                 </button>
                             </div>

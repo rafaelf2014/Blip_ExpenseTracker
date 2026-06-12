@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { API_BASE } from '../constants/api';
-import type { Expense, RegularTransaction, CategoryDatum, TrendDatum } from '../types';
-import { getWeekStart, calcIncome, makeExpenseFilter } from '../utils/finance';
+import type { Expense, CategoryDatum, TrendDatum } from '../types';
+import { makeExpenseFilter, sumIncome } from '../utils/finance';
+import { syncRecurring, fetchExpenses, fetchExpenseConfig } from '../services/api';
 
 const COLORS = ['#06b6d4', '#10b981', '#8b5cf6', '#f59e0b', '#ec4899', '#6366f1', '#64748b'];
 
@@ -16,7 +16,6 @@ export function useAnalytics() {
     });
 
     const [rawExpenses, setRawExpenses]                 = useState<Expense[]>([]);
-    const [regularTransactions, setRegularTransactions] = useState<RegularTransaction[]>([]);
     const [categories, setCategories]                   = useState<string[]>([]);
     const [expenseTypes, setExpenseTypes]               = useState<string[]>([]);
 
@@ -31,18 +30,12 @@ export function useAnalytics() {
     useEffect(() => {
         const storedUserId = localStorage.getItem('userId');
         if (storedUserId) {
-            fetch(`${API_BASE}/expenses/${storedUserId}`)
-                .then(res => res.json())
-                .then(data => setRawExpenses(data))
+            syncRecurring(storedUserId)
+                .then(() => fetchExpenses(storedUserId))
+                .then(setRawExpenses)
                 .catch(err => console.error('Erro ao carregar analytics:', err));
-            fetch(`${API_BASE}/users/${storedUserId}/settings`)
-                .then(res => res.json())
-                .then(data => setRegularTransactions(data.regularTransactions ?? []))
-                .catch(console.error);
         }
-        fetch(`${API_BASE}/expense-config`)
-            .then(res => res.json())
-            .then(data => { setCategories(data.categories); setExpenseTypes(data.expenseTypes); });
+        fetchExpenseConfig().then(cfg => { setCategories(cfg.categories); setExpenseTypes(cfg.expenseTypes); });
     }, []);
 
     useEffect(() => {
@@ -51,16 +44,7 @@ export function useAnalytics() {
             makeExpenseFilter({ searchTerm, filterCategory, filterType, filterTime, filterMin, filterMax })
         );
 
-        let periodStart: Date;
-        if (filterTime === 'week')       periodStart = getWeekStart(today);
-        else if (filterTime === 'month') periodStart = new Date(today.getFullYear(), today.getMonth(), 1);
-        else if (filterTime === 'year')  periodStart = new Date(today.getFullYear(), 0, 1);
-        else {
-            const earliest = rawExpenses.reduce((min, e) => Math.min(min, new Date(e.date).getTime()), Infinity);
-            periodStart = isFinite(earliest) ? new Date(earliest) : new Date(0);
-        }
-        const totalIncome = calcIncome(regularTransactions, periodStart, today);
-
+        const totalIncome = sumIncome(filtered);
 
         let totalExpense = 0;
         const categoryTotals: Record<string, number> = {};
@@ -68,20 +52,16 @@ export function useAnalytics() {
 
         filtered.forEach(exp => {
             const amount = Number(exp.amount);
+            const spend  = Math.max(0, amount);   // spending only for category/expense totals
+            const income = Math.max(0, -amount);  // income rows have negative amounts
             const d      = new Date(exp.date);
             const key    = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
             const label  = d.toLocaleString('default', { month: 'short' });
             if (!monthlyData[key]) monthlyData[key] = { income: 0, expenses: 0, label };
-            totalExpense += amount;
-            monthlyData[key].expenses += amount;
-            categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + amount;
-        });
-
-        Object.keys(monthlyData).forEach(key => {
-            const [year, month] = key.split('-').map(Number);
-            const start = new Date(year, month - 1, 1);
-            const end   = new Date(year, month, 0);
-            monthlyData[key].income = calcIncome(regularTransactions, start, end);
+            totalExpense += spend;
+            monthlyData[key].expenses += spend;
+            monthlyData[key].income   += income;
+            if (spend > 0) categoryTotals[exp.category] = (categoryTotals[exp.category] || 0) + spend;
         });
 
         const newCategoryData = Object.keys(categoryTotals)
@@ -121,7 +101,7 @@ export function useAnalytics() {
         setTrendData(newTrendData);
         setStats({ avgMonthlyIncome, avgMonthlyExpense, avgDaily, topCategory: newCategoryData[0]?.name ?? 'N/A' });
 
-    }, [rawExpenses, regularTransactions, searchTerm, filterCategory, filterType, filterTime, filterMin, filterMax]);
+    }, [rawExpenses, searchTerm, filterCategory, filterType, filterTime, filterMin, filterMax]);
 
     return {
         categoryData, trendData, stats,

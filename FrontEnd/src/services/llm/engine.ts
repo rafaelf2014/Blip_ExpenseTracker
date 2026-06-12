@@ -7,22 +7,49 @@ const SELECTED_MODEL = 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC';
 let engine: WebWorkerMLCEngine | null = null;
 let initPromise: Promise<void> | null = null;
 
-const initProgressCallback = (p: InitProgressReport) =>
+// ── Loading status (so the UI can show a spinner while the model downloads) ──
+export type LLMStatus = 'idle' | 'loading' | 'ready' | 'error';
+let status: LLMStatus = 'idle';
+let progress = 0; // 0–1 download/init progress
+const listeners = new Set<() => void>();
+
+function setStatus(next: LLMStatus) {
+    status = next;
+    listeners.forEach(l => l());
+}
+
+/** Current model-loading status. */
+export const getLLMStatus = (): LLMStatus => status;
+/** Current load progress (0–1). */
+export const getLLMProgress = (): number => progress;
+/** Subscribe to status/progress changes; returns an unsubscribe function. */
+export function subscribeLLM(listener: () => void): () => void {
+    listeners.add(listener);
+    return () => listeners.delete(listener);
+}
+
+const initProgressCallback = (p: InitProgressReport) => {
+    progress = p.progress;
+    listeners.forEach(l => l());
     console.log(`Carregando IA: ${Math.round(p.progress * 100)}%`);
+};
 
 export async function initLLM(): Promise<void> {
     if (engine) return;
     if (initPromise) { await initPromise; return; }
 
+    setStatus('loading');
     initPromise = (async () => {
         const worker = new Worker(new URL('../webllm-worker.ts', import.meta.url), { type: 'module' });
         try {
             engine = await CreateWebWorkerMLCEngine(worker, SELECTED_MODEL, { initProgressCallback });
             console.log('Modelo carregado.');
+            setStatus('ready');
         } catch (e) {
             worker.terminate();
             console.error(e);
             initPromise = null;
+            setStatus('error');
         }
     })();
     await initPromise;

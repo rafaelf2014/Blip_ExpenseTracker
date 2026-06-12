@@ -54,14 +54,8 @@ router.put('/api/users/update', async (req, res) => {
     if (nameExists && oldUsername !== newUsername) {
         return res.status(400).json({ error: "Username already taken" });
     }
-    //3. Update the user's username 
+    //3. Update the user's username (expenses link by immutable user ID, so they need no change)
     user.username = newUsername;
-    //4. Update all expenses associated with the old username to reflect the new username
-    db.data.expenses.forEach((expense) => {
-        if (expense.userId === oldUsername) {
-            expense.userId = newUsername;
-        }
-    });
 
     await db.write();
 

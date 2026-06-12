@@ -95,6 +95,12 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+
+    // Per-section accent colours (decorative; identical in both themes).
+    &.icon-green  { background-color: $green; }
+    &.icon-amber  { background-color: $yellow; }
+    &.icon-purple { background-color: #8B5CF6; }
+    &.icon-slate  { background-color: $text-faint; }
 }
 
 // ── Profile form ──────────────────────────────────────────────────────────────
@@ -226,6 +232,26 @@ select.form-control {
         opacity: 0.6;
         cursor: not-allowed;
     }
+
+    &.btn-danger {
+        background-color: $red;
+        &:hover:not(:disabled) { background-color: $red-dark; }
+    }
+}
+
+// ── Dev Tools ─────────────────────────────────────────────────────────────────
+
+.devtools-hint {
+    color: $text-muted;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+
+    strong { color: $text; }
+}
+
+.devtools-actions {
+    display: flex;
+    gap: 0.75rem;
 }
 
 // ── Financial section ─────────────────────────────────────────────────────────

@@ -1,7 +1,8 @@
 import { useEffect, useState, useMemo } from 'react';
 import { API_BASE } from '../constants/api';
-import type { Expense, RegularTransaction, Budget, BalanceEntry, BudgetUtilEntry, SavingsRateEntry } from '../types';
-import { getWeekStart, toLocalDateStr, monthKey, pctOrZero, calcIncome, computeMonthlyMetrics } from '../utils/finance';
+import type { Expense, Budget, BalanceEntry, BudgetUtilEntry, SavingsRateEntry } from '../types';
+import { getWeekStart, toLocalDateStr, monthKey, pctOrZero, computeMonthlyMetrics, sumSpent, sumIncome, computeBalance } from '../utils/finance';
+import { syncRecurring, fetchExpenses as apiFetchExpenses, fetchUserSettings, fetchExpenseConfig } from '../services/api';
 
 export function useDashboard() {
     const [expenses, setExpenses]                       = useState<Expense[]>([]);
@@ -11,7 +12,6 @@ export function useDashboard() {
     const [categories, setCategories]                   = useState<string[]>([]);
     const [expenseTypes, setExpenseTypes]               = useState<string[]>([]);
     const [currentBalance, setCurrentBalance]           = useState(0);
-    const [regularTransactions, setRegularTransactions] = useState<RegularTransaction[]>([]);
     const [budgets, setBudgets]                         = useState<Budget[]>([]);
     const [balanceHistory, setBalanceHistory]           = useState<BalanceEntry[]>([]);
     const [budgetUtilHistory, setBudgetUtilHistory]     = useState<BudgetUtilEntry[]>([]);
@@ -26,24 +26,17 @@ export function useDashboard() {
         setUsername(storedUsername);
         setUserId(storedUserId);
 
-        fetch(`${API_BASE}/expense-config`)
-            .then(r => r.json())
-            .then(data => { setCategories(data.categories); setExpenseTypes(data.expenseTypes); });
+        fetchExpenseConfig().then(cfg => { setCategories(cfg.categories); setExpenseTypes(cfg.expenseTypes); });
 
-        Promise.all([
-            fetch(`${API_BASE}/expenses/${storedUserId}`).then(r => r.json()),
-            fetch(`${API_BASE}/users/${storedUserId}/settings`).then(r => r.json()),
-        ]).then(([expenseData, settingsData]: [Expense[], any]) => {
-            const balance:       number               = settingsData.currentBalance ?? 0;
-            const regularTxns:   RegularTransaction[] = settingsData.regularTransactions ?? [];
-            const budgetList:    Budget[]             = settingsData.budgets ?? [];
-            const balHist:       BalanceEntry[]       = settingsData.balanceHistory ?? [];
-            const budUtilHist:   BudgetUtilEntry[]    = settingsData.budgetUtilHistory ?? [];
-            const savRateHist:   SavingsRateEntry[]   = settingsData.savingsRateHistory ?? [];
+        // Materialize any due recurring transactions before reading the expense list.
+        syncRecurring(storedUserId)
+            .then(() => Promise.all([apiFetchExpenses(storedUserId), fetchUserSettings(storedUserId)]))
+            .then(([expenseData, settings]) => {
+            const { currentBalance: balance, budgets: budgetList,
+                    balanceHistory: balHist, budgetUtilHistory: budUtilHist, savingsRateHistory: savRateHist } = settings;
 
             setExpenses(expenseData);
             setCurrentBalance(balance);
-            setRegularTransactions(regularTxns);
             setBudgets(budgetList);
 
             const now      = new Date();
@@ -51,11 +44,12 @@ export function useDashboard() {
             const thisKey   = monthKey(now);
 
             const thisMonthExps = expenseData.filter(e => { const d = new Date(e.date); return d >= thisStart && d <= now; });
-            const { budgetUtilization, savingsRate } = computeMonthlyMetrics(thisMonthExps, budgetList, regularTxns, thisStart, now);
+            const { budgetUtilization, savingsRate } = computeMonthlyMetrics(thisMonthExps, budgetList);
             const budgetUtil = budgetUtilization ?? 0;
             const savRate    = savingsRate ?? 0;
+            const computedBalance = computeBalance(balance, expenseData);
 
-            const newBalHist     = [...balHist.filter(h => h.month !== thisKey),     { month: thisKey, balance }];
+            const newBalHist     = [...balHist.filter(h => h.month !== thisKey),     { month: thisKey, balance: computedBalance }];
             const newBudUtilHist = [...budUtilHist.filter(h => h.month !== thisKey), { month: thisKey, utilization: budgetUtil }];
             const newSavRateHist = [...savRateHist.filter(h => h.month !== thisKey), { month: thisKey, rate: savRate }];
 
@@ -72,8 +66,7 @@ export function useDashboard() {
     }, []);
 
     const fetchExpenses = async (id: string) => {
-        const res = await fetch(`${API_BASE}/expenses/${id}`);
-        if (res.ok) setExpenses(await res.json());
+        setExpenses(await apiFetchExpenses(id));
     };
 
     useEffect(() => {
@@ -94,15 +87,18 @@ export function useDashboard() {
         const thisMonthExpenses = expenses.filter(e => { const d = new Date(e.date); return d >= thisMonthStart && d <= today; });
         const lastMonthExpenses = expenses.filter(e => { const d = new Date(e.date); return d >= lastMonthStart && d <= lastMonthEnd; });
 
-        const monthSpent      = thisMonthExpenses.reduce((s, e) => s + Number(e.amount), 0);
-        const monthIncome     = calcIncome(regularTransactions, thisMonthStart, today);
-        const lastMonthSpent  = lastMonthExpenses.reduce((s, e) => s + Number(e.amount), 0);
-        const lastMonthIncome = calcIncome(regularTransactions, lastMonthStart, lastMonthEnd);
+        // Spending = positive amounts; income = negative amounts (recurring income rows).
+        const monthSpent      = sumSpent(thisMonthExpenses);
+        const monthIncome     = sumIncome(thisMonthExpenses);
+        const lastMonthSpent  = sumSpent(lastMonthExpenses);
+        const lastMonthIncome = sumIncome(lastMonthExpenses);
         const lastMonthDays   = lastMonthEnd.getDate();
 
+        // Total balance = starting balance + net of every transaction to date.
+        const balance         = computeBalance(currentBalance, expenses);
         const lastBalEntry    = balanceHistory.find(h => h.month === lastMonthKey);
-        const balanceChange   = pctOrZero(currentBalance, lastBalEntry?.balance);
-        const balancePositive = lastBalEntry != null ? currentBalance >= lastBalEntry.balance : true;
+        const balanceChange   = pctOrZero(balance, lastBalEntry?.balance);
+        const balancePositive = lastBalEntry != null ? balance >= lastBalEntry.balance : true;
         const incomeChange    = pctOrZero(monthIncome, lastMonthIncome || null);
         const incomePositive  = monthIncome >= lastMonthIncome;
         const spentChange     = pctOrZero(monthSpent, lastMonthSpent || null);
@@ -112,11 +108,12 @@ export function useDashboard() {
             today, thisMonthStart, lastMonthKey, lastMonthDays,
             thisMonthExpenses, lastMonthExpenses,
             monthSpent, monthIncome, lastMonthSpent,
+            balance,
             balanceChange, balancePositive,
             incomeChange, incomePositive,
             spentChange, spentPositive,
         };
-    }, [expenses, regularTransactions, currentBalance, balanceHistory]);
+    }, [expenses, currentBalance, balanceHistory]);
 
     // --- Memo 2: chart data and highlight index ---
     const { chartData, highlightIndex } = useMemo(() => {
@@ -124,12 +121,15 @@ export function useDashboard() {
         const todayStr     = toLocalDateStr(today);
         const weekStartStr = toLocalDateStr(getWeekStart(today));
 
+        // The chart tracks spending only, so ignore income (negative) rows.
+        const spend = (exp: Expense) => Math.max(0, Number(exp.amount));
+
         if (chartPeriod === 'week') {
             const data = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(n => ({ name: n, value: 0 }));
             expenses.forEach(exp => {
                 const d = new Date(exp.date);
                 const s = toLocalDateStr(d);
-                if (s >= weekStartStr && s <= todayStr) data[(d.getDay() + 6) % 7].value += Number(exp.amount);
+                if (s >= weekStartStr && s <= todayStr) data[(d.getDay() + 6) % 7].value += spend(exp);
             });
             return { chartData: data, highlightIndex: (today.getDay() + 6) % 7 };
         }
@@ -139,7 +139,7 @@ export function useDashboard() {
             expenses.forEach(exp => {
                 const d = new Date(exp.date);
                 if (d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear())
-                    data[Math.min(Math.floor((d.getDate() - 1) / 7), 4)].value += Number(exp.amount);
+                    data[Math.min(Math.floor((d.getDate() - 1) / 7), 4)].value += spend(exp);
             });
             return { chartData: data, highlightIndex: Math.min(Math.floor((today.getDate() - 1) / 7), 4) };
         }
@@ -147,26 +147,29 @@ export function useDashboard() {
         const data = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].map(n => ({ name: n, value: 0 }));
         expenses.forEach(exp => {
             const d = new Date(exp.date);
-            if (d.getFullYear() === today.getFullYear()) data[d.getMonth()].value += Number(exp.amount);
+            if (d.getFullYear() === today.getFullYear()) data[d.getMonth()].value += spend(exp);
         });
         return { chartData: data, highlightIndex: today.getMonth() };
     }, [expenses, chartPeriod]);
 
     // --- Memo 3: quick stats and budget/savings metrics ---
     const quickStats = useMemo(() => {
-        const { today, thisMonthStart, lastMonthKey, lastMonthDays, thisMonthExpenses, lastMonthExpenses, monthSpent, lastMonthSpent } = monthData;
+        const { today, lastMonthKey, lastMonthDays, thisMonthExpenses, lastMonthExpenses, monthSpent, lastMonthSpent } = monthData;
 
         const daysElapsed       = Math.max(1, today.getDate());
         const avgDailySpend     = monthSpent / daysElapsed;
         const lastAvgDailySpend = lastMonthSpent / lastMonthDays;
         const avgDailyChange    = pctOrZero(avgDailySpend, lastMonthSpent > 0 ? lastAvgDailySpend : null);
 
-        const largestExpense     = thisMonthExpenses.length > 0 ? Math.max(...thisMonthExpenses.map(e => Number(e.amount))) : 0;
-        const lastLargestExpense = lastMonthExpenses.length > 0 ? Math.max(...lastMonthExpenses.map(e => Number(e.amount))) : null;
+        // Largest single expense — spending only (ignore income rows).
+        const spends = (rows: typeof thisMonthExpenses) => rows.map(e => Number(e.amount)).filter(a => a > 0);
+        const thisSpends = spends(thisMonthExpenses);
+        const lastSpends = spends(lastMonthExpenses);
+        const largestExpense     = thisSpends.length > 0 ? Math.max(...thisSpends) : 0;
+        const lastLargestExpense = lastSpends.length > 0 ? Math.max(...lastSpends) : null;
         const largestChange      = pctOrZero(largestExpense, lastLargestExpense);
 
-        const { budgetUtilization, savingsRate } = computeMonthlyMetrics(
-            thisMonthExpenses, budgets, regularTransactions, thisMonthStart, today);
+        const { budgetUtilization, savingsRate } = computeMonthlyMetrics(thisMonthExpenses, budgets);
 
         const lastBudUtilEntry  = budgetUtilHistory.find(h => h.month === lastMonthKey);
         const budgetUtilChange  = budgetUtilization !== null ? pctOrZero(budgetUtilization, lastBudUtilEntry?.utilization ?? null) : null;
@@ -175,7 +178,7 @@ export function useDashboard() {
         const savingsRateChange = savingsRate !== null ? pctOrZero(savingsRate, lastSavEntry?.rate ?? null) : null;
 
         return { avgDailySpend, avgDailyChange, largestExpense, largestChange, budgetUtilization, budgetUtilChange, savingsRate, savingsRateChange };
-    }, [monthData, budgets, regularTransactions, budgetUtilHistory, savingsRateHistory]);
+    }, [monthData, budgets, budgetUtilHistory, savingsRateHistory]);
 
     // --- Memo 4: recent transactions ---
     const recentTransactions = useMemo(() =>
@@ -185,7 +188,8 @@ export function useDashboard() {
 
     return {
         expenses, showForm, setShowForm, username, userId,
-        categories, expenseTypes, currentBalance,
+        categories, expenseTypes,
+        currentBalance: monthData.balance,   // computed: starting balance + net of all transactions
         chartPeriod, setChartPeriod,
         fetchExpenses,
         chartData, highlightIndex,

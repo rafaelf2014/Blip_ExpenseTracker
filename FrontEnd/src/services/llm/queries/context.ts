@@ -82,6 +82,7 @@ export function buildQueryContext(
     };
 
     const filteredExpenses = expenses.filter(exp => {
+        if (Number(exp.amount) < 0)                                      return false; // income rows handled separately
         if (targetCategory !== 'ALL' && exp.category !== targetCategory) return false;
         if (!filterByDate(exp))                                          return false;
         if (filterMin !== null && Number(exp.amount) <= filterMin)       return false;

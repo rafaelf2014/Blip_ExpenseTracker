@@ -32,6 +32,12 @@ export type SavingsRateEntry = {
   rate: number; // percentage, can be negative
 };
 
+// A deleted occurrence of a recurring template, so sync won't regenerate it.
+export type RecurringSkip = {
+  sourceId: string;
+  date: string; // YYYY-MM-DD of the skipped occurrence
+};
+
 export type User = {
   id: string;
   username: string;
@@ -43,16 +49,19 @@ export type User = {
   balanceHistory?: BalanceEntry[];
   budgetUtilHistory?: BudgetUtilEntry[];
   savingsRateHistory?: SavingsRateEntry[];
+  recurringSkips?: RecurringSkip[];
 };
 
 export type Expense = {
   id: string;
   userId: string;
   description: string;
-  amount: number;
+  amount: number;       // expenses are positive; income is stored as negative
   category: string;
   type: string;
   date: string;
+  isIncome?: boolean;   // true for income rows (amount stored negative)
+  sourceId?: string;    // id of the RegularTransaction that generated this row (if any)
 };
 
 export type DatabaseSchema = {

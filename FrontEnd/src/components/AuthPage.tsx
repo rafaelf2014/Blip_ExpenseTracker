@@ -6,6 +6,7 @@ import { Receipt } from 'lucide-react';
 import '../styles/AuthPage.scss';
 import toast from 'react-hot-toast';
 import { API_BASE } from '../constants/api';
+import { initLLM } from '../services/llmService';
 
 export default function AuthPage() {
   const { t } = useTranslation();
@@ -19,18 +20,26 @@ export default function AuthPage() {
 
     const endpoint = isLogin ? 'login' : 'register';
 
-    const response = await fetch(`${API_BASE}/${endpoint}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password })
-    });
-
-    const data = await response.json();
+    let response: Response;
+    let data: { user?: { id: string }; message?: string; error?: string };
+    try {
+      response = await fetch(`${API_BASE}/${endpoint}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password })
+      });
+      data = await response.json();
+    } catch {
+      toast.error('Could not reach the server. Please try again.');
+      return;
+    }
 
     if (response.ok) {
       if (isLogin) {
         localStorage.setItem('username', username);
-        localStorage.setItem('userId', data.user.id);
+        localStorage.setItem('userId', data.user!.id);
+        // Warm the WebLLM model in the background so it's ready for AI Quick-Add.
+        initLLM().catch(console.error);
         navigate('/dashboard');
       } else {
         toast.success(data.message + " You can now login.");

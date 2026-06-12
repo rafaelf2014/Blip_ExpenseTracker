@@ -32,21 +32,20 @@ export function DevToolsSection() {
     return (
         <div className="settings-card">
             <div className="card-header">
-                <div className="card-icon" style={{ backgroundColor: '#64748B' }}>
+                <div className="card-icon icon-slate">
                     <Terminal size={20} color="white" />
                 </div>
                 <h2>Dev Tools</h2>
             </div>
             <div className="settings-form">
-                <p style={{ color: '#94A3B8', fontSize: '0.875rem', marginBottom: '1rem' }}>
-                    Unknown terms collected by the AI keyword classifier: <strong style={{ color: '#F1F5F9' }}>{count}</strong>
+                <p className="devtools-hint">
+                    Unknown terms collected by the AI keyword classifier: <strong>{count}</strong>
                 </p>
-                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <div className="devtools-actions">
                     <button type="button" className="save-button" onClick={handleExport}>
                         <Download size={16} /> Export JSON
                     </button>
-                    <button type="button" className="save-button" onClick={handleClear}
-                        style={{ backgroundColor: '#DC2626' }}>
+                    <button type="button" className="save-button btn-danger" onClick={handleClear}>
                         <Trash2 size={16} /> Clear
                     </button>
                 </div>

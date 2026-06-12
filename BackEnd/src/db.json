@@ -71,7 +71,7 @@
         },
         {
           "month": "2026-06",
-          "balance": 3240
+          "balance": 4776.320000000001
         }
       ],
       "budgetUtilHistory": [
@@ -125,7 +125,8 @@
           "month": "2026-06",
           "rate": 0
         }
-      ]
+      ],
+      "recurringSkips": []
     },
     {
       "id": "1773510856765",
@@ -223,7 +224,7 @@
     {
       "id": "e2601008",
       "userId": "1773510223926",
-      "description": "Almoço restaurante Zé da Esquina",
+      "description": "AlmoÃƒÂ§o restaurante ZÃƒÂ© da Esquina",
       "amount": 12,
       "category": "Food",
       "type": "One-time",
@@ -241,7 +242,7 @@
     {
       "id": "e2601010",
       "userId": "1773510223926",
-      "description": "Café pastelaria",
+      "description": "CafÃƒÂ© pastelaria",
       "amount": 3.5,
       "category": "Food",
       "type": "One-time",
@@ -250,7 +251,7 @@
     {
       "id": "e2601011",
       "userId": "1773510223926",
-      "description": "Farmácia",
+      "description": "FarmÃƒÂ¡cia",
       "amount": 15,
       "category": "Health",
       "type": "One-time",
@@ -358,7 +359,7 @@
     {
       "id": "e2602008",
       "userId": "1773510223926",
-      "description": "Ginásio Holmes Place",
+      "description": "GinÃƒÂ¡sio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -367,7 +368,7 @@
     {
       "id": "e2602009",
       "userId": "1773510223926",
-      "description": "Almoço sushi",
+      "description": "AlmoÃƒÂ§o sushi",
       "amount": 18,
       "category": "Food",
       "type": "One-time",
@@ -376,7 +377,7 @@
     {
       "id": "e2602010",
       "userId": "1773510223926",
-      "description": "Zara - calças ganga",
+      "description": "Zara - calÃƒÂ§as ganga",
       "amount": 39.99,
       "category": "Clothes",
       "type": "One-time",
@@ -403,7 +404,7 @@
     {
       "id": "e2602013",
       "userId": "1773510223926",
-      "description": "Consulta médica",
+      "description": "Consulta mÃƒÂ©dica",
       "amount": 45,
       "category": "Health",
       "type": "One-time",
@@ -493,7 +494,7 @@
     {
       "id": "e2603008",
       "userId": "1773510223926",
-      "description": "Ginásio Holmes Place",
+      "description": "GinÃƒÂ¡sio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -502,7 +503,7 @@
     {
       "id": "e2603009",
       "userId": "1773510223926",
-      "description": "Almoço restaurante",
+      "description": "AlmoÃƒÂ§o restaurante",
       "amount": 14,
       "category": "Food",
       "type": "One-time",
@@ -520,7 +521,7 @@
     {
       "id": "e2603011",
       "userId": "1773510223926",
-      "description": "Farmácia",
+      "description": "FarmÃƒÂ¡cia",
       "amount": 22,
       "category": "Health",
       "type": "One-time",
@@ -628,7 +629,7 @@
     {
       "id": "e2604008",
       "userId": "1773510223926",
-      "description": "Ginásio Holmes Place",
+      "description": "GinÃƒÂ¡sio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -655,7 +656,7 @@
     {
       "id": "e2604011",
       "userId": "1773510223926",
-      "description": "Almoço sushi",
+      "description": "AlmoÃƒÂ§o sushi",
       "amount": 16,
       "category": "Food",
       "type": "One-time",
@@ -763,7 +764,7 @@
     {
       "id": "e2605008",
       "userId": "1773510223926",
-      "description": "Ginásio Holmes Place",
+      "description": "GinÃƒÂ¡sio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -790,7 +791,7 @@
     {
       "id": "e2605011",
       "userId": "1773510223926",
-      "description": "Almoço restaurante italiano",
+      "description": "AlmoÃƒÂ§o restaurante italiano",
       "amount": 24,
       "category": "Food",
       "type": "One-time",
@@ -808,7 +809,7 @@
     {
       "id": "e2605013",
       "userId": "1773510223926",
-      "description": "Farmácia",
+      "description": "FarmÃƒÂ¡cia",
       "amount": 18,
       "category": "Health",
       "type": "One-time",
@@ -862,7 +863,7 @@
     {
       "id": "e2606003",
       "userId": "1773510223926",
-      "description": "Café pastelaria",
+      "description": "CafÃƒÂ© pastelaria",
       "amount": 4.2,
       "category": "Food",
       "type": "One-time",
@@ -871,7 +872,7 @@
     {
       "id": "e2606004",
       "userId": "1773510223926",
-      "description": "Almoço restaurante",
+      "description": "AlmoÃƒÂ§o restaurante",
       "amount": 13.5,
       "category": "Food",
       "type": "One-time",
@@ -885,6 +886,61 @@
       "category": "Transportation",
       "type": "One-time",
       "date": "2026-06-03T00:00:00.000Z"
+    },
+    {
+      "id": "1776809740230-2026-01-21",
+      "userId": "1773510223926",
+      "description": "Salary",
+      "amount": -1500,
+      "category": "Other",
+      "type": "Recurring",
+      "date": "2026-01-21T00:00:00.000Z",
+      "isIncome": true,
+      "sourceId": "1776809740230"
+    },
+    {
+      "id": "1776809740230-2026-02-21",
+      "userId": "1773510223926",
+      "description": "Salary",
+      "amount": -1500,
+      "category": "Other",
+      "type": "Recurring",
+      "date": "2026-02-21T00:00:00.000Z",
+      "isIncome": true,
+      "sourceId": "1776809740230"
+    },
+    {
+      "id": "1776809740230-2026-03-21",
+      "userId": "1773510223926",
+      "description": "Salary",
+      "amount": -1500,
+      "category": "Other",
+      "type": "Recurring",
+      "date": "2026-03-21T00:00:00.000Z",
+      "isIncome": true,
+      "sourceId": "1776809740230"
+    },
+    {
+      "id": "1776809740230-2026-04-21",
+      "userId": "1773510223926",
+      "description": "Salary",
+      "amount": -1500,
+      "category": "Other",
+      "type": "Recurring",
+      "date": "2026-04-21T00:00:00.000Z",
+      "isIncome": true,
+      "sourceId": "1776809740230"
+    },
+    {
+      "id": "1776809740230-2026-05-21",
+      "userId": "1773510223926",
+      "description": "Salary",
+      "amount": -1500,
+      "category": "Other",
+      "type": "Recurring",
+      "date": "2026-05-21T00:00:00.000Z",
+      "isIncome": true,
+      "sourceId": "1776809740230"
     }
   ],
   "categories": [

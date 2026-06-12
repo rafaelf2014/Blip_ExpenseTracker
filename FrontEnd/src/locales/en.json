@@ -177,6 +177,7 @@
     },
     "aiMenu": {
         "button_title": "Quick add with AI",
+        "loading": "Loading AI model…",
         "title": "Quick Add",
         "subtitle": "Describe your expense in plain language and AI will fill in the details."
     },

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 import "../styles/ExpenseTable.scss";
 import { useCurrency } from '../Context/CurrencyContext';
 import { useDate } from '../Context/DateContext';
@@ -91,14 +91,15 @@ export function ExpenseTable({ expenses, totalCount, onEditClick }: ExpenseTable
                   <td className='desc-col'>
                     <div className='icon-wrapper'>{getCategoryIcon(expense.category)}</div>
                     {expense.description}
+                    {expense.sourceId && <RefreshCw size={13} className='recurring-marker' />}
                   </td>
                   <td className='category-col'>
                     <span className='category-pill'>{expense.category}</span>
                   </td>
                   <td className='date-col'>{formatDate(expense.date)}</td>
                   <td className='type-col capitalize'>{expense.type || 'Standard'}</td>
-                  <td className={`amount-col ${Number(expense.amount) > 0 ? 'expense' : 'income'}`}>
-                    {formatCurrency(Number(expense.amount))}
+                  <td className={`amount-col ${Number(expense.amount) < 0 ? 'income' : 'expense'}`}>
+                    {Number(expense.amount) < 0 ? '+' : '-'}{formatCurrency(Math.abs(Number(expense.amount)))}
                   </td>
                   <td className='actions-col'>
                     <button className='action-btn' onClick={() => onEditClick(expense)}>

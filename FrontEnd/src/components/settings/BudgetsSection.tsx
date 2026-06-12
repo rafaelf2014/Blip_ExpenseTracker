@@ -31,7 +31,7 @@ export function BudgetsSection({ budgets, setBudgets, saveBudgets }: BudgetsSect
     return (
         <div className="settings-card">
             <div className="card-header">
-                <div className="card-icon" style={{ backgroundColor: '#F59E0B' }}>
+                <div className="card-icon icon-amber">
                     <PiggyBank size={20} color="white" />
                 </div>
                 <h2>Category Budgets</h2>
