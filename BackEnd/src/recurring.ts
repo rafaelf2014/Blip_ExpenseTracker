@@ -1,14 +1,12 @@
-// Minimal shape needed for occurrence math — kept local so this module has zero
-// dependency on db.ts (which does file I/O on import), making it cleanly testable.
+// Só o que é preciso para calcular as ocorrências. Fica aqui para não depender
+// do db.ts (que mexe em ficheiros ao importar) e dá para testar à vontade.
 export type RecurringLike = {
     frequency: 'weekly' | 'monthly' | 'yearly';
-    date: string; // ISO date of the first occurrence
+    date: string; // data ISO da primeira ocorrência
 };
 
-/**
- * Returns every occurrence date (YYYY-MM-DD) of a recurring template from its
- * start date up to and including `today`. Pure — no DB access, so it's unit-testable.
- */
+// Devolve todas as datas (YYYY-MM-DD) de um recorrente, do início até hoje
+// (inclusive). Função pura, sem acesso à BD, por isso é testável.
 export function occurrenceDates(rt: RecurringLike, today: Date): string[] {
     const start = new Date(rt.date);
     start.setHours(0, 0, 0, 0);

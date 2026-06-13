@@ -4,11 +4,9 @@ import { QUERY_CATEGORY_KEYWORDS } from '../../../constants/keywords';
 import { parseDateContext, type DateContext } from '../dateContext';
 import { getMessages, type Lang, type Messages } from './messages';
 
-/**
- * Tudo o que um handler de query precisa: a pergunta normalizada, a janela
- * temporal interpretada, os dados filtrados, os totais derivados e formatadores.
- * Construído uma vez em `buildQueryContext` e partilhado por todos os handlers.
- */
+// Tudo o que um handler precisa: a pergunta normalizada, a janela de tempo, os
+// dados filtrados, os totais e os formatadores. Montado uma vez em
+// buildQueryContext e partilhado por todos os handlers.
 export type QueryContext = {
     norm: string;
     today: Date;
@@ -35,7 +33,7 @@ export type QueryContext = {
     filteredExpenses: Expense[];
     totalSpent: number;
 
-    /** "DD/MM" a partir de uma data ISO. */
+    // "DD/MM" a partir de uma data ISO.
     fmtD: (s: string) => string;
 };
 
@@ -57,7 +55,7 @@ export function buildQueryContext(
     const dateCtx = parseDateContext(norm, today, m);
     const { tYear, tMonth, tDay, minDate, maxDate, customDateContext } = dateCtx;
 
-    // Filtros de montante — o lookahead impede "over 2 months" de contar como montante
+    // Filtros de valor — o lookahead evita que "over 2 months" conte como valor
     const noTimeUnit = '(?!\\s*(?:days?|weeks?|months?|years?|dias?|semanas?|meses?|anos?))';
     const aboveM = norm.match(new RegExp(`(?:over|above|more than|greater than|acima de|mais de)\\s*[$€£]?\\s*(\\d+(?:[.,]\\d{1,2})?)${noTimeUnit}`));
     const belowM = norm.match(new RegExp(`(?:under|below|less than|lower than|abaixo de|menos de)\\s*[$€£]?\\s*(\\d+(?:[.,]\\d{1,2})?)${noTimeUnit}`));
@@ -82,7 +80,7 @@ export function buildQueryContext(
     };
 
     const filteredExpenses = expenses.filter(exp => {
-        if (Number(exp.amount) < 0)                                      return false; // income rows handled separately
+        if (Number(exp.amount) < 0)                                      return false; // o rendimento é tratado à parte
         if (targetCategory !== 'ALL' && exp.category !== targetCategory) return false;
         if (!filterByDate(exp))                                          return false;
         if (filterMin !== null && Number(exp.amount) <= filterMin)       return false;

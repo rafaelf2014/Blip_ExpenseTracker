@@ -11,7 +11,7 @@ const EMPTY_SETTINGS: UserSettings = {
     savingsRateHistory: [],
 };
 
-/** Fetch a user's settings, normalized so every field has a safe default. */
+// Vai buscar as settings do user, já com defaults para cada campo.
 export async function fetchUserSettings(userId: string): Promise<UserSettings> {
     const res = await fetch(`${API_BASE}/users/${userId}/settings`);
     const data = await res.json();
@@ -28,23 +28,21 @@ export async function fetchUserSettings(userId: string): Promise<UserSettings> {
 
 export { EMPTY_SETTINGS };
 
-/** Fetch a user's transactions (expenses + income rows). */
+// Vai buscar as transações do user (despesas + rendimentos).
 export async function fetchExpenses(userId: string): Promise<Expense[]> {
     const res = await fetch(`${API_BASE}/expenses/${userId}`);
     if (!res.ok) return [];
     return res.json();
 }
 
-/** Fetch the available categories and expense types. */
+// Vai buscar as categorias e os tipos de despesa disponíveis.
 export async function fetchExpenseConfig(): Promise<ExpenseConfig> {
     const res = await fetch(`${API_BASE}/expense-config`);
     return res.json();
 }
 
-/**
- * Ask the backend to materialize any missing recurring-transaction occurrences
- * (up to today). Idempotent — safe to call on load. Resolves once done.
- */
+// Pede ao backend para criar as ocorrências de recorrentes que faltam (até hoje).
+// É idempotente, dá para chamar no arranque sem problemas.
 export async function syncRecurring(userId: string): Promise<void> {
     if (!userId) return;
     try {

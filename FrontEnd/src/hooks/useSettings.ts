@@ -91,7 +91,7 @@ export function useSettings() {
     const saveFinancial = async () => {
         try {
             await saveSettings({ currentBalance, regularTransactions });
-            // Materialize/prune recurring rows for the new template set, then notify open pages.
+            // Ajusta as linhas recorrentes ao novo conjunto de templates e avisa as páginas abertas.
             await syncRecurring(userId);
             window.dispatchEvent(new Event('blip:expense-added'));
             toast.success('Financial settings saved!');

@@ -7,10 +7,10 @@ const SELECTED_MODEL = 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC';
 let engine: WebWorkerMLCEngine | null = null;
 let initPromise: Promise<void> | null = null;
 
-// Loading status (so the UI can show a spinner while the model downloads)
+// Estado do carregamento (para a UI mostrar um spinner enquanto o modelo descarrega)
 export type LLMStatus = 'idle' | 'loading' | 'ready' | 'error';
 let status: LLMStatus = 'idle';
-let progress = 0; // 0–1 download/init progress
+let progress = 0; // progresso 0–1 do download/init
 const listeners = new Set<() => void>();
 
 function setStatus(next: LLMStatus) {
@@ -18,11 +18,11 @@ function setStatus(next: LLMStatus) {
     listeners.forEach(l => l());
 }
 
-/** Current model-loading status. */
+// Estado atual do carregamento do modelo.
 export const getLLMStatus = (): LLMStatus => status;
-/** Current load progress (0–1). */
+// Progresso atual (0–1).
 export const getLLMProgress = (): number => progress;
-/** Subscribe to status/progress changes; returns an unsubscribe function. */
+// Subscreve mudanças de estado/progresso; devolve a função para cancelar.
 export function subscribeLLM(listener: () => void): () => void {
     listeners.add(listener);
     return () => listeners.delete(listener);
@@ -55,7 +55,7 @@ export async function initLLM(): Promise<void> {
     await initPromise;
 }
 
-/** Resolve com `null` se a promise não terminar dentro de `ms`. */
+// Devolve `null` se a promise não acabar dentro de `ms`.
 export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | null> {
     return Promise.race([
         promise,
@@ -63,7 +63,7 @@ export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T | nul
     ]);
 }
 
-/** Texto da primeira escolha de uma chat completion, ou '' se vazio. */
+// Texto da primeira escolha do chat completion, ou null se vier vazio.
 async function completeChat(
     messages: { role: 'system' | 'user' | 'assistant'; content: string }[],
     maxTokens: number,
@@ -78,7 +78,7 @@ async function completeChat(
     return (reply.choices[0]?.message?.content ?? '').trim();
 }
 
-/** Resumo curto em inglês (1-4 palavras) do que foi comprado/pago. */
+// Resumo curto em inglês (1-4 palavras) do que foi comprado/pago.
 export async function getLLMDescription(userInput: string): Promise<string | null> {
     try {
         const raw = await completeChat([
@@ -98,7 +98,7 @@ export async function getLLMDescription(userInput: string): Promise<string | nul
     }
 }
 
-/** Categoria + descrição em JSON, quando as palavras-chave não chegaram a uma categoria. */
+// Categoria + descrição em JSON, quando as palavras-chave não acertaram na categoria.
 export async function getLLMCategoryAndDescription(
     userInput: string,
 ): Promise<{ category: string; description: string } | null> {

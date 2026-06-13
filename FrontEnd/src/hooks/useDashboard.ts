@@ -28,7 +28,7 @@ export function useDashboard() {
 
         fetchExpenseConfig().then(cfg => { setCategories(cfg.categories); setExpenseTypes(cfg.expenseTypes); });
 
-        // Materialize any due recurring transactions before reading the expense list.
+        // Cria os recorrentes em atraso antes de ler a lista de despesas.
         syncRecurring(storedUserId)
             .then(() => Promise.all([apiFetchExpenses(storedUserId), fetchUserSettings(storedUserId)]))
             .then(([expenseData, settings]) => {
@@ -76,7 +76,7 @@ export function useDashboard() {
         return () => window.removeEventListener('blip:expense-added', handler);
     }, [userId]);
 
-    // --- Memo 1: monthly filters, spend/income totals, and change pills ---
+    // Mês: filtros, totais de gasto/rendimento e as variações dos cartões.
     const monthData = useMemo(() => {
         const today          = new Date();
         const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -87,14 +87,14 @@ export function useDashboard() {
         const thisMonthExpenses = expenses.filter(e => { const d = new Date(e.date); return d >= thisMonthStart && d <= today; });
         const lastMonthExpenses = expenses.filter(e => { const d = new Date(e.date); return d >= lastMonthStart && d <= lastMonthEnd; });
 
-        // Spending = positive amounts; income = negative amounts (recurring income rows).
+        // Gasto = valores positivos; rendimento = negativos (linhas de rendimento recorrente).
         const monthSpent      = sumSpent(thisMonthExpenses);
         const monthIncome     = sumIncome(thisMonthExpenses);
         const lastMonthSpent  = sumSpent(lastMonthExpenses);
         const lastMonthIncome = sumIncome(lastMonthExpenses);
         const lastMonthDays   = lastMonthEnd.getDate();
 
-        // Total balance = starting balance + net of every transaction to date.
+        // Saldo total = saldo inicial + o líquido de todas as transações até agora.
         const balance         = computeBalance(currentBalance, expenses);
         const lastBalEntry    = balanceHistory.find(h => h.month === lastMonthKey);
         const balanceChange   = pctOrZero(balance, lastBalEntry?.balance);
@@ -115,13 +115,13 @@ export function useDashboard() {
         };
     }, [expenses, currentBalance, balanceHistory]);
 
-    // --- Memo 2: chart data and highlight index ---
+    // Dados do gráfico e o índice da barra a destacar.
     const { chartData, highlightIndex } = useMemo(() => {
         const today        = new Date();
         const todayStr     = toLocalDateStr(today);
         const weekStartStr = toLocalDateStr(getWeekStart(today));
 
-        // The chart tracks spending only, so ignore income (negative) rows.
+        // O gráfico só mostra gastos, por isso ignora as linhas de rendimento (negativas).
         const spend = (exp: Expense) => Math.max(0, Number(exp.amount));
 
         if (chartPeriod === 'week') {
@@ -152,7 +152,7 @@ export function useDashboard() {
         return { chartData: data, highlightIndex: today.getMonth() };
     }, [expenses, chartPeriod]);
 
-    // --- Memo 3: quick stats and budget/savings metrics ---
+    // Quick stats e as métricas de orçamento/poupança.
     const quickStats = useMemo(() => {
         const { today, lastMonthKey, lastMonthDays, thisMonthExpenses, lastMonthExpenses, monthSpent, lastMonthSpent } = monthData;
 
@@ -161,7 +161,7 @@ export function useDashboard() {
         const lastAvgDailySpend = lastMonthSpent / lastMonthDays;
         const avgDailyChange    = pctOrZero(avgDailySpend, lastMonthSpent > 0 ? lastAvgDailySpend : null);
 
-        // Largest single expense — spending only (ignore income rows).
+        // Maior despesa única — só gastos (ignora rendimento).
         const spends = (rows: typeof thisMonthExpenses) => rows.map(e => Number(e.amount)).filter(a => a > 0);
         const thisSpends = spends(thisMonthExpenses);
         const lastSpends = spends(lastMonthExpenses);
@@ -180,7 +180,7 @@ export function useDashboard() {
         return { avgDailySpend, avgDailyChange, largestExpense, largestChange, budgetUtilization, budgetUtilChange, savingsRate, savingsRateChange };
     }, [monthData, budgets, budgetUtilHistory, savingsRateHistory]);
 
-    // --- Memo 4: recent transactions ---
+    // Transações recentes.
     const recentTransactions = useMemo(() =>
         [...expenses].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5),
         [expenses]
@@ -189,7 +189,7 @@ export function useDashboard() {
     return {
         expenses, showForm, setShowForm, username, userId,
         categories, expenseTypes,
-        currentBalance: monthData.balance,   // computed: starting balance + net of all transactions
+        currentBalance: monthData.balance,   // calculado: saldo inicial + líquido de tudo
         chartPeriod, setChartPeriod,
         fetchExpenses,
         chartData, highlightIndex,

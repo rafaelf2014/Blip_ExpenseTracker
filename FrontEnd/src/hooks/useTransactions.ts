@@ -37,7 +37,7 @@ export function useTransactions() {
         setUsername(storedUsername);
         setUserId(storedUserId);
 
-        // Materialize due recurring transactions, then load the (now complete) list.
+        // Cria os recorrentes em atraso e só depois carrega a lista (já completa).
         syncRecurring(storedUserId).then(() => fetchExpenses(storedUserId));
 
         fetchExpenseConfig().then(cfg => { setCategories(cfg.categories); setExpenseTypes(cfg.expenseTypes); });

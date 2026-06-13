@@ -1,6 +1,6 @@
-// Funções puras de normalização e correspondência de texto usadas pela camada de IA.
+// Funções de texto (normalizar e comparar) usadas pela camada de IA.
 
-/** Minúsculas, sem acentos e sem pontuação — base para todas as comparações. */
+// Mete em minúsculas, tira acentos e pontuação — a base de todas as comparações.
 export function normalizeText(text: string): string {
     return text
         .toLowerCase()
@@ -9,7 +9,7 @@ export function normalizeText(text: string): string {
         .replace(/[^a-z0-9\s]/g, ' ');
 }
 
-/** Distância de edição de Levenshtein entre duas strings. */
+// Distância de Levenshtein entre duas strings.
 export function levenshtein(a: string, b: string): number {
     const m = a.length, n = b.length;
     const dp: number[][] = Array.from({ length: m + 1 }, (_, i) =>
@@ -23,11 +23,8 @@ export function levenshtein(a: string, b: string): number {
     return dp[m][n];
 }
 
-/**
- * Classifica `text` numa das etiquetas em `rules`.
- * Primeiro tenta correspondência exata de palavra-chave; se falhar, faz
- * correspondência aproximada (Levenshtein) para tolerar erros ortográficos.
- */
+// Encaixa o texto numa das etiquetas. Primeiro tenta palavra-chave exata; se não
+// der, usa Levenshtein para aguentar erros de escrita.
 export function classifyByKeywords(
     text: string,
     rules: [string, string[]][],
@@ -57,7 +54,7 @@ export function classifyByKeywords(
     return bestLabel;
 }
 
-/** Mapeia `value` para a entrada mais próxima de `validList` (exata, case-insensitive, ou fuzzy). */
+// Encaixa o valor na entrada mais parecida da lista (exata, sem ligar a maiúsculas, ou fuzzy).
 export function normalizeToList(value: string, validList: string[]): string {
     if (!value) return validList[0];
     if (validList.includes(value)) return value;

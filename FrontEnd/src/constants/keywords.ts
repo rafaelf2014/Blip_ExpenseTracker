@@ -101,9 +101,9 @@ export const QUERY_CATEGORY_KEYWORDS: [string, string[]][] = [
     ['Clothes',        ['roupa', 'vestuario', 'calcado', 'clothes', 'clothing', 'fashion', 'apparel', 'shopping']],
 ];
 
-// NOTE: keywords are matched as substrings, so bare 3-letter tokens like 'mes'
-// or 'ano' are unsafe (they hit "mesa", "itali-ano", …). Use unambiguous words
-// and the actual recurrence phrases people type.
+// Atenção: as palavras-chave batem como substring, por isso tokens de 3 letras
+// como 'mes' ou 'ano' são perigosos (apanham "mesa", "itali-ano"...). Usamos
+// palavras sem ambiguidade e as frases que as pessoas escrevem mesmo.
 export const TYPE_KEYWORDS: [string, string[]][] = [
     ['Monthly',      ['mensal', 'monthly', 'subscri', 'subscription', 'recorrent', 'recurring', 'por mes', 'ao mes', '/mes']],
     ['Yearly',       ['anual', 'annual', 'yearly', 'por ano', 'ao ano', '/ano']],

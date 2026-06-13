@@ -7,7 +7,7 @@ export type RegularTransaction = {
   isIncome: boolean;
   category: string;
   frequency: 'weekly' | 'monthly' | 'yearly';
-  date: string; // ISO date of first occurrence — defines the day-of-month/week/year it repeats
+  date: string; // data ISO da 1ª ocorrência — define o dia do mês/semana/ano em que repete
 };
 
 export type Budget = {
@@ -24,18 +24,18 @@ export type BalanceEntry = {
 
 export type BudgetUtilEntry = {
   month: string;
-  utilization: number; // percentage, can exceed 100
+  utilization: number; // percentagem, pode passar de 100
 };
 
 export type SavingsRateEntry = {
   month: string;
-  rate: number; // percentage, can be negative
+  rate: number; // percentagem, pode ser negativa
 };
 
-// A deleted occurrence of a recurring template, so sync won't regenerate it.
+// Uma ocorrência apagada de um recorrente, para o sync não a voltar a criar.
 export type RecurringSkip = {
   sourceId: string;
-  date: string; // YYYY-MM-DD of the skipped occurrence
+  date: string; // YYYY-MM-DD da ocorrência saltada
 };
 
 export type User = {
@@ -56,12 +56,12 @@ export type Expense = {
   id: string;
   userId: string;
   description: string;
-  amount: number;       // expenses are positive; income is stored as negative
+  amount: number;       // gastos positivos; rendimento guardado como negativo
   category: string;
   type: string;
   date: string;
-  isIncome?: boolean;   // true for income rows (amount stored negative)
-  sourceId?: string;    // id of the RegularTransaction that generated this row (if any)
+  isIncome?: boolean;   // true nas linhas de rendimento (valor negativo)
+  sourceId?: string;    // id do recorrente que gerou esta linha (se houver)
 };
 
 export type DatabaseSchema = {

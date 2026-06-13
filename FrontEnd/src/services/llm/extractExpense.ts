@@ -6,21 +6,21 @@ import { getLLMDescription, getLLMCategoryAndDescription } from './engine';
 
 const STORAGE_KEY_UNKNOWN_TERMS = 'blip_unknown_terms';
 
-// Currency tokens we accept: symbols + spelled-out words (EN + PT).
+// Moedas que aceitamos: símbolos + palavras (EN + PT).
 const CURRENCY = String.raw`€|\$|£|eur(?:os?)?|d[oó]lar(?:es)?|dollars?|pounds?|libras?`;
 const AMOUNT_RE = new RegExp(
     String.raw`(?:${CURRENCY})\s*(\d+(?:[.,]\d{1,2})?)|(\d+(?:[.,]\d{1,2})?)\s*(?:${CURRENCY})`,
     'i',
 );
 
-/** Extrai um montante de texto, suportando prefixo (€10) ou sufixo (10€) e vírgula decimal. */
+// Tira o valor do texto, com o símbolo antes (€10) ou depois (10€) e vírgula decimal.
 function extractAmount(text: string): number | null {
     const m = text.match(AMOUNT_RE);
     if (!m) return null;
     return parseFloat((m[1] ?? m[2]).replace(',', '.'));
 }
 
-/** Resolve uma data a partir de texto (hoje/ontem, dia da semana, ou data explícita); default: hoje. */
+// Descobre a data pelo texto (hoje/ontem, dia da semana, ou data escrita); por defeito, hoje.
 function extractDate(text: string): string {
     const today = new Date();
     const lower = normalizeText(text);
@@ -60,7 +60,7 @@ function extractDate(text: string): string {
     return toLocalDateStr(today);
 }
 
-/** Descrição de recurso: remove montantes e palavras de data, deixando o resto do texto. */
+// Descrição de recurso: tira os valores e as palavras de data, fica com o resto.
 function fallbackDescription(userInput: string): string {
     return userInput
         .replace(/\d+[.,]?\d*\s*[€$£]/g, '')
@@ -71,7 +71,7 @@ function fallbackDescription(userInput: string): string {
         .slice(0, 40);
 }
 
-/** Guarda termos que as palavras-chave não reconheceram, para análise futura. */
+// Guarda os termos que as palavras-chave não apanharam, para ver mais tarde.
 function rememberUnknownTerm(term: string): void {
     if (!term) return;
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEY_UNKNOWN_TERMS) ?? '[]') as string[];
@@ -81,11 +81,8 @@ function rememberUnknownTerm(term: string): void {
     }
 }
 
-/**
- * Converte texto livre numa despesa estruturada.
- * Montante/data/tipo vêm de regex+palavras-chave; a categoria usa palavras-chave
- * e recorre ao LLM apenas quando estas não chegam a uma categoria.
- */
+// Transforma texto livre numa despesa estruturada. Valor/data/tipo vêm de
+// regex+palavras-chave; a categoria também, e só chama o LLM quando estas falham.
 export async function extractExpenseFromText(
     userInput: string,
     categories: string[],

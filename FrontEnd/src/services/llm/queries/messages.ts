@@ -50,7 +50,7 @@ export type Messages = {
 
     totalResult: (amount: string, cat: string, when: string, n: number) => string;
 
-    // Date-context phrases (the "when" fragment in the responses above)
+    // Frases do "quando" (o bocado de data das respostas acima)
     date: {
         onDate: (d: number, m: number, y: number) => string;
         inQuarter: (q: number, y: number) => string;

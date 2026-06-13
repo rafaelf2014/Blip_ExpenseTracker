@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { getLLMStatus, subscribeLLM, type LLMStatus } from '../services/llmService';
 
-/** Subscribes a component to the WebLLM model-loading status. */
+// Liga um componente ao estado de carregamento do modelo WebLLM.
 export function useLLMStatus(): LLMStatus {
     return useSyncExternalStore(subscribeLLM, getLLMStatus);
 }

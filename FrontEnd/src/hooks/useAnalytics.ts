@@ -52,8 +52,8 @@ export function useAnalytics() {
 
         filtered.forEach(exp => {
             const amount = Number(exp.amount);
-            const spend  = Math.max(0, amount);   // spending only for category/expense totals
-            const income = Math.max(0, -amount);  // income rows have negative amounts
+            const spend  = Math.max(0, amount);   // só gastos, para os totais por categoria/despesa
+            const income = Math.max(0, -amount);  // as linhas de rendimento têm valor negativo
             const d      = new Date(exp.date);
             const key    = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
             const label  = d.toLocaleString('default', { month: 'short' });

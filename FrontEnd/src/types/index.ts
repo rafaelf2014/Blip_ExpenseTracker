@@ -2,12 +2,12 @@ export type Expense = {
   id: string;
   userId?: string;
   description: string;
-  amount: number;       // expenses positive; income stored negative
+  amount: number;       // gastos positivos; rendimento guardado como negativo
   category: string;
   type: string;
   date: string;
-  isIncome?: boolean;   // true for income rows generated from recurring income
-  sourceId?: string;    // id of the RegularTransaction that generated this row
+  isIncome?: boolean;   // true nas linhas de rendimento vindas de recorrentes
+  sourceId?: string;    // id do recorrente que gerou esta linha
 };
 
 export type NewExpense = Omit<Expense, 'id'>;
@@ -36,7 +36,7 @@ export type SavingsRateEntry = { month: string; rate: number };
 export type CategoryDatum = { name: string; value: number; color: string };
 export type TrendDatum    = { month: string; income: number; expenses: number };
 
-// Shape returned by GET /users/:id/settings
+// O que vem do GET /users/:id/settings
 export type UserSettings = {
   profilePicture: string | null;
   currentBalance: number;
@@ -47,7 +47,7 @@ export type UserSettings = {
   savingsRateHistory: SavingsRateEntry[];
 };
 
-// Shape returned by GET /expense-config
+// O que vem do GET /expense-config
 export type ExpenseConfig = {
   categories: string[];
   expenseTypes: string[];

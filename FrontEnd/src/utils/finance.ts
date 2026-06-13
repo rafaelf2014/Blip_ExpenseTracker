@@ -1,34 +1,33 @@
 import type { Expense, RegularTransaction, Budget } from '../types';
 
-// Signed-amount helpers
-// Transaction rows are signed: positive = spending, negative = income.
+// Valores com sinal: positivo = gasto, negativo = rendimento.
 
-/** Total spent: sum of positive amounts only. */
+// Total gasto: só soma os valores positivos.
 export function sumSpent(expenses: Expense[]): number {
   return expenses.reduce((s, e) => s + Math.max(0, Number(e.amount)), 0);
 }
 
-/** Total income: the absolute value of the negative amounts. */
+// Total recebido: o valor absoluto dos negativos.
 export function sumIncome(expenses: Expense[]): number {
   return expenses.reduce((s, e) => s + Math.max(0, -Number(e.amount)), 0);
 }
 
-/** Net flow over a set of rows: income − spending (= −sum of signed amounts). */
+// Saldo líquido: rendimento menos gastos.
 export function sumNet(expenses: Expense[]): number {
   return expenses.reduce((s, e) => s - Number(e.amount), 0);
 }
 
-/** Running balance: starting balance plus the net of every transaction. */
+// Saldo corrente: saldo inicial mais o líquido de tudo.
 export function computeBalance(startingBalance: number, expenses: Expense[]): number {
   return startingBalance + sumNet(expenses);
 }
 
-// usa componentes locais para evitar desvios de fuso horário à meia-noite
+// Usa a data local para não saltar de dia à meia-noite por causa do fuso.
 export function toLocalDateStr(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// segunda-feira da semana actual
+// Segunda-feira da semana.
 export function getWeekStart(d: Date): Date {
   const daysFromMonday = (d.getDay() + 6) % 7; // Seg=0, ... Dom=6
   return new Date(d.getFullYear(), d.getMonth(), d.getDate() - daysFromMonday);
@@ -38,7 +37,7 @@ export function monthKey(d: Date): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
 }
 
-// retorna "0" quando não há dado anterior para comparar
+// Devolve "0" quando não há valor anterior para comparar.
 export function pctOrZero(curr: number, prev: number | null | undefined): string {
   if (prev == null || prev === 0) return '0';
   return ((curr - prev) / Math.abs(prev) * 100).toFixed(1);
@@ -58,8 +57,8 @@ export function countOccurrences(rt: RegularTransaction, start: Date, end: Date)
   }
 
   if (rt.frequency === 'monthly') {
-    // Step by absolute month index, clamping the day to each month's length, so a
-    // start on the 29th–31st can't drift (Feb) or loop. lastDay = new Date(y,m+1,0).
+    // Avança por índice de mês e limita o dia ao tamanho do mês, para que um dia
+    // 29-31 não derive (Fevereiro) nem entre em loop. lastDay = new Date(y,m+1,0).
     const day = startDate.getDate();
     let y = start.getFullYear();
     let m = start.getMonth();
@@ -123,7 +122,7 @@ export type ExpenseFilters = {
   filterMax: string;
 };
 
-/** Predicado combinado de pesquisa + categoria + tipo + intervalo de valor + tempo. */
+// Junta pesquisa + categoria + tipo + intervalo de valor + tempo num só filtro.
 export function makeExpenseFilter(f: ExpenseFilters): (e: Expense) => boolean {
   const timeFilter = makeTimeFilter(f.filterTime);
   const search     = f.searchTerm.toLowerCase();
@@ -143,16 +142,14 @@ export function makeExpenseFilter(f: ExpenseFilters): (e: Expense) => boolean {
 export type MonthlyMetrics = {
   monthSpent: number;
   monthIncome: number;
-  /** % dos orçamentos mensais já gastos; null se não há orçamentos. */
+  // % dos orçamentos mensais já gastos; null se não houver orçamentos.
   budgetUtilization: number | null;
-  /** % do rendimento poupado; null se não há rendimento. */
+  // % do rendimento poupado; null se não houver rendimento.
   savingsRate: number | null;
 };
 
-/**
- * Métricas-chave de um mês: total gasto, rendimento, utilização de orçamento e
- * taxa de poupança. Centraliza a matemática partilhada pelo histórico e pelos quick stats.
- */
+// Métricas do mês (gasto, rendimento, orçamento, poupança) num só sítio,
+// partilhadas pelo histórico e pelos quick stats.
 export function computeMonthlyMetrics(
   monthExpenses: Expense[],
   budgets: Budget[],
@@ -160,7 +157,7 @@ export function computeMonthlyMetrics(
   const monthSpent  = sumSpent(monthExpenses);
   const monthIncome = sumIncome(monthExpenses);
 
-  // Budgets only track spending, so sum positive amounts per category.
+  // Os orçamentos só contam gastos, por isso somamos os positivos por categoria.
   const monthlyBudgets   = budgets.filter(b => b.period === 'monthly');
   const totalBudgetLimit = monthlyBudgets.reduce((s, b) => s + b.limit, 0);
   const budgetSpent      = monthlyBudgets.reduce((s, b) =>

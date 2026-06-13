@@ -3,7 +3,7 @@ import { db, type User, type RegularTransaction, type Budget, type BalanceEntry,
 
 const router = Router();
 
-// Register Route
+// Registo
 router.post('/api/register', async (req, res) => {
     const { username, password } = req.body;
 
@@ -23,7 +23,7 @@ router.post('/api/register', async (req, res) => {
     res.status(201).json({ message: "User registered successfully!" });
 });
 
-// Login Route
+// Login
 router.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
 
@@ -40,21 +40,21 @@ router.post('/api/login', async (req, res) => {
     });
 });
 
-// Update Username Route
+// Mudar username
 router.put('/api/users/update', async (req, res) => {
     const { oldUsername, newUsername } = req.body;
 
-    //1. Find the user by their current username
+    // 1. Procura o user pelo username atual
     const user = db.data.users.find((u: User) => u.username === oldUsername);
     if (!user) {
         return res.status(404).json({ error: "User not found" });
     }
-    //2. Check if the new username is already taken by another user
+    // 2. Vê se o novo username já está ocupado
     const nameExists = db.data.users.find((u: User) => u.username === newUsername);
     if (nameExists && oldUsername !== newUsername) {
         return res.status(400).json({ error: "Username already taken" });
     }
-    //3. Update the user's username (expenses link by immutable user ID, so they need no change)
+    // 3. Atualiza (as despesas ligam pelo ID, que não muda, por isso não mexemos nelas)
     user.username = newUsername;
 
     await db.write();
@@ -62,30 +62,30 @@ router.put('/api/users/update', async (req, res) => {
     return res.status(200).json({ message: "Username updated successfully!" });
 });
 
-// Update Password Route
+// Mudar password
 router.put('/api/users/update-password', async (req, res) => {
     const { username, currentPassword, newPassword } = req.body;
 
-    // 1. Find the user
+    // 1. Procura o user
     const user = db.data.users.find((u) => u.username === username);
 
     if (!user) {
         return res.status(404).json({ error: "User not found" });
     }
 
-    // 2. Security check: Verify the current password
+    // 2. Confirma a password atual antes de deixar mudar
     if (user.password !== currentPassword) {
         return res.status(401).json({ error: "Current password is incorrect" });
     }
 
-    // 3. Update and save
+    // 3. Atualiza e guarda
     user.password = newPassword;
     await db.write();
 
     res.json({ message: "Password updated successfully! 🔒" });
 });
 
-// Get User Settings Route
+// Buscar as settings do user
 router.get('/api/users/:userId/settings', (req, res): any => {
     const { userId } = req.params;
     const user = db.data.users.find((u: User) => u.id === userId);
@@ -102,7 +102,7 @@ router.get('/api/users/:userId/settings', (req, res): any => {
     });
 });
 
-// Update User Settings Route
+// Guardar as settings do user
 router.put('/api/users/:userId/settings', async (req, res): Promise<any> => {
     const { userId } = req.params;
     const user = db.data.users.find((u: User) => u.id === userId);

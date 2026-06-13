@@ -6,7 +6,7 @@ export type QueryType =
     | 'TOTAL' | 'MAX' | 'AVERAGE' | 'LIST' | 'BUDGET' | 'INCOME' | 'COUNT'
     | 'MOST_FREQUENT' | 'DISTINCT_CATEGORIES' | 'PERCENTAGE' | 'DUPLICATES' | 'ROUND_AMOUNTS';
 
-/** Resultado da interpretação da janela temporal de uma pergunta. */
+// O que sai da leitura da janela temporal de uma pergunta.
 export type DateContext = {
     tYear: number | null;
     tMonth: number | null;
@@ -16,7 +16,7 @@ export type DateContext = {
     customDateContext: string;
 };
 
-/** Classifica a intenção da pergunta a partir das suas palavras-chave. */
+// Vê o tipo de pergunta pelas palavras-chave.
 export function detectQueryType(norm: string): QueryType {
     if (/duplicat|repetid|mesmo valor|same amount/.test(norm))                                               return 'DUPLICATES';
     if (/round amount|exact amount|exact dollar|montante redondo|numero redondo|valor redondo/.test(norm))   return 'ROUND_AMOUNTS';
@@ -44,18 +44,18 @@ const QUERY_KEYWORDS = [
     'most used', 'frequent', 'distinct', 'spent', 'spend', 'transactions', 'expenses',
 ];
 
-/** Distingue uma pergunta financeira de input não reconhecido. */
+// Separa uma pergunta sobre finanças de input que não percebemos.
 export function detectChatIntent(userInput: string): 'QUERY' | 'UNKNOWN' {
     const norm = normalizeText(userInput);
     return QUERY_KEYWORDS.some(kw => norm.includes(kw)) ? 'QUERY' : 'UNKNOWN';
 }
 
-/** Último dia do mês `month` (1-12) do ano `year`. */
+// Último dia do mês (1-12) de um ano.
 function lastDayOfMonth(year: number, month: number): number {
     return new Date(year, month, 0).getDate();
 }
 
-/** Interpreta a janela temporal pedida na pergunta (mês, trimestre, "últimos N dias", etc.). */
+// Lê a janela de tempo pedida (mês, trimestre, "últimos N dias", etc.).
 export function parseDateContext(norm: string, today: Date, m: Messages): DateContext {
     const currentYear  = today.getFullYear();
     const currentMonth = today.getMonth() + 1;
