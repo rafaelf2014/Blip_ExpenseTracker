@@ -90,7 +90,7 @@ export function ExpenseTable({ expenses, totalCount, onEditClick }: ExpenseTable
                 <tr key={expense.id}>
                   <td className='desc-col'>
                     <div className='icon-wrapper'>{getCategoryIcon(expense.category)}</div>
-                    {expense.description}
+                    <span className='desc-text'>{expense.description}</span>
                     {expense.sourceId && <RefreshCw size={13} className='recurring-marker' />}
                   </td>
                   <td className='category-col'>

@@ -292,9 +292,10 @@ $sidebar-width-collapsed: 80px;
         }
     }
 
-    // Content must clear the fixed bottom bar.
-    .dashboard-content-wrapper,
-    .settings-page {
+    // The bottom bar is fixed, so it floats over the page. Give the content area
+    // (whatever sits next to the sidebar on every page) bottom padding so its last
+    // rows clear the bar instead of hiding under it.
+    .sidebar + * {
         padding-bottom: calc(#{$bottombar-h} + 16px);
     }
 }

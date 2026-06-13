@@ -17,7 +17,11 @@
     overflow-y: auto;
 
     @media (max-width: $mobile) {
-        padding: 20px 16px;
+        // Only override top/side padding — leave padding-bottom to the bottom-bar
+        // clearance rule in Sidebar.scss (a `padding:` shorthand here would reset it).
+        padding-top: 20px;
+        padding-left: 16px;
+        padding-right: 16px;
     }
 }
 

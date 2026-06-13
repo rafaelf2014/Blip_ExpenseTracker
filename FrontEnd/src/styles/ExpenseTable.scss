@@ -66,6 +66,9 @@
             gap: 16px;
             font-size: 18px;
 
+            // Description text flexes and can shrink (so it can ellipsis on mobile).
+            .desc-text { flex: 1; min-width: 0; }
+
             // Matches the dashboard "Recent Transactions" icon box
             .icon-wrapper {
               width: 48px;
@@ -189,24 +192,45 @@
     .empty-state { padding: 40px 20px; font-size: 16px; }
 
     .expense-table {
+      // Fixed layout so columns honour our widths and the table can't grow wider
+      // than the screen (which would push Actions off-edge under overflow:hidden).
+      table-layout: fixed;
+      width: 100%;
+
       // Hide Category (2nd) and Type (4th) columns — header (th) and body (td).
       thead th:nth-child(2),
       thead th:nth-child(4),
       tbody td.category-col,
       tbody td.type-col { display: none; }
 
-      thead th { padding: 14px 10px; font-size: 13px; }
+      // Remaining 4 columns: Description takes the slack, the rest are fixed/narrow.
+      thead th:nth-child(1) { width: auto; }       // Description
+      thead th:nth-child(3) { width: 64px; }        // Date
+      thead th:nth-child(5) { width: 72px; }        // Amount
+      thead th:nth-child(6) { width: 56px; }        // Actions
+
+      thead th { padding: 14px 8px; font-size: 13px; }
 
       tbody td {
-        padding: 12px 10px;
+        padding: 12px 8px;
 
         &.desc-col {
           font-size: 14px;
-          gap: 10px;
-          .icon-wrapper { width: 36px; height: 36px; }
+          gap: 8px;
+          min-width: 0;                  // allow the cell to shrink so text can clip
+          .icon-wrapper { width: 32px; height: 32px; }
+
+          // Truncate long descriptions with an ellipsis instead of widening the table.
+          .desc-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            min-width: 0;
+          }
         }
-        &.date-col   { font-size: 13px; }
-        &.amount-col { font-size: 15px; }
+        &.date-col   { font-size: 12px; }
+        &.amount-col { font-size: 14px; padding-left: 2px; padding-right: 2px; }
+        &.actions-col .action-btn { font-size: 22px; }
       }
     }
 

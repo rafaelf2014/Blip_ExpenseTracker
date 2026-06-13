@@ -349,7 +349,8 @@
       align-items: stretch;
       gap: 16px;
 
-      .amounts-group { gap: 12px; .input-group { flex: 1; input { width: 100%; } } }
+      // Stack Min/Max so two full-width inputs don't overlap in a single row.
+      .amounts-group { flex-direction: column; gap: 12px; .input-group { flex: 1; min-width: 0; input { width: 100%; box-sizing: border-box; } } }
       .panel-actions { width: 100%; .clear-btn, .apply-btn { flex: 1; } }
     }
   }
