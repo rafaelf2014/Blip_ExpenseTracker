@@ -71,7 +71,7 @@
         },
         {
           "month": "2026-06",
-          "balance": 4776.320000000001
+          "balance": 4384.530000000001
         }
       ],
       "budgetUtilHistory": [
@@ -97,7 +97,7 @@
         },
         {
           "month": "2026-06",
-          "utilization": 55
+          "utilization": 79
         }
       ],
       "savingsRateHistory": [
@@ -224,7 +224,7 @@
     {
       "id": "e2601008",
       "userId": "1773510223926",
-      "description": "AlmoÃƒÂ§o restaurante ZÃƒÂ© da Esquina",
+      "description": "Almoço restaurante Zé da Esquina",
       "amount": 12,
       "category": "Food",
       "type": "One-time",
@@ -242,7 +242,7 @@
     {
       "id": "e2601010",
       "userId": "1773510223926",
-      "description": "CafÃƒÂ© pastelaria",
+      "description": "Café pastelaria",
       "amount": 3.5,
       "category": "Food",
       "type": "One-time",
@@ -251,7 +251,7 @@
     {
       "id": "e2601011",
       "userId": "1773510223926",
-      "description": "FarmÃƒÂ¡cia",
+      "description": "Farmácia",
       "amount": 15,
       "category": "Health",
       "type": "One-time",
@@ -359,7 +359,7 @@
     {
       "id": "e2602008",
       "userId": "1773510223926",
-      "description": "GinÃƒÂ¡sio Holmes Place",
+      "description": "Ginásio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -368,7 +368,7 @@
     {
       "id": "e2602009",
       "userId": "1773510223926",
-      "description": "AlmoÃƒÂ§o sushi",
+      "description": "Almoço sushi",
       "amount": 18,
       "category": "Food",
       "type": "One-time",
@@ -377,7 +377,7 @@
     {
       "id": "e2602010",
       "userId": "1773510223926",
-      "description": "Zara - calÃƒÂ§as ganga",
+      "description": "Zara - calças ganga",
       "amount": 39.99,
       "category": "Clothes",
       "type": "One-time",
@@ -404,7 +404,7 @@
     {
       "id": "e2602013",
       "userId": "1773510223926",
-      "description": "Consulta mÃƒÂ©dica",
+      "description": "Consulta médica",
       "amount": 45,
       "category": "Health",
       "type": "One-time",
@@ -494,7 +494,7 @@
     {
       "id": "e2603008",
       "userId": "1773510223926",
-      "description": "GinÃƒÂ¡sio Holmes Place",
+      "description": "Ginásio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -503,7 +503,7 @@
     {
       "id": "e2603009",
       "userId": "1773510223926",
-      "description": "AlmoÃƒÂ§o restaurante",
+      "description": "Almoço restaurante",
       "amount": 14,
       "category": "Food",
       "type": "One-time",
@@ -521,7 +521,7 @@
     {
       "id": "e2603011",
       "userId": "1773510223926",
-      "description": "FarmÃƒÂ¡cia",
+      "description": "Farmácia",
       "amount": 22,
       "category": "Health",
       "type": "One-time",
@@ -629,7 +629,7 @@
     {
       "id": "e2604008",
       "userId": "1773510223926",
-      "description": "GinÃƒÂ¡sio Holmes Place",
+      "description": "Ginásio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -656,7 +656,7 @@
     {
       "id": "e2604011",
       "userId": "1773510223926",
-      "description": "AlmoÃƒÂ§o sushi",
+      "description": "Almoço sushi",
       "amount": 16,
       "category": "Food",
       "type": "One-time",
@@ -764,7 +764,7 @@
     {
       "id": "e2605008",
       "userId": "1773510223926",
-      "description": "GinÃƒÂ¡sio Holmes Place",
+      "description": "Ginásio Holmes Place",
       "amount": 30,
       "category": "Health",
       "type": "Monthly",
@@ -791,7 +791,7 @@
     {
       "id": "e2605011",
       "userId": "1773510223926",
-      "description": "AlmoÃƒÂ§o restaurante italiano",
+      "description": "Almoço restaurante italiano",
       "amount": 24,
       "category": "Food",
       "type": "One-time",
@@ -809,7 +809,7 @@
     {
       "id": "e2605013",
       "userId": "1773510223926",
-      "description": "FarmÃƒÂ¡cia",
+      "description": "Farmácia",
       "amount": 18,
       "category": "Health",
       "type": "One-time",
@@ -863,7 +863,7 @@
     {
       "id": "e2606003",
       "userId": "1773510223926",
-      "description": "CafÃƒÂ© pastelaria",
+      "description": "Café pastelaria",
       "amount": 4.2,
       "category": "Food",
       "type": "One-time",
@@ -872,7 +872,7 @@
     {
       "id": "e2606004",
       "userId": "1773510223926",
-      "description": "AlmoÃƒÂ§o restaurante",
+      "description": "Almoço restaurante",
       "amount": 13.5,
       "category": "Food",
       "type": "One-time",
@@ -886,6 +886,141 @@
       "category": "Transportation",
       "type": "One-time",
       "date": "2026-06-03T00:00:00.000Z"
+    },
+    {
+      "id": "e2606006",
+      "userId": "1773510223926",
+      "description": "Spotify",
+      "amount": 5,
+      "category": "Entertainment",
+      "type": "Monthly",
+      "date": "2026-06-04T00:00:00.000Z"
+    },
+    {
+      "id": "e2606007",
+      "userId": "1773510223926",
+      "description": "Netflix",
+      "amount": 13,
+      "category": "Entertainment",
+      "type": "Monthly",
+      "date": "2026-06-04T00:00:00.000Z"
+    },
+    {
+      "id": "e2606008",
+      "userId": "1773510223926",
+      "description": "EDP Electricidade",
+      "amount": 50,
+      "category": "Utilities",
+      "type": "Monthly",
+      "date": "2026-06-05T00:00:00.000Z"
+    },
+    {
+      "id": "e2606009",
+      "userId": "1773510223926",
+      "description": "NOS Internet + TV",
+      "amount": 40,
+      "category": "Utilities",
+      "type": "Monthly",
+      "date": "2026-06-05T00:00:00.000Z"
+    },
+    {
+      "id": "e2606010",
+      "userId": "1773510223926",
+      "description": "Supermercado Lidl",
+      "amount": 47,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-06-06T00:00:00.000Z"
+    },
+    {
+      "id": "e2606011",
+      "userId": "1773510223926",
+      "description": "Jantar com amigos",
+      "amount": 28,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-06-06T00:00:00.000Z"
+    },
+    {
+      "id": "e2606012",
+      "userId": "1773510223926",
+      "description": "Metro Andante mensal",
+      "amount": 40,
+      "category": "Transportation",
+      "type": "Monthly",
+      "date": "2026-06-08T00:00:00.000Z"
+    },
+    {
+      "id": "e2606013",
+      "userId": "1773510223926",
+      "description": "Ginásio Holmes Place",
+      "amount": 30,
+      "category": "Health",
+      "type": "Monthly",
+      "date": "2026-06-08T00:00:00.000Z"
+    },
+    {
+      "id": "e2606014",
+      "userId": "1773510223926",
+      "description": "Café pastelaria",
+      "amount": 3.8,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-06-09T00:00:00.000Z"
+    },
+    {
+      "id": "e2606015",
+      "userId": "1773510223926",
+      "description": "Farmácia",
+      "amount": 17,
+      "category": "Health",
+      "type": "One-time",
+      "date": "2026-06-10T00:00:00.000Z"
+    },
+    {
+      "id": "e2606016",
+      "userId": "1773510223926",
+      "description": "Supermercado Continente",
+      "amount": 64,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-06-11T00:00:00.000Z"
+    },
+    {
+      "id": "e2606017",
+      "userId": "1773510223926",
+      "description": "Zara - t-shirt",
+      "amount": 19.99,
+      "category": "Clothes",
+      "type": "One-time",
+      "date": "2026-06-11T00:00:00.000Z"
+    },
+    {
+      "id": "e2606018",
+      "userId": "1773510223926",
+      "description": "Cinema NOS",
+      "amount": 10,
+      "category": "Entertainment",
+      "type": "One-time",
+      "date": "2026-06-12T00:00:00.000Z"
+    },
+    {
+      "id": "e2606019",
+      "userId": "1773510223926",
+      "description": "Almoço restaurante",
+      "amount": 14.5,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-06-12T00:00:00.000Z"
+    },
+    {
+      "id": "e2606020",
+      "userId": "1773510223926",
+      "description": "Uber",
+      "amount": 9.5,
+      "category": "Transportation",
+      "type": "One-time",
+      "date": "2026-06-13T00:00:00.000Z"
     },
     {
       "id": "1776809740230-2026-01-21",
