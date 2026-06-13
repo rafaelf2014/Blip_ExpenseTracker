@@ -34,6 +34,10 @@ describe('amount parsing — prompt bank', () => {
         ['book £9.99 entertainment', 9.99],
         ['eur 40 electricity', 40],             // "eur" word
         ['paguei 1000 euros de renda', 1000],   // "euros" word
+        ['lunch 15 dollars food', 15],          // "dollars" word
+        ['paguei 20 dolares', 20],              // PT "dolares"
+        ['book 9 pounds entertainment', 9],     // "pounds" word
+        ['camisa 30 libras clothes', 30],       // PT "libras"
         ['netflix €7.99 monthly', 7.99],
         ['big purchase €1234.56 furniture', 1234.56],
         ['just some food text no number', 0],   // no amount -> 0

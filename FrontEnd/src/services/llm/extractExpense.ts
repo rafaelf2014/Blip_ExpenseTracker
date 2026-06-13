@@ -6,9 +6,16 @@ import { getLLMDescription, getLLMCategoryAndDescription } from './engine';
 
 const STORAGE_KEY_UNKNOWN_TERMS = 'blip_unknown_terms';
 
+// Currency tokens we accept: symbols + spelled-out words (EN + PT).
+const CURRENCY = String.raw`€|\$|£|eur(?:os?)?|d[oó]lar(?:es)?|dollars?|pounds?|libras?`;
+const AMOUNT_RE = new RegExp(
+    String.raw`(?:${CURRENCY})\s*(\d+(?:[.,]\d{1,2})?)|(\d+(?:[.,]\d{1,2})?)\s*(?:${CURRENCY})`,
+    'i',
+);
+
 /** Extrai um montante de texto, suportando prefixo (€10) ou sufixo (10€) e vírgula decimal. */
 function extractAmount(text: string): number | null {
-    const m = text.match(/(?:€|\$|£|eur(?:os?)?)\s*(\d+(?:[.,]\d{1,2})?)|(\d+(?:[.,]\d{1,2})?)\s*(?:€|\$|£|eur(?:os?)?)/i);
+    const m = text.match(AMOUNT_RE);
     if (!m) return null;
     return parseFloat((m[1] ?? m[2]).replace(',', '.'));
 }
