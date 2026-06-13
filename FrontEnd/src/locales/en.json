@@ -31,6 +31,7 @@
         "housing": "Housing",
         "transportation": "Transportation",
         "entertainment": "Entertainment",
+        "utilities": "Utilities",
         "other": "Other",
         "income": "Income"
     },
@@ -61,7 +62,33 @@
     },
     "planning": {
         "title": "Planning",
-        "subtitle": "Set up your balance, recurring transactions and category budgets"
+        "subtitle": "Set up your balance, recurring transactions and category budgets",
+        "financial_setup": "Financial Setup",
+        "current_balance": "Current Balance",
+        "current_balance_hint": "Your real account balance - optional.",
+        "balance_label": "Balance",
+        "regular_transactions": "Regular Transactions",
+        "regular_transactions_hint": "Salary, rent, subscriptions, anything that repeats automatically.",
+        "desc_placeholder": "Description (e.g. Salary)",
+        "amount_placeholder": "Amount",
+        "first_occurrence_title": "First occurrence, determines which day of the month/week/year this repeats",
+        "income": "Income",
+        "expense": "Expense",
+        "weekly": "Weekly",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "add": "Add",
+        "from": "from",
+        "save_financial": "Save Financial Settings",
+        "category_budgets": "Category Budgets",
+        "category_budgets_hint": "Set monthly (or weekly/yearly) spending caps per category.",
+        "limit_placeholder": "Limit",
+        "add_budget": "Add Budget",
+        "save_budgets": "Save Budgets",
+        "err_fill_desc_amount": "Fill in description and amount",
+        "err_enter_limit": "Enter a budget limit",
+        "err_budget_exists": "A budget for that category + period already exists",
+        "confirm_stop_recurring": "Stop the recurring {{kind}} \"{{description}}\"?\n\nTransactions it already created stay in your history — only future ones stop. Click \"Save Financial Settings\" to apply."
     },
     "settings": {
         "title": "Settings",
@@ -115,7 +142,7 @@
         "save_expense": "Save Expense",
         "added_success": "Expense added successfully!",
         "add_failed": "Failed to add expense. Please try again.",
-        "ai_confirm_title": "🤖 AI Confirmation",
+        "ai_confirm_title": "AI Confirmation",
         "ai_confirm_subtitle": "Check the extracted data before saving."
     },
     "auth": {
@@ -137,7 +164,13 @@
         "title": "Analytics",
         "subtitle": "Deep insights into your financial data",
         "show_filters": "Show Filters",
-        "hide_filters": "Hide Filters"
+        "hide_filters": "Hide Filters",
+        "avg_monthly_income": "Avg Monthly Income",
+        "avg_monthly_expenses": "Avg Monthly Expenses",
+        "avg_daily_spend": "Avg Daily Spend",
+        "most_spent_category": "Most Spent Category",
+        "expense_categories": "Expense Categories",
+        "income_vs_expenses": "Income vs Expenses Trend"
     },
     "dashboard": {
         "title": "Dashboard",

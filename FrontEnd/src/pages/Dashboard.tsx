@@ -12,7 +12,22 @@ import { SummaryCard } from '../components/SummaryBoxes';
 import { useCurrency } from '../context/CurrencyContext';
 import { useDate } from '../context/DateContext';
 import { useDashboard } from '../hooks/useDashboard';
+import { useTheme } from '../context/ThemeContext';
 import { getCategoryIcon } from '../utils/iconMapping';
+
+// Chart colors per theme. Recharts needs concrete colors (not CSS vars), and
+// mapping straight off the theme value avoids any DOM-read timing issues — these
+// mirror the --accent/--border/--text tokens in global.scss.
+const CHART_COLORS = {
+  dark: {
+    bar: '#06B6D4', barMuted: '#334155', tick: '#94A3B8',
+    grid: 'rgba(51, 65, 85, 0.5)', tooltipBg: '#1E293B', tooltipBorder: '#334155', text: '#F8FAFC',
+  },
+  light: {
+    bar: '#E2603B', barMuted: '#C9BFA8', tick: '#6B6250',
+    grid: 'rgba(160, 148, 122, 0.45)', tooltipBg: '#FEFCF7', tooltipBorder: '#C9BFA8', text: '#2B2517',
+  },
+} as const;
 
 function StatPill({ change, higherIsBad = false }: { change: string; higherIsBad?: boolean }) {
   const val = Number(change);
@@ -28,7 +43,10 @@ export default function Dashboard() {
   const { t } = useTranslation();
   const { formatCurrency } = useCurrency();
   const { formatDate } = useDate();
+  const { theme } = useTheme();
   const [showAiMenu, setShowAiMenu] = useState(false);
+
+  const chartColors = CHART_COLORS[theme];
   const {
     showForm, setShowForm, username, userId,
     categories, expenseTypes, currentBalance,
@@ -102,19 +120,19 @@ export default function Dashboard() {
                 <div className="chart-wrapper">
                   <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={chartData} barCategoryGap="35%">
-                      <CartesianGrid vertical={false} stroke="#1e293b" strokeDasharray="4 4" />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 12 }} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94A3B8', fontSize: 11 }} width={40} />
+                      <CartesianGrid vertical={false} stroke={chartColors.grid} strokeDasharray="4 4" />
+                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: chartColors.tick, fontSize: 12 }} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fill: chartColors.tick, fontSize: 11 }} width={40} />
                       <Tooltip
-                        cursor={{ fill: 'rgba(255,255,255,0.04)' }}
-                        contentStyle={{ backgroundColor: '#1E293B', border: '1px solid #334155', borderRadius: '8px' }}
-                        labelStyle={{ color: '#94A3B8', fontSize: '12px', marginBottom: '4px' }}
-                        itemStyle={{ color: '#ffffff' }}
+                        cursor={{ fill: 'rgba(127,127,127,0.08)' }}
+                        contentStyle={{ backgroundColor: chartColors.tooltipBg, border: `1px solid ${chartColors.tooltipBorder}`, borderRadius: '8px' }}
+                        labelStyle={{ color: chartColors.tick, fontSize: '12px', marginBottom: '4px' }}
+                        itemStyle={{ color: chartColors.text }}
                         formatter={(value) => [formatCurrency(Number(value ?? 0)), t('dashboard.tooltip_spent')]}
                       />
                       <Bar dataKey="value" radius={[4, 4, 0, 0]}>
                         {chartData.map((entry, i) => (
-                          <Cell key={entry.name} fill={i === highlightIndex ? '#06B6D4' : '#334155'} />
+                          <Cell key={entry.name} fill={i === highlightIndex ? chartColors.bar : chartColors.barMuted} />
                         ))}
                       </Bar>
                     </BarChart>
@@ -183,7 +201,7 @@ export default function Dashboard() {
                       <div className="icon-circle">{getCategoryIcon(exp.category, 18)}</div>
                       <div className="item-details">
                         <strong>{exp.description}</strong>
-                        <span>{exp.category}</span>
+                        <span>{t(`categories.${exp.category.toLowerCase()}`, exp.category)}</span>
                       </div>
                     </div>
                     <div className="item-price">

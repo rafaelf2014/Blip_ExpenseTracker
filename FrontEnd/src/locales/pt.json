@@ -31,6 +31,7 @@
         "housing": "Habitação",
         "transportation": "Transporte",
         "entertainment": "Entretenimento",
+        "utilities": "Serviços",
         "other": "Outros",
         "income": "Rendimento"
     },
@@ -61,7 +62,33 @@
     },
     "planning": {
         "title": "Planeamento",
-        "subtitle": "Configura o teu saldo, transações recorrentes e orçamentos por categoria"
+        "subtitle": "Configura o teu saldo, transações recorrentes e orçamentos por categoria",
+        "financial_setup": "Configuração Financeira",
+        "current_balance": "Saldo Atual",
+        "current_balance_hint": "O saldo real da tua conta - opcional.",
+        "balance_label": "Saldo",
+        "regular_transactions": "Transações Regulares",
+        "regular_transactions_hint": "Salário, renda, subscrições, tudo o que se repete automaticamente.",
+        "desc_placeholder": "Descrição (ex: Salário)",
+        "amount_placeholder": "Montante",
+        "first_occurrence_title": "Primeira ocorrência, define em que dia do mês/semana/ano isto repete",
+        "income": "Rendimento",
+        "expense": "Despesa",
+        "weekly": "Semanal",
+        "monthly": "Mensal",
+        "yearly": "Anual",
+        "add": "Adicionar",
+        "from": "desde",
+        "save_financial": "Guardar Configuração Financeira",
+        "category_budgets": "Orçamentos por Categoria",
+        "category_budgets_hint": "Define limites de gasto mensais (ou semanais/anuais) por categoria.",
+        "limit_placeholder": "Limite",
+        "add_budget": "Adicionar Orçamento",
+        "save_budgets": "Guardar Orçamentos",
+        "err_fill_desc_amount": "Preenche a descrição e o montante",
+        "err_enter_limit": "Introduz um limite de orçamento",
+        "err_budget_exists": "Já existe um orçamento para essa categoria + período",
+        "confirm_stop_recurring": "Parar o {{kind}} recorrente \"{{description}}\"?\n\nAs transações que já criou ficam no teu histórico — só as futuras param. Carrega em \"Guardar Configuração Financeira\" para aplicar."
     },
     "settings": {
         "title": "Definições",
@@ -115,7 +142,7 @@
         "save_expense": "Guardar Despesa",
         "added_success": "Despesa adicionada com sucesso!",
         "add_failed": "Falha ao adicionar a despesa. Tenta novamente.",
-        "ai_confirm_title": "🤖 Confirmação da IA",
+        "ai_confirm_title": "Confirmação da IA",
         "ai_confirm_subtitle": "Verifica os dados extraídos antes de guardar."
     },
     "auth": {
@@ -137,7 +164,13 @@
         "title": "Análises",
         "subtitle": "Informações detalhadas sobre os teus dados financeiros",
         "show_filters": "Mostrar Filtros",
-        "hide_filters": "Esconder Filtros"
+        "hide_filters": "Esconder Filtros",
+        "avg_monthly_income": "Rendimento Médio Mensal",
+        "avg_monthly_expenses": "Despesas Médias Mensais",
+        "avg_daily_spend": "Gasto Diário Médio",
+        "most_spent_category": "Categoria com Mais Gastos",
+        "expense_categories": "Categorias de Despesa",
+        "income_vs_expenses": "Tendência de Rendimento vs Despesas"
     },
     "dashboard": {
         "title": "Painel",

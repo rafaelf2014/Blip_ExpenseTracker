@@ -101,15 +101,15 @@ export default function Analytics() {
                 )}
 
                 <div className="summary-boxes-container">
-                    <SummaryCard title="Avg Monthly Income"   value={formatCurrency(stats.avgMonthlyIncome)}   icon={TrendingUp}   type="income"  />
-                    <SummaryCard title="Avg Monthly Expenses" value={formatCurrency(stats.avgMonthlyExpense)}  icon={TrendingDown} type="expense" />
-                    <SummaryCard title="Avg Daily Spend"      value={formatCurrency(stats.avgDaily)}           icon={DollarSign}   type="balance" />
-                    <SummaryCard title="Most Spent Category"  value={t(`categories.${stats.topCategory.toLowerCase()}`, stats.topCategory)} icon={ShoppingCart} type="balance" />
+                    <SummaryCard title={t('analytics.avg_monthly_income')}   value={formatCurrency(stats.avgMonthlyIncome)}   icon={TrendingUp}   type="income"  />
+                    <SummaryCard title={t('analytics.avg_monthly_expenses')} value={formatCurrency(stats.avgMonthlyExpense)}  icon={TrendingDown} type="expense" />
+                    <SummaryCard title={t('analytics.avg_daily_spend')}      value={formatCurrency(stats.avgDaily)}           icon={DollarSign}   type="balance" />
+                    <SummaryCard title={t('analytics.most_spent_category')}  value={t(`categories.${stats.topCategory.toLowerCase()}`, stats.topCategory)} icon={ShoppingCart} type="balance" />
                 </div>
 
                 <div className="charts-grid">
                     <div className="chart-card">
-                        <h2>Expense Categories</h2>
+                        <h2>{t('analytics.expense_categories')}</h2>
                         <div className="chart-wrapper">
                             <svg width="0" height="0">
                                 <defs>
@@ -155,7 +155,7 @@ export default function Analytics() {
                     </div>
 
                     <div className="chart-card">
-                        <h2>Income vs Expenses Trend</h2>
+                        <h2>{t('analytics.income_vs_expenses')}</h2>
                         <div className="chart-wrapper">
                             <ResponsiveContainer width="100%" height={350}>
                                 <LineChart data={trendData} margin={{ top: 20, right: 30, left: -20, bottom: 0 }}>

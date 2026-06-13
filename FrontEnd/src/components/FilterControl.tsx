@@ -122,7 +122,7 @@ export function FilterControls({
                 <div key={cat} className={`category-card ${filterCategory === cat ? 'active' : ''}`} onClick={() => setFilterCategory(cat)}>
                   <Check size={14} className="check-icon" />
                   <span className="category-icon">{getCategoryIcon(cat, 22)}</span>
-                  <span className="category-label">{cat}</span>
+                  <span className="category-label">{t(`categories.${cat.toLowerCase()}`, cat)}</span>
                 </div>
               ))}
             </div>
@@ -137,7 +137,7 @@ export function FilterControls({
               </div>
               {expenseTypes.map((type) => (
                 <div key={type} className={`filter-pill ${filterType === type ? 'active' : ''}`} onClick={() => setFilterType(type)}>
-                  {type}
+                  {t(`types.${type.toLowerCase()}`, type)}
                 </div>
               ))}
             </div>

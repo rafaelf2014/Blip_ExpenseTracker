@@ -33,11 +33,11 @@ export function EditExpenseModal({ expense, categories, expenseTypes, onClose, o
         <input className='edit-input' type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         <select className='edit-input' value={category} onChange={(e) => setCategory(e.target.value)}>
           <option value="">{t('editExpenseModal.select_category')}</option>
-          {categories.map(c => <option key={c} value={c}>{c}</option>)}
+          {categories.map(c => <option key={c} value={c}>{t(`categories.${c.toLowerCase()}`, c)}</option>)}
         </select>
         <select className='edit-input' value={type} onChange={(e) => setType(e.target.value)}>
           <option value="">{t('editExpenseModal.select_type')}</option>
-          {expenseTypes.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+          {expenseTypes.map(opt => <option key={opt} value={opt}>{t(`types.${opt.toLowerCase()}`, opt)}</option>)}
         </select>
       </div>
 

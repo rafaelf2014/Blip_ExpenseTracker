@@ -67,13 +67,13 @@ export function ExpenseModal({ userId, categories, expenseTypes, onClose, onExpe
           <div className='form-group'>
             <label>{t('modals.category')}</label>
             <select className='form-control' value={category} onChange={(e) => setCategory(e.target.value)} required>
-              {categories.map((cat) => <option key={cat} value={cat}>{cat}</option>)}
+              {categories.map((cat) => <option key={cat} value={cat}>{t(`categories.${cat.toLowerCase()}`, cat)}</option>)}
             </select>
           </div>
           <div className='form-group'>
             <label>{t('modals.type')}</label>
             <select className='form-control' value={type} onChange={(e) => setType(e.target.value)} required>
-              {expenseTypes.map((opt) => <option key={opt} value={opt}>{opt}</option>)}
+              {expenseTypes.map((opt) => <option key={opt} value={opt}>{t(`types.${opt.toLowerCase()}`, opt)}</option>)}
             </select>
           </div>
         </div>

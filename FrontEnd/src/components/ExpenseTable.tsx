@@ -94,10 +94,10 @@ export function ExpenseTable({ expenses, totalCount, onEditClick }: ExpenseTable
                     {expense.sourceId && <RefreshCw size={13} className='recurring-marker' />}
                   </td>
                   <td className='category-col'>
-                    <span className='category-pill'>{expense.category}</span>
+                    <span className='category-pill'>{t(`categories.${expense.category.toLowerCase()}`, expense.category)}</span>
                   </td>
                   <td className='date-col'>{formatDate(expense.date)}</td>
-                  <td className='type-col capitalize'>{expense.type || 'Standard'}</td>
+                  <td className='type-col capitalize'>{t(`types.${(expense.type || 'Standard').toLowerCase()}`, expense.type || 'Standard')}</td>
                   <td className={`amount-col ${Number(expense.amount) < 0 ? 'income' : 'expense'}`}>
                     {Number(expense.amount) < 0 ? '+' : '-'}{formatCurrency(Math.abs(Number(expense.amount)))}
                   </td>
