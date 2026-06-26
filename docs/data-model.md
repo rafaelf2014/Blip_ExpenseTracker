@@ -1,6 +1,6 @@
 # Data Model
 
-## The signed-amount money model (read this first)
+## The signed-amount money model
 
 Every transaction is a single row with **one signed `amount`**:
 
@@ -17,7 +17,7 @@ sumNet(rows)     // income − spending  (= −Σ signed amounts)
 computeBalance(start, rows)  // start + net
 ```
 
-`isIncome` exists on rows, but it's a convenience marker for income rows generated from recurring templates — the *sign* of `amount` is the source of truth. When you write code that touches money, respect the sign; don't assume amounts are positive.
+`isIncome` exists on rows, but it's a convenience marker for income rows generated from recurring templates - the *sign* of `amount` is the source of truth. When you write code that touches money, respect the sign; don't assume amounts are positive.
 
 All the shared money/date helpers live in `utils/finance.ts` and are covered by `__tests__/finance.test.ts`.
 
@@ -26,8 +26,8 @@ All the shared money/date helpers live in `utils/finance.ts` and are covered by 
 The "database" is a single JSON file, `BackEnd/src/db.json`, managed by [lowdb](https://github.com/typicode/lowdb). On import, `db.ts` loads the whole file into memory (`db.data`); route handlers mutate `db.data` and call `await db.write()` to flush back to disk.
 
 Implications worth knowing:
-- It's the entire DB in memory — fine for a demo, not concurrent-safe or scalable.
-- **Don't hand-edit `db.json` while the server is running** — the in-memory copy will overwrite your edits on the next `db.write()`. Stop the server first. (See [development.md](development.md#gotchas).)
+- It's the entire DB in memory - fine for a demo, not concurrent-safe or scalable.
+- **Don't hand-edit `db.json` while the server is running** - the in-memory copy will overwrite your edits on the next `db.write()`. Stop the server first. (See [development.md](development.md#gotchas).)
 
 ## Schema
 
@@ -80,7 +80,7 @@ type User = {
 }
 ```
 
-The `*History` arrays are snapshots written by the app when settings are saved — they're **not** recomputed from raw expenses on read. If you bulk-edit expenses, the history won't update until the next save.
+The `*History` arrays are snapshots written by the app when settings are saved - they're **not** recomputed from raw expenses on read. If you bulk-edit expenses, the history won't update until the next save.
 
 ### RegularTransaction (recurring template)
 
@@ -105,9 +105,9 @@ How the sync works (`expense.routes.ts` + `recurring.ts`):
 
 1. **`occurrenceDates(template, today)`** (pure, in `recurring.ts`) returns every date the template should have fired, from its start date up to today.
 2. For each occurrence, a row is created with a deterministic id `${templateId}|${date}` so duplicates can't happen. Income rows are written with a **negative** amount and `isIncome: true`.
-3. **Skip list** — if the user deletes or edits a generated occurrence, a `RecurringSkip` (`{ sourceId, date }`) is recorded so the sync never regenerates that one. ("Skip this month's rent.")
-4. **Detach on template delete** — if a template is removed, its already-generated rows are *kept* (so history and balance stay intact) but detached: their `sourceId` is cleared and they become normal one-off rows. No new occurrences are generated.
+3. **Skip list** - if the user deletes or edits a generated occurrence, a `RecurringSkip` (`{ sourceId, date }`) is recorded so the sync never regenerates that one. ("Skip this month's rent.")
+4. **Detach on template delete** - if a template is removed, its already-generated rows are *kept* (so history and balance stay intact) but detached: their `sourceId` is cleared and they become normal one-off rows. No new occurrences are generated.
 
 ### The monthly edge case
 
-Stepping a monthly recurrence naively (add 1 month) breaks on month-ends: a template starting the 31st would skip February or loop. Both `recurring.ts` and `finance.ts` (`countOccurrences`) handle this by stepping an **absolute month index** and **clamping the day** to each month's length (`new Date(y, m+1, 0)` = last day of month `m`). So a "31st" template fires on Feb 28/29 without drifting or looping. This is covered by tests — keep it that way if you touch the stepping logic.
+Stepping a monthly recurrence naively (add 1 month) breaks on month-ends: a template starting the 31st would skip February or loop. Both `recurring.ts` and `finance.ts` (`countOccurrences`) handle this by stepping an **absolute month index** and **clamping the day** to each month's length (`new Date(y, m+1, 0)` = last day of month `m`). So a "31st" template fires on Feb 28/29 without drifting or looping. This is covered by tests - keep it that way if you touch the stepping logic.

@@ -6,22 +6,22 @@ You log expenses the normal way (form) or in plain language by typing or speakin
 
 ## Features
 
-- **Expenses** — add / edit / delete with category, type, date and amount. Sortable, paginated table with filters (search, category, type, date range, amount range).
+- **Expenses** - add / edit / delete with category, type, date and amount. Sortable, paginated table with filters (search, category, type, date range, amount range).
 - **Natural-language entry** — type or dictate something like *"Paguei 40€ de eletricidade ontem"* and review the parsed expense before saving.
-- **Chatbot** — a floating assistant that answers spending questions (*"Quanto gastei em comida este mês?"*) with relative-date parsing. Fully deterministic — it doesn't call the LLM.
-- **Dashboard** — balance, monthly income/expenses with month-over-month change, a spending chart (week/month/year) and quick stats.
-- **Analytics** — category breakdown, income-vs-expense trend, top categories. Respects the active filters.
-- **Planning** — recurring transactions (salary, rent, subscriptions; weekly/monthly/yearly) and per-category budgets.
-- **Settings** — profile (incl. picture), password change, and preferences (currency, language EN/PT, date format, dark/light theme).
+- **Chatbot** - a floating assistant that answers spending questions (*"Quanto gastei em comida este mês?"*) with relative-date parsing. Fully deterministic - it doesn't call the LLM.
+- **Dashboard** - balance, monthly income/expenses with month-over-month change, a spending chart (week/month/year) and quick stats.
+- **Analytics** - category breakdown, income-vs-expense trend, top categories. Respects the active filters.
+- **Planning** - recurring transactions (salary, rent, subscriptions; weekly/monthly/yearly) and per-category budgets.
+- **Settings** - profile (incl. picture), password change, and preferences (currency, language EN/PT, date format, dark/light theme).
 - **Voice input** via the Web Speech API (pt-PT).
 
 ### How the AI works
 
 Expense parsing is a hybrid pipeline, fastest path first:
 
-1. **Keywords** — a bilingual (PT/EN) keyword list with brand/store names categorizes most inputs instantly.
-2. **Fuzzy matching** — Levenshtein distance covers typos and partial words.
-3. **WebLLM (Qwen2.5-1.5B)** — a local model in a Web Worker, used only when keywords fail, to write a short description and infer the category.
+1. **Keywords** - a bilingual (PT/EN) keyword list with brand/store names categorizes most inputs instantly.
+2. **Fuzzy matching** - Levenshtein distance covers typos and partial words.
+3. **WebLLM (Qwen2.5-1.5B)** - a local model in a Web Worker, used only when keywords fail, to write a short description and infer the category.
 
 The chatbot's financial answers are computed directly from your data (no LLM), so they're fast and exact. Unknown terms are saved to `localStorage` to help improve the keyword list later.
 

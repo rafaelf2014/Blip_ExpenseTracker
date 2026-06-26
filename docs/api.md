@@ -2,7 +2,7 @@
 
 Base URL: `http://localhost:5000/api` (hardcoded in `FrontEnd/src/constants/api.ts`).
 
-All requests/responses are JSON. There is **no authentication** — endpoints identify the user by a `userId` in the path or body. CORS is open. The JSON body limit is 5 MB (to allow base64 profile pictures).
+All requests/responses are JSON. There is **no authentication** - endpoints identify the user by a `userId` in the path or body. CORS is open. The JSON body limit is 5 MB (to allow base64 profile pictures).
 
 Conventions below: `→` request body, `←` success response. Error responses are `{ "error": "..." }` with the noted status.
 
