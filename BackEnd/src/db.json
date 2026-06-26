@@ -71,7 +71,7 @@
         },
         {
           "month": "2026-06",
-          "balance": 4384.530000000001
+          "balance": 5789.530000000001
         }
       ],
       "budgetUtilHistory": [
@@ -97,7 +97,7 @@
         },
         {
           "month": "2026-06",
-          "utilization": 79
+          "utilization": 87
         }
       ],
       "savingsRateHistory": [
@@ -123,7 +123,7 @@
         },
         {
           "month": "2026-06",
-          "rate": 0
+          "rate": 24
         }
       ],
       "recurringSkips": []
@@ -1076,6 +1076,44 @@
       "date": "2026-05-21T00:00:00.000Z",
       "isIncome": true,
       "sourceId": "1776809740230"
+    },
+    {
+      "id": "1776809740230-2026-06-21",
+      "userId": "1773510223926",
+      "description": "Salary",
+      "amount": -1500,
+      "category": "Other",
+      "type": "Recurring",
+      "date": "2026-06-21T00:00:00.000Z",
+      "isIncome": true,
+      "sourceId": "1776809740230"
+    },
+    {
+      "id": "1782319718937",
+      "userId": "1773510223926",
+      "description": "dinner at restaurant",
+      "amount": 35,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-06-23T00:00:00.000Z"
+    },
+    {
+      "id": "1782320448065",
+      "userId": "1773510223926",
+      "description": "Restaurant lunch",
+      "amount": 50,
+      "category": "Food",
+      "type": "One-time",
+      "date": "2026-06-23T00:00:00.000Z"
+    },
+    {
+      "id": "1782320591746",
+      "userId": "1773510223926",
+      "description": "Gym subscription, 10 euros",
+      "amount": 10,
+      "category": "Health",
+      "type": "Monthly",
+      "date": "2026-06-24T00:00:00.000Z"
     }
   ],
   "categories": [
